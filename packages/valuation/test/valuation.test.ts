@@ -1,272 +1,280 @@
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it, vi } from 'vitest'
 import {
-  VALUATION_METHODS, VALUATION_MISS_REASONS, amount, fromBaseUnits,
-  hashJson, instant, toJSON
+  amount, Decimal, fromBaseUnits, hashJson, instant, toJSON, VALUATION_METHODS
 } from '../../core/src/index.ts'
-import type { Amount, Instant } from '../../core/src/index.ts'
+import type { Amount, ValuationMissReason } from '../../core/src/index.ts'
 import { loadSchemas } from '../../validate/src/schema-registry.ts'
-import { MockPriceProvider, ValuationEngine, relativeSpread } from '../src/index.ts'
-import type { PriceProvider, Quote, QuoteQuery, ValuationResult, ValueInput } from '../src/index.ts'
+import {
+  comparisonSpread, ENGINE_VERSION, isValuationMiss, MockPriceProvider, ValuationEngine
+} from '../src/index.ts'
+import type {
+  PriceProvider, Quote, QuoteQuery, Valuation, ValuationResult, ValueInput
+} from '../src/index.ts'
 
 const timestamp = instant('2021-06-15T23:40:00Z')
-const generated = instant('2026-01-10T09:00:00Z')
+const generatedAt = instant('2026-01-10T09:00:07Z')
 const query: QuoteQuery = {
-  asset: { chain: 'synthetic-chain', symbol: 'COIN' }, timestamp,
-  targetCurrency: 'EUR', method: 'exact_timestamp'
+  asset: { chain: 'tezos', symbol: 'XTZ' }, timestamp, targetCurrency: 'EUR'
 }
-const input: ValueInput = { ...query, quantity: amount('100.000001') }
-const options = { now: () => generated, createId: () => 'synthetic-valuation' }
-const quote = (price = '2.41', changes: Partial<Quote> = {}): Quote => ({
-  ...query, asset: { ...query.asset }, unitPrice: amount(price), sourceTimestamp: timestamp,
-  providerMarket: 'COIN/EUR', timeResolution: 'PT1S',
-  rawSourceReference: 'synthetic://quote/2021-06-15T23:40:00Z',
-  rawPayloadHash: hashJson({ price, timestamp }), confidence: 0.8, ...changes
+const input: ValueInput = { ...query, quantity: amount('100') }
+const quote = (price = '2.41', overrides: Partial<Quote> = {}): Quote => ({
+  ...query, method: 'nearest_trade', unit_price: amount(price), provider_market: 'XTZ/EUR',
+  time_resolution: 'PT5M', raw_source_reference: 'synthetic://xtz-eur/2021-06-15T23:40:00Z',
+  confidence: 0.8, raw_payload: { price, source_timestamp: timestamp }, ...overrides
 })
-const mock = (id = 'mock', price = '2.41', q = query, changes: Partial<Quote> = {}) =>
-  new MockPriceProvider(id, [{ query: q, response: quote(price, { ...q, ...changes }) }])
-const engine = (providers: readonly PriceProvider[] = [mock()]) => new ValuationEngine(providers, options)
-const valued = (result: ValuationResult) => {
-  expect(result.status).toBe('VALUED')
-  if (result.status !== 'VALUED') throw new Error(result.miss.detail)
-  return result.valuation
+const provider = (id = 'primary', price = '2.41', q: QuoteQuery = query, response = quote(price, q)) =>
+  new MockPriceProvider(id, [{ query: q, response }])
+const engine = (...providers: PriceProvider[]) =>
+  new ValuationEngine(providers, { now: () => generatedAt })
+const valued = (result: ValuationResult): Valuation => {
+  if (isValuationMiss(result)) throw new Error(`Expected a valuation, got ${result.reason}`)
+  return result
 }
 const registry = loadSchemas(fileURLToPath(new URL('../../../', import.meta.url)))
-function validates(result: ValuationResult): void {
-  const name = result.status === 'VALUED' ? 'valuation' : 'valuation-miss'
-  const validate = registry.byPath.get(`schemas/valuation/${name}.schema.json`)!
-  const record = result.status === 'VALUED' ? result.valuation : result.miss
-  expect(validate(JSON.parse(JSON.stringify(record))), JSON.stringify(validate.errors)).toBe(true)
+const validate = (result: ValuationResult) => {
+  const path = isValuationMiss(result) ? 'valuation-miss' : 'valuation'
+  const check = registry.byPath.get(`schemas/valuation/${path}.schema.json`)!
+  expect(check(JSON.parse(JSON.stringify(result))), JSON.stringify(check.errors)).toBe(true)
 }
 
-describe('AC-005 historical valuation', () => {
-  it('exposes provenance and multiplies native quantity precision using core decimals', async () => {
-    const result = await engine().value(input)
-    const record = valued(result)
-    expect(record).toMatchObject({
-      quantity: '100.000001', unit_price: '2.41', total_value: '241.00000241',
-      timestamp, provider: 'mock', method: 'exact_timestamp', target_currency: 'EUR',
-      generated_at: generated, engine_version: 'valuation@0.0.0', schema_version: '0.1.0',
-      provider_market: 'COIN/EUR', raw_source_reference: quote().rawSourceReference,
-      raw_payload_hash: quote().rawPayloadHash, fallback_used: false, fallback_chain: ['mock']
+describe('AC-005: historical quote provenance and decimal precision', () => {
+  it('values the operation instant with inspectable source, method and version', async () => {
+    const result = valued(await engine(provider()).value(input))
+    expect(result).toMatchObject({
+      quantity: '100', unit_price: '2.41', total_value: '241', provider: 'primary',
+      timestamp, target_currency: 'EUR', method: 'nearest_trade', time_resolution: 'PT5M',
+      raw_source_reference: quote().raw_source_reference, raw_payload_hash: hashJson(quote().raw_payload!),
+      generated_at: generatedAt, engine_version: ENGINE_VERSION, schema_version: '0.1.0',
+      fallback_used: false, fallback_chain: ['primary']
     })
-    validates(result)
-    const small = valued(await engine([mock('mock', '0.123456789012345678')]).value({
-      ...input, quantity: fromBaseUnits('1', 18)
+    validate(result)
+  })
+
+  it('preserves native quantity precision without rounding to fiat cents', async () => {
+    const result = valued(await engine(provider('primary', '0.123456789012345678')).value({
+      ...input, quantity: fromBaseUnits('1234567890123456789', 18)
     }))
-    expect(small.total_value).toBe('0.000000000000000000123456789012345678')
+    expect(result.quantity).toBe('1.234567890123456789')
+    // Integer product 1234567890123456789 * 123456789012345678, scaled by 10^36.
+    expect(result.total_value).toBe('0.152415787532388366390794098763907942')
+    expect(valued(await engine(provider('primary', '2.41')).value({
+      ...input, quantity: fromBaseUnits('1', 6)
+    })).total_value).toBe('0.00000241')
   })
 
-  it('replays deterministically with injected generation metadata and local mock data', async () => {
-    const first = await engine().value(input)
-    expect(await engine().value(input)).toEqual(first)
-    expect(JSON.parse(JSON.stringify(first))).toEqual(JSON.parse(JSON.stringify(await engine().value(input))))
-  })
-
-  it('preserves UTC block time across a local date boundary', async () => {
-    const record = valued(await engine().value({
-      ...input, timestamp: '2021-06-16T01:40:00+02:00' as Instant
+  it('passes UTC block time through even when the local date is the next day', async () => {
+    const p = provider()
+    const spy = vi.spyOn(p, 'quote')
+    const result = valued(await engine(p).value({
+      ...input, timestamp: instant('2021-06-16T01:40:00+02:00')
     }))
-    expect(record.timestamp).toBe('2021-06-15T23:40:00.000Z')
+    expect(spy.mock.calls[0]![0].timestamp).toBe(timestamp)
+    expect(result.timestamp).toBe(timestamp)
   })
 
-  it.each(VALUATION_METHODS)('records the explicit %s method without legal classification', async method => {
-    const q: QuoteQuery = {
-      ...query, method, ...(method === 'nearest_trade' ? { maxDistanceMs: 300_000 } : {})
-    }
-    const record = valued(await engine([mock('mock', '2.41', q)]).value({ ...input, ...q }))
-    expect(record.method).toBe(method)
-    expect(record).not.toHaveProperty('classification')
-  })
-
-  it('supports fiat and crypto target currencies through explicit quotes', async () => {
-    for (const [asset, targetCurrency] of [
-      [{ asset_id: 'fiat-eur' }, 'USD'], [{ chain: 'synthetic-chain', symbol: 'COIN' }, 'BTC']
-    ] as const) {
-      const q = { ...query, asset, targetCurrency }
-      const result = await engine([mock('mock', '0.5', q)]).value({ ...input, ...q })
-      expect(valued(result).total_value).toBe('50.0000005')
-      validates(result)
-    }
-  })
-})
-
-describe('miss, fallback and provider boundaries', () => {
-  it.each(VALUATION_MISS_REASONS)('records %s as UNKNOWN without price fields', async reason => {
-    const provider = new MockPriceProvider('missing', [{ query, response: { reason } }])
-    const result = await engine([provider]).value(input)
-    expect(result.status).toBe('UNKNOWN')
-    if (result.status !== 'UNKNOWN') throw new Error('expected miss')
-    expect(result.miss).toMatchObject({ reason, providers_tried: ['missing'], timestamp })
-    expect(result.miss).not.toHaveProperty('unit_price')
-    expect(result.miss).not.toHaveProperty('total_value')
-    validates(result)
-  })
-
-  it('records ordered misses and stops after the first successful fallback', async () => {
-    const unused = { id: 'unused', quote: vi.fn().mockRejectedValue(new Error('must not run')) }
-    const result = await engine([mock('success'), new MockPriceProvider('missing'), unused]).value({
-      ...input, providers: ['missing', 'success', 'unused']
-    })
-    expect(valued(result)).toMatchObject({
-      provider: 'success', fallback_used: true, fallback_chain: ['missing', 'success']
-    })
-    expect(result.attempts.map(item => item.status)).toEqual(['MISSED', 'QUOTED'])
-    expect(unused.quote).not.toHaveBeenCalled()
-  })
-
-  it('records network failure and every miss, without persisting thrown messages', async () => {
-    const broken = { id: 'broken', quote: async (): Promise<Quote> => { throw new Error('secret=private') } }
-    const result = await engine([broken, new MockPriceProvider('missing')]).value(input)
-    expect(result.status).toBe('UNKNOWN')
-    expect(result.attempts).toMatchObject([
-      { provider: 'broken', miss: { reason: 'network' } },
-      { provider: 'missing', miss: { reason: 'hole' } }
-    ])
-    expect(JSON.stringify(result)).not.toContain('secret')
-    validates(result)
-    expect(valued(await engine([broken, mock()]).value(input)).fallback_used).toBe(true)
-  })
-
-  it('never assumes stablecoin parity or NFT floor prices, including zero quantities', async () => {
-    for (const asset of [
-      { asset_id: 'synthetic-stablecoin' },
-      { chain: 'synthetic-chain', contract: 'synthetic-nft', token_id: '42' }
-    ]) {
-      const result = await engine().value({ ...input, asset, quantity: amount('0') })
-      expect(result.status).toBe('UNKNOWN')
-    }
+  it.each(VALUATION_METHODS)('preserves explicit %s methodology', async (method) => {
+    const q = { ...query, method }
+    const result = valued(await engine(provider('method', '2.41', q, quote('2.41', {
+      ...q, time_resolution: method === 'daily' ? 'P1D; UTC calendar date' : 'PT5M'
+    }))).value({ ...input, method }))
+    expect(result.method).toBe(method)
+    expect(result.timestamp).toBe(timestamp)
+    validate(result)
   })
 
   it.each([
-    { unitPrice: -1 as unknown as Amount },
-    { unitPrice: amount('-1') },
-    { confidence: NaN },
-    { targetCurrency: 'USD' },
-    { asset: { chain: 'different-chain', symbol: 'COIN' } },
-    { sourceTimestamp: instant('2021-06-15T23:39:59Z') },
-    { timestamp: instant('2021-06-15T23:39:59Z') },
-    { timestamp: '2021-06-15T23:40:00' as Instant },
-    { method: 'daily' as const },
-    { rawSourceReference: '' },
-    { timeResolution: '' },
-    { confidence: 1.1 }
-  ])('rejects invalid or mismatched quote %j as a hole', async changes => {
-    const provider: PriceProvider = { id: 'bad', quote: async () => quote('1', changes) }
-    const result = await engine([provider]).value(input)
-    expect(result.attempts).toMatchObject([{ status: 'MISSED', miss: { reason: 'hole' } }])
-    expect(result.status).toBe('UNKNOWN')
+    [{ asset_id: 'fiat-eur' }, 'USD'],
+    [{ chain: 'synthetic', symbol: 'TOKEN' }, 'BTC']
+  ] as const)('does not restrict providers to one chain or fiat pair: %j / %s', async (asset, targetCurrency) => {
+    const q = { ...query, asset, targetCurrency }
+    const result = valued(await engine(provider('pair', '0.1', q)).value({ ...q, quantity: amount('3') }))
+    expect(result.total_value).toBe('0.3')
+    validate(result)
   })
 
-  it('rejects malformed responses and isolates provider mutation of the query', async () => {
-    const malformed: PriceProvider = { id: 'bad', quote: async () => null as unknown as Quote }
-    const mutating: PriceProvider = {
-      id: 'mutating', quote: async q => {
-        Object.assign(q.asset, { chain: 'wrong-chain' })
-        return quote('1', q)
+  it('reproduces byte-identical records with the same quote and generation instant', async () => {
+    const a = await engine(provider()).value(input)
+    const b = await engine(provider()).value(input)
+    expect(JSON.stringify(a)).toBe(JSON.stringify(b))
+  })
+})
+
+describe('recorded fallback and UNKNOWN', () => {
+  it('records every attempted provider and stops on the first successful quote', async () => {
+    const unused = provider('unused')
+    const spy = vi.spyOn(unused, 'quote')
+    const result = valued(await engine(
+      new MockPriceProvider('first', [], { reason: 'network' }), provider('second'), unused
+    ).value(input))
+    expect(result.provider).toBe('second')
+    expect(result.fallback_used).toBe(true)
+    expect(result.fallback_chain).toEqual(['first', 'second'])
+    expect(spy).not.toHaveBeenCalled()
+    validate(result)
+  })
+
+  it('honors the caller-specified provider order and subset', async () => {
+    const result = valued(await engine(provider('a', '0.9'), provider('b', '0.93')).value({
+      ...input, providers: ['b', 'a']
+    }))
+    expect(result.provider).toBe('b')
+    expect(result.unit_price).toBe('0.93')
+    expect(result.fallback_chain).toEqual(['b'])
+  })
+
+  it('keeps every miss reason and never adds price fields when all providers miss', async () => {
+    const reasons: ValuationMissReason[] = ['network', 'hole', 'unsupported_asset', 'no_market']
+    const result = await engine(...reasons.map((reason) =>
+      new MockPriceProvider(reason, [], { reason, detail: `Fixture ${reason}` })
+    )).value(input)
+    expect(isValuationMiss(result)).toBe(true)
+    if (!isValuationMiss(result)) throw new Error('Expected a miss')
+    expect(result.reason).toBe('no_market')
+    expect(result.providers_tried).toEqual(reasons)
+    expect(JSON.parse(result.detail)).toEqual(reasons.map((reason) => ({
+      provider: reason, reason, detail: `Fixture ${reason}`
+    })))
+    expect(result).not.toHaveProperty('unit_price')
+    expect(result).not.toHaveProperty('total_value')
+    validate(result)
+  })
+
+  it.each([
+    { chain: 'tezos', contract: 'KT1SyntheticNft', token_id: '42' },
+    { chain: 'synthetic', symbol: 'USDC' },
+    { asset_id: 'fiat-eur' }
+  ])('does not invent NFT floors, stablecoin parity or same-currency parity for %j', async (asset) => {
+    const result = await engine(new MockPriceProvider('empty', [], { reason: 'no_market' })).value({
+      ...input, asset
+    })
+    expect(isValuationMiss(result)).toBe(true)
+    validate(result)
+  })
+
+  it('distinguishes a sourced zero price and zero quantity from a miss', async () => {
+    const zeroPrice = valued(await engine(provider('zero', '0')).value(input))
+    const zeroQuantity = valued(await engine(provider()).value({ ...input, quantity: amount('0') }))
+    expect(zeroPrice.total_value).toBe('0')
+    expect(zeroPrice.raw_source_reference).toBeTruthy()
+    expect(zeroQuantity.total_value).toBe('0')
+    expect(isValuationMiss(await engine(new MockPriceProvider('empty')).value({
+      ...input, quantity: amount('0')
+    }))).toBe(true)
+  })
+
+  it('propagates unexpected provider errors instead of hiding them as missing prices', async () => {
+    const failure = new Error('Adapter programming error')
+    await expect(engine({ id: 'broken', quote: async () => { throw failure } }).value(input)).rejects.toBe(failure)
+  })
+})
+
+describe('multi-provider comparison', () => {
+  it('keeps ordered selection, alternatives, full provenance, misses and decimal spread', async () => {
+    const result = await engine(
+      new MockPriceProvider('offline', [], { reason: 'network' }),
+      provider('b', '0.93'), provider('a', '0.91'), provider('c', '0.90')
+    ).compare(input)
+    expect(result.status).toBe('VALUED')
+    const selected = valued(result.selected)
+    expect(selected.provider).toBe('b')
+    expect(selected.fallback_chain).toEqual(['offline', 'b'])
+    expect(selected.fallback_used).toBe(true)
+    expect(selected.alternatives?.map((v) => v.provider)).toEqual(['a', 'c'])
+    expect(result.misses).toEqual([{ provider: 'offline', reason: 'network' }])
+    expect(result.valuations.map((v) => v.unit_price)).toEqual(['0.93', '0.91', '0.9'])
+    expect(result.spread).toBe('3.333333333333333333333333333333333333333')
+    expect(selected.spread).toBe(result.spread)
+    result.valuations.forEach(validate)
+    validate(selected)
+    expect(result.valuations[1]!.fallback_chain).toEqual(['a'])
+  })
+
+  it('returns UNKNOWN and no spread when every provider misses', async () => {
+    const result = await engine(new MockPriceProvider('empty')).compare(input)
+    expect(result.status).toBe('UNKNOWN')
+    expect(isValuationMiss(result.selected)).toBe(true)
+    expect(result.valuations).toEqual([])
+    expect(result).not.toHaveProperty('spread')
+    validate(result.selected)
+  })
+
+  it('does not mistake a failed comparison after selection for fallback', async () => {
+    const result = await engine(provider(), new MockPriceProvider('empty')).compare(input)
+    expect(valued(result.selected).fallback_used).toBe(false)
+    expect(valued(result.selected).fallback_chain).toEqual(['primary'])
+    expect(result).not.toHaveProperty('spread')
+    expect(result.misses).toEqual([{ provider: 'empty', reason: 'hole' }])
+  })
+
+  it.each([
+    [[], undefined], [['1'], undefined], [['0', '1'], undefined],
+    [['0', '0'], undefined], [['0.9', '0.9'], '0'], [['0.8', '1'], '25']
+  ] as const)('defines spread edge cases %j as %s', (prices, expected) => {
+    const spread = comparisonSpread(prices.map((price) => amount(price)))
+    expect(spread === undefined ? undefined : toJSON(spread)).toBe(expected)
+  })
+})
+
+describe('provider boundary and mock isolation', () => {
+  it.each(['wrong currency', 'wrong asset', 'wrong time', 'missing source', 'invalid confidence', 'negative price']) (
+    'rejects %s rather than materializing an unsupported valuation', async (problem) => {
+      const overrides: Record<string, Partial<Quote>> = {
+        'wrong currency': { targetCurrency: 'USD' },
+        'wrong asset': { asset: { chain: 'different-chain', symbol: 'XTZ' } },
+        'wrong time': { timestamp: instant('2021-06-15T00:00:00Z') },
+        'missing source': { raw_source_reference: '' },
+        'invalid confidence': { confidence: Number.NaN },
+        'negative price': { unit_price: amount('-1') }
       }
+      await expect(engine(provider('bad', '1', query, quote('1', overrides[problem]))).value(input)).rejects.toThrow()
     }
-    const result = await engine([malformed, mutating, mock()]).value(input)
-    expect(valued(result).fallback_chain).toEqual(['bad', 'mutating', 'mock'])
-    expect(input.asset.chain).toBe('synthetic-chain')
+  )
+
+  it('does not silently substitute a daily quote for an explicit exact method', async () => {
+    const q: QuoteQuery = { ...query, method: 'exact_timestamp' }
+    await expect(engine(provider('bad', '1', q, quote('1', { method: 'daily' }))).value({
+      ...input, method: 'exact_timestamp'
+    })).rejects.toThrow(/method/)
   })
 
-  it('accepts evidenced zero prices, without turning a missing quote into zero', async () => {
-    const result = await engine([mock('zero', '0')]).value(input)
-    expect(valued(result).total_value).toBe('0')
-    validates(result)
+  it.each([0.1, '0.1', new Decimal('NaN'), amount('-1')])('rejects invalid quantity %s', async (quantity) => {
+    await expect(engine(provider()).value({ ...input, quantity: quantity as Amount })).rejects.toThrow(/quantity/)
   })
 
-  it('rejects ambiguous policies, invalid amounts, and timezone-less instants', async () => {
-    expect(() => engine([])).toThrow()
-    expect(() => engine([mock(), mock()])).toThrow()
-    for (const changes of [
-      { providers: [] }, { providers: ['missing'] }, { providers: ['mock', 'mock'] },
-      { quantity: amount('-1') }, { quantity: 1 as unknown as Amount },
-      { timestamp: '2021-06-15T23:40:00' as Instant }, { targetCurrency: 'eur' },
-      { method: 'nearest_trade' as const }, { maxDistanceMs: -1 }
-    ]) await expect(engine().value({ ...input, ...changes })).rejects.toThrow()
+  it('rejects bare numeric prices at the provider boundary', async () => {
+    const p: PriceProvider = { id: 'bad', quote: async () => quote('1', { unit_price: 0.1 as unknown as Amount }) }
+    await expect(engine(p).value(input)).rejects.toThrow(/unit_price/)
   })
-})
 
-describe('time resolution', () => {
-  it('accepts nearest trade only within an explicit bounded distance', async () => {
-    const q = { ...query, method: 'nearest_trade' as const, maxDistanceMs: 60_000 }
-    for (const [sourceTimestamp, status] of [
-      [instant('2021-06-15T23:39:00Z'), 'VALUED'],
-      [instant('2021-06-15T23:41:00Z'), 'VALUED'],
-      [instant('2021-06-15T23:38:59Z'), 'UNKNOWN']
-    ]) {
-      const result = await engine([mock('mock', '1', q, { sourceTimestamp: sourceTimestamp as Instant })])
-        .value({ ...input, ...q })
-      expect(result.status).toBe(status)
+  it('rejects empty, duplicate or unregistered provider policies', async () => {
+    expect(() => engine()).toThrow(/At least one/)
+    expect(() => engine(provider(), provider())).toThrow(/unique/)
+    for (const providers of [[], ['primary', 'primary'], ['missing']]) {
+      await expect(engine(provider()).value({ ...input, providers })).rejects.toThrow(/policy/)
     }
   })
 
-  it('uses the UTC day only when daily is explicitly requested', async () => {
-    const q = { ...query, method: 'daily' as const }
-    const provider = mock('daily', '1', q, {
-      sourceTimestamp: instant('2021-06-15T00:00:00Z'), timeResolution: 'P1D'
-    })
-    expect(valued(await engine([provider]).value({ ...input, ...q })).timestamp).toBe(timestamp)
-    expect((await engine([provider]).value(input)).status).toBe('UNKNOWN')
-    const wrongDay = mock('daily', '1', q, { sourceTimestamp: instant('2021-06-16T00:00:00Z') })
-    expect((await engine([wrongDay]).value({ ...input, ...q })).status).toBe('UNKNOWN')
-  })
-})
-
-describe('comparison and spread', () => {
-  it('compares all providers while respecting selection order and exposing alternatives', async () => {
-    const comparison = await engine([
-      new MockPriceProvider('missing'), mock('a', '0.91'), mock('b', '0.93'), mock('c', '0.90')
-    ]).compare({ ...input, providers: ['missing', 'b', 'a', 'c'] })
-    const record = valued(comparison.result)
-    expect(record.provider).toBe('b')
-    expect(record.fallback_chain).toEqual(['missing', 'b'])
-    expect(record.alternatives.map(item => item.provider)).toEqual(['a', 'c'])
-    expect(record.spread).toBe('0.03333333333333333333333333333333333333333')
-    expect(comparison.spreadPercent).toBe('3.333333333333333333333333333333333333333')
-    expect(comparison.result.attempts).toHaveLength(4)
-    validates(comparison.result)
+  it('only matches configured queries, including method and exact instant', async () => {
+    const p = provider()
+    for (const q of [
+      { ...query, timestamp: instant('2021-06-15T23:40:01Z') },
+      { ...query, targetCurrency: 'USD' },
+      { ...query, method: 'daily' as const }
+    ]) expect(await p.quote(q)).toEqual({ reason: 'hole' })
+    expect(() => new MockPriceProvider('duplicate', [
+      { query, response: quote() }, { query, response: quote() }
+    ])).toThrow(/Duplicate/)
   })
 
-  it('does not count comparison misses after selection as fallback', async () => {
-    const result = await engine([mock(), new MockPriceProvider('missing')]).compare(input)
-    expect(valued(result.result).fallback_used).toBe(false)
-    expect(valued(result.result)).not.toHaveProperty('spread')
-    expect(result.spreadPercent).toBeNull()
-    const absent = await engine([new MockPriceProvider('missing')]).compare(input)
-    expect(absent.result.status).toBe('UNKNOWN')
-    expect(absent.spreadPercent).toBeNull()
-  })
-
-  it.each([
-    [[], null], [['1'], null], [['0', '0'], '0'], [['1', '1'], '0'],
-    [['0', '1'], null], [['0.1', '0.3'], '2'], [['2', '1'], '1']
-  ] as const)('handles sparse, identical, zero and decimal prices: %j', (prices, expected) => {
-    const spread = relativeSpread(prices.map(price => amount(price)))
-    expect(spread === null ? null : toJSON(spread)).toBe(expected)
-  })
-})
-
-describe('mock provider', () => {
-  it('matches the complete query and never interpolates or conflates token identities', async () => {
-    const provider = mock()
-    for (const changes of [
-      { timestamp: instant('2021-06-15T23:40:01Z') }, { targetCurrency: 'USD' },
-      { asset: { ...query.asset, token_id: '42' } }, { method: 'daily' as const }
-    ]) expect(await provider.quote({ ...query, ...changes })).toMatchObject({ reason: 'hole' })
-  })
-
-  it('copies fixtures on entry and return and rejects duplicate query keys', async () => {
-    const response = quote()
-    const entry = { query, response }
-    const provider = new MockPriceProvider('mock', [entry])
-    Object.assign(response.asset, { chain: 'changed' })
-    const first = await provider.quote(query)
-    if ('reason' in first) throw new Error('expected quote')
-    Object.assign(first.asset, { chain: 'changed-again' })
-    expect(await provider.quote(query)).toMatchObject({ asset: { chain: 'synthetic-chain' } })
-    expect(() => new MockPriceProvider('mock', [entry, entry])).toThrow('duplicate')
+  it('snapshots supplied fixtures and isolates returned payloads from later mutation', async () => {
+    const payload = { price: '2.41' }
+    const fixture = quote('2.41', { raw_payload: payload })
+    const p = provider('snapshot', '2.41', query, fixture)
+    payload.price = '999'
+    const first = await p.quote(query) as Quote
+    expect(first.raw_payload).toEqual({ price: '2.41' })
+    ;(first.raw_payload as { price: string }).price = '888'
+    expect((await p.quote(query) as Quote).raw_payload).toEqual({ price: '2.41' })
   })
 })

@@ -1,86 +1,90 @@
 # Valuation
 
-Implements P0-1-06: chain-neutral valuation, deterministic mock quotes, recorded
-fallbacks, UNKNOWN on missing evidence, and multi-provider comparison (AC-005).
+Implements P0-1-06: a standalone valuation engine, offline mock provider and
+multi-provider comparison. It uses core `Amount` arithmetic and UTC instants;
+there is no chain fetching or tax classification.
 
 ```ts
 import { amount, instant } from '../core/src/index.ts'
-import { MockPriceProvider, ValuationEngine } from './src/index.ts'
+import { MockPriceProvider, ValuationEngine, isValuationMiss } from './src/index.ts'
 
 const query = {
-  asset: { asset_id: 'synthetic-coin' },
+  asset: { chain: 'synthetic', symbol: 'TOKEN' },
   timestamp: instant('2021-06-15T23:40:00Z'),
-  targetCurrency: 'EUR',
-  method: 'exact_timestamp' as const
+  targetCurrency: 'EUR'
 }
-const provider = new MockPriceProvider('synthetic', [{
+const provider = new MockPriceProvider('fixture', [{
   query,
   response: {
     ...query,
-    unitPrice: amount('2.41'),
-    sourceTimestamp: query.timestamp,
-    providerMarket: 'COIN/EUR',
-    timeResolution: 'PT1S',
-    rawSourceReference: 'synthetic://quote-1',
+    unit_price: amount('0.93'),
+    method: 'nearest_trade',
+    provider_market: 'TOKEN/EUR',
+    time_resolution: 'PT5M',
+    raw_source_reference: 'synthetic://quotes/1',
     confidence: 0.8
   }
 }])
 const engine = new ValuationEngine([provider])
-const result = await engine.value({ ...query, quantity: amount('100.000001') })
-// result.status === 'VALUED'; result.valuation.total_value === '241.00000241'
+const result = await engine.value({ ...query, quantity: amount('100') })
+if (isValuationMiss(result)) {
+  // UNKNOWN: expose the gap to the findings/workspace layer.
+} else {
+  console.log(result.total_value) // decimal string "93"
+}
 ```
 
-`value` tries the requested provider IDs in order and stops at the first valid
-quote. Omit `providers` to use registration order. Empty, duplicate or unknown
-provider IDs are configuration errors. The method defaults to `exact_timestamp`;
-providers must honor it. A fallback cannot silently change the requested method.
-Request `daily`, `nearest_trade`, `marketplace_implied`, `user_supplied`, or
-`professional` explicitly when the evidence supports that method.
+`PriceProvider.quote(query)` returns a `Quote` or a `Miss`. Quotes echo the asset,
+requested instant and target currency and provide their actual method, market,
+time resolution, source reference and data-quality confidence. With no requested
+method, the engine accepts the method documented by the chosen provider; an
+explicit method must match. Nearest-trade timestamps and daily bucket conventions
+belong in the source evidence/time resolution. The requested operation instant is
+never changed to local midnight. Expected transport failures are `network` misses;
+unexpected exceptions and invalid quotes throw so adapter bugs remain visible.
 
-`PriceProvider.quote` returns a quote or a miss (`no_market`, `hole`,
-`unsupported_asset`, `network`). Quotes echo the request's asset, timestamp,
-currency and method, and carry a source timestamp, market, time resolution,
-source reference and confidence. The engine checks these before using a price.
-Exact quotes must have the same source instant; daily quotes must use the same
-UTC day. Nearest-trade queries require an explicit `maxDistanceMs` and the source
-instant must fall within it. Other methods retain their source instant in the
-attempt trace. Confidence describes data quality, never legal certainty.
+`value(input)` tries providers in constructor order, or the caller's `providers`
+order, stopping at the first quote. The selected record includes the actual
+attempted `fallback_chain` (including the successful provider) and `fallback_used`.
+An empty or invalid provider policy is a configuration error. When every provider
+misses, the engine returns a schema-compatible `ValuationMiss`, meaning `UNKNOWN`.
+Its `reason` is the final miss, and `detail` is a JSON array preserving every
+provider's reason and optional detail. No price or total is inserted, including
+for stablecoins, same-currency queries, NFTs and zero quantities. An explicitly
+sourced zero price remains a valid quote.
 
-The result envelope has status `VALUED` with a `valuation` record or `UNKNOWN`
-with a `miss` record. Those records conform to the existing valuation schemas;
-the envelope's `attempts` records every quote or reason for failure. If all
-providers miss, the miss's primary reason is the final provider's reason and
-its detail lists every failure. No amount is present in a miss. Provider
-exceptions become network misses with a generic message; malformed or
-mismatched quotes become holes. Stablecoins, NFTs and zero quantities require
-actual evidence just like any other asset. An explicitly evidenced zero price
-is valid.
+`compare(input)` queries all configured providers and keeps the first successful
+quote selected according to the same policy. It returns full `valuations`,
+structured `misses`, and the selected record with `alternatives`. Other successful
+comparison records describe their own provider, not a fallback from the selection.
+The spread is **(maximum unit price − minimum unit price) / minimum unit price ×
+100**, expressed as a decimal percentage string. It is omitted when fewer than
+two quotes exist or the minimum price is zero; equal positive prices give `"0"`.
+Methods may differ unless the caller specifies one, and each remains visible.
 
-`compare` queries every requested provider, keeps the first successful quote as
-the selected valuation and records other successful quotes as alternatives.
-Comparison-only attempts after selection do not count as fallbacks. Its
-`spreadPercent` is `(max - min) / min * 100`; the valuation record's `spread`
-stores the corresponding ratio. Both use core decimal arithmetic. With fewer
-than two quotes, or a zero minimum and nonzero maximum, the percentage is `null`
-and the record omits `spread`. Identical quotes, including all-zero quotes,
-have zero spread. This is a price range, not a confidence or legal assessment.
+Quantities and prices must be finite, non-negative core `Amount` values. Persisted
+money is serialized with core `toJSON`; no fiat-cent rounding is applied. Core's
+40-significant-digit decimal precision governs arithmetic, including repeating
+spread fractions. Presentation/accounting rounding belongs to the caller's
+explicit policy.
 
-Quantities and prices use core's branded `Amount`; persisted money is serialized
-as decimal strings without exponent notation. Multiplication and division use
-core's 40-significant-digit decimal context. No fiat-cent rounding is applied;
-callers choose and record any reporting rounding through core's rounding API.
-`now` and `createId` can be injected for deterministic replay. Save the result
-envelope to retain source timestamps and attempted quotes alongside the selected
-record's source reference, optional payload hash, method and engine version.
+Runtime validation also rejects malformed asset references and timestamps without
+an explicit timezone, including timestamps echoed by adapters. Offset timestamps
+are normalized to UTC through core; a timezone-less string is never interpreted
+using the local machine's timezone. Miss details must be strings so recorded
+failure provenance cannot silently acquire an incompatible shape.
 
-The mock matches the complete query exactly and copies fixture responses. An
-absent fixture is a hole; it never searches adjacent times or assumes a peg.
-There are no network providers, price interpolation, cache persistence, or lot
-matching in this task. Live and supplied-price adapters remain separate work.
+The persistable results match `schemas/valuation/valuation.schema.json` and
+`valuation-miss.schema.json`. Successful records include the engine version and
+optionally a core content hash of a supplied `raw_payload`. The caller retains
+that payload in its local evidence store; this engine does not provide a durable
+cache. Inject `now` and replay the same fixtures to reproduce the same records
+and content-derived IDs. The mock copies fixtures and matches only configured
+queries; it never interpolates prices or accesses a network.
 
-Core primitives and the test schema validator are imported through their existing
-workspace source entry points so this lane needs no lockfile or root manifest
-changes. This package currently runs from source within the monorepo.
+This private source workspace consumes core through repository-relative imports,
+so this task adds no dependency or lockfile changes. Live historical adapters,
+durable caching and lot matching are separate tasks.
 
 Run `pnpm exec vitest run packages/valuation/test` and
-`pnpm exec tsc -p packages/valuation/tsconfig.json --noEmit` from the repository root.
+`pnpm --filter @octc/valuation typecheck` from the repository root.

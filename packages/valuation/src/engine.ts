@@ -1,198 +1,187 @@
 import {
-  Decimal, VALUATION_METHODS, VALUATION_MISS_REASONS, amount, canonicalJson,
-  div, instant, isContentHash, isSlug, isUlid, mul, sub, toJSON, ulid
+  amount, canonicalJson, cmp, Decimal, div, hashJson, instant, isSlug, isUlid, mul, sub, toJSON,
+  VALUATION_METHODS, VALUATION_MISS_REASONS
 } from '../../core/src/index.ts'
 import type { Amount, Instant, JsonValue } from '../../core/src/index.ts'
 import type {
-  Alternative, Attempt, Comparison, Miss, PriceProvider, Quote, QuoteQuery,
-  ValuationResult, ValueInput
+  AssetRef, Comparison, PriceProvider, ProviderMiss, Quote, QuoteQuery,
+  Valuation, ValuationMiss, ValuationResult, ValueInput
 } from './types.ts'
 
 export const ENGINE_VERSION = 'valuation@0.0.0'
+export const SCHEMA_VERSION = '0.1.0'
 
-export interface EngineOptions {
-  readonly now?: () => Instant
-  readonly createId?: () => string
+export const isValuationMiss = (result: ValuationResult): result is ValuationMiss =>
+  'valuation_miss_id' in result
+
+const identity = (asset: AssetRef): string => canonicalJson({ ...asset })
+
+function requireAmount(value: Amount, name: string): void {
+  if (!(value instanceof Decimal) || !value.isFinite() || value.isNegative()) {
+    throw new TypeError(`${name} must be a finite, non-negative core Amount`)
+  }
 }
 
-/** Decimal inputs may not arrive as JS numbers, even from an untyped adapter. */
-function nonnegative(value: Amount): boolean {
-  return Decimal.isDecimal(value) && value.isFinite() && !value.isNegative()
+/** Reject implicit local-time parsing even when called from untyped importers. */
+function requireInstant(value: Instant): Instant {
+  if (typeof value !== 'string' || !/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(value)) {
+    throw new TypeError('Timestamp must include an explicit timezone')
+  }
+  return instant(value)
 }
 
-function queryFor(input: ValueInput): QuoteQuery {
-  if (!nonnegative(input.quantity)) throw new TypeError('quantity must be a nonnegative Amount')
-  if (!/^[A-Z]{3,10}$/.test(input.targetCurrency)) throw new TypeError('invalid target currency')
-  const asset = input.asset
+function requireAsset(asset: AssetRef): void {
   if (!asset || (!asset.asset_id && !asset.chain) ||
       Object.entries(asset).some(([key, value]) =>
         !['asset_id', 'chain', 'contract', 'token_id', 'symbol'].includes(key) ||
         typeof value !== 'string') ||
       (asset.asset_id !== undefined && !isSlug(asset.asset_id) && !isUlid(asset.asset_id))) {
-    throw new TypeError('invalid asset reference')
-  }
-  // Instant is branded by core. Also reject timezone-less strings at runtime.
-  if (!/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(input.timestamp)) {
-    throw new TypeError('timestamp must include an explicit timezone')
-  }
-  const method = input.method ?? 'exact_timestamp'
-  if (!VALUATION_METHODS.includes(method)) throw new TypeError('unsupported valuation method')
-  if ((method === 'nearest_trade' && input.maxDistanceMs === undefined) ||
-      (input.maxDistanceMs !== undefined &&
-       (!Number.isSafeInteger(input.maxDistanceMs) || input.maxDistanceMs < 0))) {
-    throw new TypeError('nearest_trade requires a nonnegative maxDistanceMs')
-  }
-  return {
-    asset: { ...asset }, timestamp: instant(input.timestamp),
-    targetCurrency: input.targetCurrency, method,
-    ...(input.maxDistanceMs === undefined ? {} : { maxDistanceMs: input.maxDistanceMs })
+    throw new TypeError('Invalid asset reference')
   }
 }
 
-function validQuote(quote: Quote, query: QuoteQuery): boolean {
-  if (!nonnegative(quote.unitPrice) || quote.method !== query.method ||
-      quote.targetCurrency !== query.targetCurrency ||
-      canonicalJson(quote.asset as JsonValue) !== canonicalJson(query.asset as JsonValue) ||
-      !/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(quote.timestamp) ||
-      instant(quote.timestamp) !== query.timestamp ||
-      !/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(quote.sourceTimestamp) ||
-      !Number.isFinite(quote.confidence) || quote.confidence < 0 || quote.confidence > 1 ||
-      ![quote.providerMarket, quote.timeResolution, quote.rawSourceReference]
-        .every(value => typeof value === 'string' && value.trim().length > 0) ||
-      (quote.rawPayloadHash !== undefined && !isContentHash(quote.rawPayloadHash))) return false
-  const source = instant(quote.sourceTimestamp)
-  if (query.method === 'exact_timestamp' && source !== query.timestamp) return false
-  // Daily observations use the UTC day, never the machine's local midnight.
-  if (query.method === 'daily' && source.slice(0, 10) !== query.timestamp.slice(0, 10)) return false
-  if (query.method === 'nearest_trade' &&
-      Math.abs(Date.parse(source) - Date.parse(query.timestamp)) > query.maxDistanceMs!) return false
-  return true
+/** Hash a JSON snapshot, never Decimal internals. */
+function recordId(prefix: string, record: object): string {
+  return `${prefix}-${hashJson(JSON.parse(JSON.stringify(record)) as JsonValue).slice(7)}`
 }
 
-async function attempt(provider: PriceProvider, query: QuoteQuery): Promise<Attempt> {
-  let response: Quote | Miss
-  try {
-    response = await provider.quote({ ...query, asset: { ...query.asset } })
-  } catch {
-    // Provider errors may contain credentials or request data; do not persist them.
-    return { provider: provider.id, status: 'MISSED', miss: { reason: 'network', detail: 'Provider request failed' } }
-  }
-  try {
-    if ('reason' in response && VALUATION_MISS_REASONS.includes(response.reason) &&
-        (response.detail === undefined || typeof response.detail === 'string')) {
-      return { provider: provider.id, status: 'MISSED', miss: { ...response } }
-    }
-    if (!('reason' in response) && validQuote(response, query)) {
-      return {
-        provider: provider.id, status: 'QUOTED',
-        quote: { ...response, asset: { ...response.asset }, unitPrice: amount(toJSON(response.unitPrice)) }
-      }
-    }
-  } catch {
-    // Malformed adapter responses are data gaps, never zero-valued quotes.
-  }
-  return { provider: provider.id, status: 'MISSED', miss: { reason: 'hole', detail: 'Invalid or mismatched quote' } }
-}
-
-/** Relative range; a single observation is not a comparison. */
-export function relativeSpread(prices: readonly Amount[]): Amount | null {
-  if (prices.some(price => !nonnegative(price))) throw new TypeError('prices must be nonnegative Amounts')
-  if (prices.length < 2) return null
-  let min = prices[0]!
-  let max = min
-  for (const price of prices.slice(1)) {
-    if (price.lessThan(min)) min = price
-    if (price.greaterThan(max)) max = price
-  }
-  if (max.equals(min)) return amount('0')
-  if (min.isZero()) return null
-  return div(sub(max, min), min)
+export interface EngineOptions {
+  /** Save/reuse this clock's value when reproducing a snapshot byte for byte. */
+  readonly now?: () => Instant
 }
 
 export class ValuationEngine {
   private readonly providers: ReadonlyMap<string, PriceProvider>
   private readonly now: () => Instant
-  private readonly createId: () => string
 
   constructor(providers: readonly PriceProvider[], options: EngineOptions = {}) {
-    if (providers.length === 0 || providers.some(provider => !provider.id.trim()) ||
-        new Set(providers.map(provider => provider.id)).size !== providers.length) {
-      throw new TypeError('register at least one provider with a unique, nonempty id')
+    if (providers.length === 0) throw new TypeError('At least one price provider is required')
+    const entries = providers.map((provider) => [provider.id, provider] as const)
+    if (entries.some(([id]) => !id.trim()) || new Set(entries.map(([id]) => id)).size !== entries.length) {
+      throw new TypeError('Price provider IDs must be non-empty and unique')
     }
-    this.providers = new Map(providers.map(provider => [provider.id, provider]))
+    this.providers = new Map(entries)
     this.now = options.now ?? (() => instant(new Date()))
-    this.createId = options.createId ?? (() => ulid())
   }
 
   async value(input: ValueInput): Promise<ValuationResult> {
-    return (await this.run(input, false)).result
+    const { valuations, misses, generatedAt, query } = await this.collect(input, false)
+    return valuations[0] ?? this.missing(query, misses, generatedAt)
   }
 
   async compare(input: ValueInput): Promise<Comparison> {
-    return this.run(input, true)
+    const { valuations, misses, generatedAt, query } = await this.collect(input, true)
+    const first = valuations[0]
+    if (!first) {
+      return { status: 'UNKNOWN', selected: this.missing(query, misses, generatedAt), valuations, misses }
+    }
+    const spread = comparisonSpread(valuations.map((v) => amount(v.unit_price)))
+    const { valuation_id: _id, ...base } = first
+    const record = {
+      ...base,
+      ...(spread === undefined ? {} : { spread: toJSON(spread) }),
+      alternatives: valuations.slice(1).map((v) => ({
+        provider: v.provider, provider_market: v.provider_market, unit_price: v.unit_price,
+        method: v.method, confidence: v.confidence
+      }))
+    }
+    return {
+      status: 'VALUED',
+      selected: { valuation_id: recordId('valuation', record), ...record },
+      valuations, misses,
+      ...(spread === undefined ? {} : { spread: toJSON(spread) })
+    }
   }
 
-  private async run(input: ValueInput, compare: boolean): Promise<Comparison> {
-    const query = queryFor(input)
-    const quantity = toJSON(input.quantity)
+  private async collect(input: ValueInput, compare: boolean) {
+    requireAmount(input.quantity, 'quantity')
+    if (!/^[A-Z]{3,10}$/.test(input.targetCurrency)) throw new TypeError('Invalid target currency')
+    requireAsset(input.asset)
+    if (input.method !== undefined && !VALUATION_METHODS.includes(input.method)) {
+      throw new TypeError('Unknown valuation method')
+    }
     const ids = [...(input.providers ?? this.providers.keys())]
-    if (!ids.length || new Set(ids).size !== ids.length || ids.some(id => !this.providers.has(id))) {
-      throw new TypeError('provider policy must contain unique registered ids')
+    if (!ids.length || new Set(ids).size !== ids.length || ids.some((id) => !this.providers.has(id))) {
+      throw new TypeError('Fallback policy must contain unique registered provider IDs')
     }
-    const attempts: Attempt[] = []
+    const query: QuoteQuery = Object.freeze({
+      asset: Object.freeze({ ...input.asset }), timestamp: requireInstant(input.timestamp),
+      targetCurrency: input.targetCurrency,
+      ...(input.method === undefined ? {} : { method: input.method })
+    })
+    const quantity = amount(toJSON(input.quantity))
+    const generatedAt = requireInstant(this.now())
+    const valuations: Valuation[] = []
+    const misses: ProviderMiss[] = []
+    const tried: string[] = []
     for (const id of ids) {
-      const result = await attempt(this.providers.get(id)!, query)
-      attempts.push(result)
-      if (!compare && result.status === 'QUOTED') break
-    }
-    const generated_at = instant(this.now())
-    const recordId = this.createId()
-    if (!isSlug(recordId) && !isUlid(recordId)) throw new TypeError('invalid valuation record id')
-    const quoted = attempts.filter(item => item.status === 'QUOTED')
-    const selected = quoted[0]
-    if (!selected) {
-      const last = attempts[attempts.length - 1]!
-      if (last.status !== 'MISSED') throw new Error('missing final provider attempt')
-      return {
-        spreadPercent: null,
-        result: {
-          status: 'UNKNOWN', attempts,
-          miss: {
-            valuation_miss_id: recordId, asset: query.asset, timestamp: query.timestamp,
-            target_currency: query.targetCurrency, reason: last.miss.reason,
-            providers_tried: attempts.map(item => item.provider),
-            detail: attempts.map(item => item.status === 'MISSED'
-              ? `${item.provider}: ${item.miss.reason}${item.miss.detail ? ` (${item.miss.detail})` : ''}`
-              : '').join('; '), generated_at
-          }
+      tried.push(id)
+      // Adapters report expected transport failures as Miss { reason: 'network' }.
+      // Unexpected exceptions propagate; programming errors are not market gaps.
+      const response = await this.providers.get(id)!.quote(query)
+      if ('reason' in response) {
+        if (!VALUATION_MISS_REASONS.includes(response.reason)) throw new TypeError('Invalid miss reason')
+        if (response.detail !== undefined && typeof response.detail !== 'string') {
+          throw new TypeError('Provider miss detail must be a string')
         }
+        misses.push({ provider: id, reason: response.reason, ...(response.detail === undefined ? {} : { detail: response.detail }) })
+        continue
       }
+      this.validateQuote(response, query)
+      const record = {
+        asset: query.asset, quantity: toJSON(quantity), timestamp: query.timestamp,
+        target_currency: query.targetCurrency, unit_price: toJSON(response.unit_price),
+        total_value: toJSON(mul(quantity, response.unit_price)), provider: id,
+        provider_market: response.provider_market, method: response.method,
+        time_resolution: response.time_resolution, raw_source_reference: response.raw_source_reference,
+        ...(response.raw_payload === undefined ? {} : { raw_payload_hash: hashJson(response.raw_payload) }),
+        fallback_used: valuations.length === 0 && misses.length > 0,
+        fallback_chain: valuations.length === 0 ? [...tried] : [id], confidence: response.confidence,
+        generated_at: generatedAt, engine_version: ENGINE_VERSION, schema_version: SCHEMA_VERSION
+      }
+      valuations.push({ valuation_id: recordId('valuation', record), ...record })
+      if (!compare) break
     }
-    const spread = compare ? relativeSpread(quoted.map(item => item.quote.unitPrice)) : null
-    const quote = selected.quote
-    const alternatives: Alternative[] = quoted.slice(1).map(item => ({
-      provider: item.provider, provider_market: item.quote.providerMarket,
-      unit_price: toJSON(item.quote.unitPrice), method: item.quote.method, confidence: item.quote.confidence
-    }))
-    const selectedIndex = attempts.indexOf(selected)
-    return {
-      spreadPercent: spread === null ? null : toJSON(mul(spread, amount('100'))),
-      result: {
-        status: 'VALUED', attempts,
-        valuation: {
-          valuation_id: recordId, asset: query.asset, quantity, timestamp: query.timestamp,
-          target_currency: query.targetCurrency, unit_price: toJSON(quote.unitPrice),
-          total_value: toJSON(mul(amount(quantity), quote.unitPrice)), provider: selected.provider,
-          provider_market: quote.providerMarket, method: quote.method,
-          time_resolution: quote.timeResolution, raw_source_reference: quote.rawSourceReference,
-          ...(quote.rawPayloadHash === undefined ? {} : { raw_payload_hash: quote.rawPayloadHash }),
-          fallback_used: selectedIndex > 0,
-          fallback_chain: attempts.slice(0, selectedIndex + 1).map(item => item.provider),
-          confidence: quote.confidence, generated_at, engine_version: ENGINE_VERSION,
-          ...(spread === null ? {} : { spread: toJSON(spread) }),
-          alternatives, schema_version: '0.1.0'
-        }
-      }
+    return { valuations, misses, generatedAt, query }
+  }
+
+  private validateQuote(quote: Quote, query: QuoteQuery): void {
+    requireAmount(quote.unit_price, 'unit_price')
+    if (identity(quote.asset) !== identity(query.asset) || requireInstant(quote.timestamp) !== query.timestamp ||
+        quote.targetCurrency !== query.targetCurrency) {
+      throw new TypeError('Provider quote does not match the requested asset, instant or currency')
+    }
+    if (!VALUATION_METHODS.includes(quote.method) || (query.method !== undefined && quote.method !== query.method)) {
+      throw new TypeError('Provider quote does not match the requested method')
+    }
+    if (!quote.provider_market?.trim() || !quote.time_resolution?.trim() || !quote.raw_source_reference?.trim()) {
+      throw new TypeError('Provider quote requires market, time resolution and source reference')
+    }
+    if (!Number.isFinite(quote.confidence) || quote.confidence < 0 || quote.confidence > 1) {
+      throw new TypeError('Provider confidence must be between zero and one')
     }
   }
+
+  private missing(query: QuoteQuery, misses: readonly ProviderMiss[], generatedAt: Instant): ValuationMiss {
+    const record = {
+      asset: query.asset, timestamp: query.timestamp, target_currency: query.targetCurrency,
+      reason: misses[misses.length - 1]!.reason,
+      providers_tried: misses.map((miss) => miss.provider), detail: JSON.stringify(misses), generated_at: generatedAt
+    }
+    return { valuation_miss_id: recordId('valuation-miss', record), ...record }
+  }
+}
+
+/** Percent relative to the minimum quote; zero denominator or <2 quotes is undefined. */
+export function comparisonSpread(prices: readonly Amount[]): Amount | undefined {
+  for (const price of prices) requireAmount(price, 'price')
+  if (prices.length < 2) return undefined
+  let min = prices[0]!
+  let max = min
+  for (const price of prices.slice(1)) {
+    if (cmp(price, min) < 0) min = price
+    if (cmp(price, max) > 0) max = price
+  }
+  if (min.isZero()) return undefined
+  return mul(div(sub(max, min), min), amount('100'))
 }

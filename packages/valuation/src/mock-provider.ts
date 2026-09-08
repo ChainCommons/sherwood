@@ -1,38 +1,38 @@
 import { amount, canonicalJson, instant, toJSON } from '../../core/src/index.ts'
-import type { JsonValue } from '../../core/src/index.ts'
 import type { Miss, PriceProvider, Quote, QuoteQuery } from './types.ts'
 
-export interface MockQuoteEntry {
+export interface MockEntry {
   readonly query: QuoteQuery
   readonly response: Quote | Miss
 }
 
 const key = (query: QuoteQuery): string => canonicalJson({
-  asset: query.asset as JsonValue, timestamp: instant(query.timestamp),
-  targetCurrency: query.targetCurrency, method: query.method,
-  maxDistanceMs: query.maxDistanceMs ?? null
+  asset: { ...query.asset }, timestamp: instant(query.timestamp),
+  targetCurrency: query.targetCurrency, method: query.method ?? null
 })
 
-function copy(response: Quote | Miss): Quote | Miss {
-  return 'reason' in response ? { ...response } : {
-    ...response, asset: { ...response.asset }, unitPrice: amount(toJSON(response.unitPrice))
-  }
-}
+const copyQuote = (quote: Quote): Quote => ({
+  ...quote, asset: { ...quote.asset }, unit_price: amount(toJSON(quote.unit_price)),
+  ...(quote.raw_payload === undefined ? {} : { raw_payload: structuredClone(quote.raw_payload) })
+})
 
-/** Exact fixture lookup only: never interpolates, fetches, or assumes a peg. */
+/** Exact query fixtures only: no interpolation, daily bucketing, parity or live APIs. */
 export class MockPriceProvider implements PriceProvider {
   private readonly entries = new Map<string, Quote | Miss>()
+  private readonly defaultMiss: Miss
 
-  constructor(readonly id: string, entries: readonly MockQuoteEntry[] = []) {
-    if (!id.trim()) throw new TypeError('mock provider id must be nonempty')
+  constructor(readonly id: string, entries: readonly MockEntry[] = [], defaultMiss: Miss = { reason: 'hole' }) {
+    if (!id.trim()) throw new TypeError('Mock provider ID must be non-empty')
+    this.defaultMiss = { ...defaultMiss }
     for (const entry of entries) {
-      const entryKey = key(entry.query)
-      if (this.entries.has(entryKey)) throw new TypeError('duplicate mock quote query')
-      this.entries.set(entryKey, copy(entry.response))
+      const queryKey = key(entry.query)
+      if (this.entries.has(queryKey)) throw new TypeError('Duplicate mock quote query')
+      this.entries.set(queryKey, 'reason' in entry.response ? { ...entry.response } : copyQuote(entry.response))
     }
   }
 
   async quote(query: QuoteQuery): Promise<Quote | Miss> {
-    return copy(this.entries.get(key(query)) ?? { reason: 'hole', detail: 'No mock quote for this query' })
+    const response = this.entries.get(key(query)) ?? this.defaultMiss
+    return 'reason' in response ? { ...response } : copyQuote(response)
   }
 }

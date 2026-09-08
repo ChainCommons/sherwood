@@ -1,32 +1,34 @@
 import type {
-  Amount, ContentHash, Instant, ValuationMethod, ValuationMissReason
+  Amount, ContentHash, Instant, JsonValue, ValuationMethod, ValuationMissReason
 } from '../../core/src/index.ts'
 
-/** Matches common.schema.json's assetRef; no chain or legal assumptions. */
+/** Structural counterpart of common.schema.json's chain-neutral assetRef. */
 export type AssetRef = Readonly<{
+  asset_id?: string
+  chain?: string
   contract?: string
   token_id?: string
   symbol?: string
-} & ({ asset_id: string; chain?: string } | { asset_id?: string; chain: string })>
+}> & ({ readonly asset_id: string } | { readonly chain: string })
 
 export interface QuoteQuery {
   readonly asset: AssetRef
+  /** Operation instant, including for daily queries. Providers document their bucket. */
   readonly timestamp: Instant
   readonly targetCurrency: string
-  readonly method: ValuationMethod
-  /** Required for nearest_trade, to prevent unbounded stale-price substitution. */
-  readonly maxDistanceMs?: number
+  readonly method?: ValuationMethod
 }
 
+/** Quotes echo the query identity so an unrelated price cannot value this request. */
 export interface Quote extends QuoteQuery {
-  readonly unitPrice: Amount
-  readonly sourceTimestamp: Instant
-  readonly providerMarket: string
-  readonly timeResolution: string
-  readonly rawSourceReference: string
-  readonly rawPayloadHash?: ContentHash
-  /** Data quality only. */
+  readonly method: ValuationMethod
+  readonly unit_price: Amount
+  readonly provider_market: string
+  readonly time_resolution: string
+  readonly raw_source_reference: string
   readonly confidence: number
+  /** Optional snapshot-ready source payload; amounts inside it must be strings. */
+  readonly raw_payload?: JsonValue
 }
 
 export interface Miss {
@@ -39,26 +41,13 @@ export interface PriceProvider {
   quote(query: QuoteQuery): Promise<Quote | Miss>
 }
 
-export interface ValueInput {
-  readonly asset: AssetRef
+export interface ValueInput extends QuoteQuery {
   readonly quantity: Amount
-  readonly timestamp: Instant
-  readonly targetCurrency: string
-  readonly method?: ValuationMethod
-  /** Ordered fallback policy; defaults to the engine's registration order. */
+  /** Ordered fallback policy. Defaults to constructor order; never sorted by price. */
   readonly providers?: readonly string[]
-  readonly maxDistanceMs?: number
 }
 
-export interface Alternative {
-  readonly provider: string
-  readonly provider_market: string
-  readonly unit_price: string
-  readonly method: ValuationMethod
-  readonly confidence: number
-}
-
-/** Serializable record conforming to valuation.schema.json. */
+/** Persistable records match the existing valuation schemas (decimal strings). */
 export interface Valuation {
   readonly valuation_id: string
   readonly asset: AssetRef
@@ -78,13 +67,21 @@ export interface Valuation {
   readonly confidence: number
   readonly generated_at: Instant
   readonly engine_version: string
-  /** Relative range (max - min) / min, not a percentage. */
-  readonly spread?: string
-  readonly alternatives: readonly Alternative[]
   readonly schema_version: string
+  /** Percentage: (max - min) / min * 100. Omitted when undefined. */
+  readonly spread?: string
+  readonly alternatives?: readonly Alternative[]
 }
 
-/** Serializable record conforming to valuation-miss.schema.json. */
+export interface Alternative {
+  readonly provider: string
+  readonly provider_market: string
+  readonly unit_price: string
+  readonly method: ValuationMethod
+  readonly confidence: number
+}
+
+/** A miss means UNKNOWN, never a zero-price valuation. */
 export interface ValuationMiss {
   readonly valuation_miss_id: string
   readonly asset: AssetRef
@@ -92,21 +89,21 @@ export interface ValuationMiss {
   readonly target_currency: string
   readonly reason: ValuationMissReason
   readonly providers_tried: readonly string[]
+  /** JSON-encoded ProviderMiss[] retains every failed attempt and reason. */
   readonly detail: string
   readonly generated_at: Instant
 }
 
-export type Attempt =
-  | { readonly provider: string; readonly status: 'QUOTED'; readonly quote: Quote }
-  | { readonly provider: string; readonly status: 'MISSED'; readonly miss: Miss }
+export interface ProviderMiss extends Miss {
+  readonly provider: string
+}
 
-/** Status belongs to the result envelope, not the existing schema records. */
-export type ValuationResult =
-  | { readonly status: 'VALUED'; readonly valuation: Valuation; readonly attempts: readonly Attempt[] }
-  | { readonly status: 'UNKNOWN'; readonly miss: ValuationMiss; readonly attempts: readonly Attempt[] }
+export type ValuationResult = Valuation | ValuationMiss
 
 export interface Comparison {
-  readonly result: ValuationResult
-  /** Null when fewer than two quotes, or a nonzero range has a zero denominator. */
-  readonly spreadPercent: string | null
+  readonly status: 'VALUED' | 'UNKNOWN'
+  readonly selected: ValuationResult
+  readonly valuations: readonly Valuation[]
+  readonly misses: readonly ProviderMiss[]
+  readonly spread?: string
 }
