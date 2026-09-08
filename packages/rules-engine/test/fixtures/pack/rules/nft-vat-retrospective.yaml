@@ -1,0 +1,23 @@
+rule_id: fixture-nft-vat-retrospective
+jurisdiction_id: fixture-juris
+tax_domain: vat
+title: NFT VAT treatment (guidance published 2025, effective 2021)
+applies_to:
+  event_types:
+    - NFT_SALE
+  capacities:
+    - ARTIST
+effective_from: 2021-01-01
+effective_to: 2024-12-31
+published_from: 2025-03-15
+sources:
+  - fixture-bofip-nft-2025
+authority_status: ADMINISTRATIVE_GUIDANCE
+certainty:
+  level: AUTHORITATIVE_INTERPRETIVE
+  reason: Retrospective administrative guidance — not contemporaneous in 2021
+effects:
+  classification: vat_review
+review:
+  status: COMMUNITY_DRAFT
+schema_version: 0.0.0

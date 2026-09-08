@@ -1,0 +1,11 @@
+source_id: fixture-commentary-b
+jurisdiction_id: fixture-juris
+issuing_authority: Commentary B
+source_type: PROFESSIONAL_GUIDANCE
+authority_level: PROFESSIONAL_GUIDANCE
+title: Reading B of ambiguous NFT sale
+publication_date: 2021-04-01
+effective_from: 2021-01-01
+retrieved_at: 2024-06-01
+content_hash: sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+schema_version: 0.0.0

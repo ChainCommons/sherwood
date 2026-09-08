@@ -1,0 +1,11 @@
+source_version_id: fixture-bofip-nft-2025-v1
+source_id: fixture-bofip-nft-2025
+version_label: "2025-03 capture"
+publication_date: 2025-03-15
+effective_from: 2021-01-01
+effective_to: 2024-12-31
+retrieved_at: 2025-04-01
+content_hash: sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+predecessor: null
+successor: null
+schema_version: 0.0.0

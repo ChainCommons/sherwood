@@ -1,0 +1,23 @@
+rule_id: fixture-self-transfer-not-disposal
+jurisdiction_id: fixture-juris
+tax_domain: capital_gains
+title: Confirmed self-transfer is not a disposal
+applies_to:
+  event_types:
+    - SELF_TRANSFER
+  capacities:
+    - ARTIST
+    - COLLECTOR
+effective_from: 2019-01-01
+published_from: 2019-01-01
+sources:
+  - fixture-cgi-150-0
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_CLEAR
+  reason: Synthetic fixture mirroring a narrow deterministic case
+effects:
+  classification: not_a_disposal
+review:
+  status: COMMUNITY_DRAFT
+schema_version: 0.0.0

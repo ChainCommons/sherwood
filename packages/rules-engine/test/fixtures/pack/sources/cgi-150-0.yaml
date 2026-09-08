@@ -1,0 +1,12 @@
+source_id: fixture-cgi-150-0
+jurisdiction_id: fixture-juris
+issuing_authority: Fixture Tax Code
+source_type: STATUTE
+authority_level: BINDING_LEGISLATION
+title: Fixture capital-gains article
+publication_date: 2019-01-01
+effective_from: 2019-01-01
+retrieved_at: 2024-06-01
+canonical_url: https://example.test/cgi-150-0
+content_hash: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+schema_version: 0.0.0
