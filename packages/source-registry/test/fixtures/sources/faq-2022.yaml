@@ -1,0 +1,12 @@
+source_id: fixture-faq-2022
+jurisdiction_id: fixture-juris
+issuing_authority: Fixture FAQ Desk
+source_type: OFFICIAL_FAQ
+authority_level: OFFICIAL_FAQ
+title: FAQ entry published mid-2022
+publication_date: 2022-06-01
+effective_from: 2022-06-01
+retrieved_at: 2024-06-01
+canonical_url: https://example.test/faq-2022
+content_hash: sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+schema_version: 0.0.0

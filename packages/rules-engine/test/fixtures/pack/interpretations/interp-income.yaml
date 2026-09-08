@@ -1,0 +1,15 @@
+interpretation_id: fixture-interp-income
+jurisdiction_id: fixture-juris
+rule_id: fixture-nft-sale-ambiguous
+summary: Treat primary NFT sale proceeds as professional income
+reasoning: Synthetic reading A for AC-011
+sources:
+  - fixture-commentary-a
+certainty:
+  level: EXPERT_INTERPRETATION
+held_by: Commentary A
+conflicts_with:
+  - fixture-interp-capital
+review:
+  status: COMMUNITY_DRAFT
+schema_version: 0.0.0

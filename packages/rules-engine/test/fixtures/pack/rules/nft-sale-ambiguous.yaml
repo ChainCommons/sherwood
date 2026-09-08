@@ -1,0 +1,26 @@
+rule_id: fixture-nft-sale-ambiguous
+jurisdiction_id: fixture-juris
+tax_domain: personal_income_tax
+title: NFT primary sale — competing professional readings
+applies_to:
+  event_types:
+    - ART_PRIMARY_SALE
+  capacities:
+    - ARTIST
+effective_from: 2021-01-01
+published_from: 2021-03-01
+sources:
+  - fixture-commentary-a
+  - fixture-commentary-b
+authority_status: PROFESSIONAL_GUIDANCE
+certainty:
+  level: CONFLICTING_AUTHORITIES
+  reason: Two professional readings; engine must not pick one
+interpretations:
+  - fixture-interp-income
+  - fixture-interp-capital
+effects:
+  classification: contested
+review:
+  status: DISPUTED
+schema_version: 0.0.0

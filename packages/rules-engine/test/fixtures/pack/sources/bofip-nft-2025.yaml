@@ -1,0 +1,13 @@
+source_id: fixture-bofip-nft-2025
+jurisdiction_id: fixture-juris
+issuing_authority: Fixture Admin Guidance
+source_type: ADMINISTRATIVE_GUIDANCE
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: Retrospective NFT guidance (2025 about 2021)
+publication_date: 2025-03-15
+effective_from: 2021-01-01
+effective_to: 2024-12-31
+retrieved_at: 2025-04-01
+canonical_url: https://example.test/bofip-nft-2025
+content_hash: sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+schema_version: 0.0.0
