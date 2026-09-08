@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/entity/wallet-ownership.schema.json",
+  "title": "Wallet ownership",
+  "description": "Plan 02 §43. Transfers between wallets whose ownership is USER_CONFIRMED for the same participant MUST NOT be treated as disposals (AC-004). Mappings are private by default.",
+  "type": "object",
+  "required": ["wallet_id", "address", "chain", "ownership_class", "confirmation", "schema_version"],
+  "properties": {
+    "wallet_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "address": { "type": "string", "minLength": 1 },
+    "chain": { "type": "string", "minLength": 1 },
+    "ownership_class": {
+      "enum": ["USER_PERSONAL", "USER_BUSINESS", "USER_CONTROLLED_ENTITY", "COLLABORATOR", "MARKETPLACE", "CUSTOMER", "PROTOCOL", "UNKNOWN"]
+    },
+    "owner_participant_id": {
+      "description": "Null until ownership is confirmed — an unconfirmed guess is not an owner.",
+      "oneOf": [{ "$ref": "../common.schema.json#/$defs/id" }, { "type": "null" }]
+    },
+    "related_entity_id": {
+      "oneOf": [{ "$ref": "../common.schema.json#/$defs/id" }, { "type": "null" }]
+    },
+    "confirmation": { "enum": ["USER_CONFIRMED", "INFERRED", "UNKNOWN"] },
+    "label": { "type": "string" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

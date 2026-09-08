@@ -1,0 +1,40 @@
+{
+  "$schema": "https://schemas.opencryptotaxcommons.org/event/semantic-event.schema.json",
+  "event_id": "01J8Z3QKQ0EVENTSAE00000000",
+  "event_type": "NFT_SALE",
+  "occurred_at_utc": "2021-06-15T21:40:00.000Z",
+  "occurred_at_local": "2021-06-15T23:40:00",
+  "timezone": "Europe/Paris",
+  "participant": "01J8Z3QKQ0PARTCPNT01000000",
+  "capacity": {
+    "primary": "COLLECTOR",
+    "secondary": [],
+    "as_of": "2021-06-15",
+    "status": "USER_CONFIRMED",
+    "candidates": [{ "capacity": "ARTIST", "reason": "seller also mints on this contract" }]
+  },
+  "counterparties": ["tz1SyntheticBuyerAddress00000000000000"],
+  "assets_given": [{ "chain": "tezos", "contract": "KT1SyntheticFa2TokenContract000000000", "token_id": "42" }],
+  "assets_received": [{ "chain": "tezos", "symbol": "XTZ" }],
+  "gross_amount": "100",
+  "fees": "2.5",
+  "royalties": "10",
+  "commissions": "0",
+  "net_amount": "87.5",
+  "amount_currency": "XTZ",
+  "jurisdiction_facts": {},
+  "source_evidence": ["01J8Z3QKQ0EVDENCE010000000"],
+  "user_annotations": [],
+  "classification": "secondary_market_disposal_of_nft",
+  "classification_source": "adapter",
+  "classification_confidence": 0.95,
+  "status": "IMPORTED",
+  "created_at": "2026-01-10T09:00:05.000Z",
+  "legs": [
+    "01J8Z3QKQ0EGGRSS0000000000",
+    "01J8Z3QKQ0EGFEE00000000000",
+    "01J8Z3QKQ0EGRYATY000000000",
+    "01J8Z3QKQ0EGNFT00000000000"
+  ],
+  "schema_version": "0.1.0"
+}

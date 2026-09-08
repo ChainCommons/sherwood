@@ -1,0 +1,58 @@
+[
+  {
+    "$schema": "https://schemas.opencryptotaxcommons.org/event/leg.schema.json",
+    "leg_id": "01J8Z3QKQ0EGGRSS0000000000",
+    "event_id": "01J8Z3QKQ0EVENTSAE00000000",
+    "from_party": "tz1SyntheticBuyerAddress00000000000000",
+    "to_party": "tz1SyntheticSellerAddress0000000000000",
+    "asset": { "chain": "tezos", "symbol": "XTZ" },
+    "quantity": "100",
+    "direction": "inbound",
+    "economic_character": "consideration",
+    "timestamp": "2021-06-15T21:40:00.000Z",
+    "source_evidence": ["01J8Z3QKQ0EVDENCE010000000"],
+    "status": "OBSERVED"
+  },
+  {
+    "$schema": "https://schemas.opencryptotaxcommons.org/event/leg.schema.json",
+    "leg_id": "01J8Z3QKQ0EGFEE00000000000",
+    "event_id": "01J8Z3QKQ0EVENTSAE00000000",
+    "from_party": "tz1SyntheticSellerAddress0000000000000",
+    "to_party": "KT1SyntheticMarketplaceContract0000000",
+    "asset": { "chain": "tezos", "symbol": "XTZ" },
+    "quantity": "2.5",
+    "direction": "outbound",
+    "economic_character": "fee",
+    "timestamp": "2021-06-15T21:40:00.000Z",
+    "source_evidence": ["01J8Z3QKQ0EVDENCE010000000"],
+    "status": "OBSERVED"
+  },
+  {
+    "$schema": "https://schemas.opencryptotaxcommons.org/event/leg.schema.json",
+    "leg_id": "01J8Z3QKQ0EGRYATY000000000",
+    "event_id": "01J8Z3QKQ0EVENTSAE00000000",
+    "from_party": "tz1SyntheticSellerAddress0000000000000",
+    "to_party": "tz1SyntheticCreatorAddress000000000000",
+    "asset": { "chain": "tezos", "symbol": "XTZ" },
+    "quantity": "10",
+    "direction": "outbound",
+    "economic_character": "royalty",
+    "timestamp": "2021-06-15T21:40:00.000Z",
+    "source_evidence": ["01J8Z3QKQ0EVDENCE010000000"],
+    "status": "OBSERVED"
+  },
+  {
+    "$schema": "https://schemas.opencryptotaxcommons.org/event/leg.schema.json",
+    "leg_id": "01J8Z3QKQ0EGNFT00000000000",
+    "event_id": "01J8Z3QKQ0EVENTSAE00000000",
+    "from_party": "tz1SyntheticSellerAddress0000000000000",
+    "to_party": "tz1SyntheticBuyerAddress00000000000000",
+    "asset": { "chain": "tezos", "contract": "KT1SyntheticFa2TokenContract000000000", "token_id": "42" },
+    "quantity": "1",
+    "direction": "outbound",
+    "economic_character": "transfer",
+    "timestamp": "2021-06-15T21:40:00.000Z",
+    "source_evidence": ["01J8Z3QKQ0EVDENCE010000000"],
+    "status": "OBSERVED"
+  }
+]

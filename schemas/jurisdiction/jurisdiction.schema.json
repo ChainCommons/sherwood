@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/jurisdiction/jurisdiction.schema.json",
+  "title": "Jurisdiction pack",
+  "description": "Plan 05 §22. A pack is a data directory, not an `if (france)` branch (INV-013). `unsupported_tax_domains` MUST be filled in explicitly so the UI can say 'not modelled' rather than implying silence means no tax.",
+  "type": "object",
+  "required": ["jurisdiction_id", "name", "jurisdiction_type", "maturity_level", "review_status", "schema_version"],
+  "properties": {
+    "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "name": { "type": "string" },
+    "parent_jurisdiction": { "oneOf": [{ "$ref": "../common.schema.json#/$defs/slug" }, { "type": "null" }] },
+    "jurisdiction_type": {
+      "enum": ["supranational", "national", "federal", "state", "province", "canton", "local", "treaty"]
+    },
+    "currency": { "$ref": "../common.schema.json#/$defs/currency" },
+    "official_languages": { "type": "array", "items": { "type": "string" } },
+    "tax_year_convention": { "type": "string" },
+    "timezone_reference": { "$ref": "../common.schema.json#/$defs/timezone" },
+    "supported_tax_domains": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/taxDomain" } },
+    "unsupported_tax_domains": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/taxDomain" } },
+    "effective_from": { "$ref": "../common.schema.json#/$defs/date" },
+    "effective_to": { "$ref": "../common.schema.json#/$defs/date" },
+    "maintainers": { "type": "array", "items": { "type": "string" } },
+    "review_status": { "$ref": "../common.schema.json#/$defs/reviewStatus" },
+    "last_source_verification": { "$ref": "../common.schema.json#/$defs/date" },
+    "maturity_level": { "$ref": "../common.schema.json#/$defs/maturityLevel" },
+    "notes": { "type": "string" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

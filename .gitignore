@@ -7,3 +7,6 @@ dist/
 *.log
 .idea/
 .vscode/
+coverage/
+.pnpm-store/
+*.tsbuildinfo

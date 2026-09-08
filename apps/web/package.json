@@ -1,0 +1,11 @@
+{
+  "name": "@octc/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "echo \"@octc/web: stub, no build yet\"",
+    "typecheck": "echo \"@octc/web: stub, nothing to typecheck\"",
+    "lint": "echo \"@octc/web: stub, nothing to lint\""
+  }
+}

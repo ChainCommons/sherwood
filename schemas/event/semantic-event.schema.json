@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/event/semantic-event.schema.json",
+  "title": "Semantic event",
+  "description": "Plan 03 §§15–16. A typed economic event. `classification` is deliberately separate from `event_type` (INV-003): tax effects come only from the rules engine, never from an adapter.",
+  "type": "object",
+  "required": ["event_id", "event_type", "occurred_at_utc", "source_evidence", "legs", "created_at", "schema_version"],
+  "properties": {
+    "event_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "event_type": { "$ref": "../common.schema.json#/$defs/semanticEventType" },
+    "occurred_at_utc": {
+      "description": "The chain timestamp, preserved in UTC (plan 17 §90).",
+      "$ref": "../common.schema.json#/$defs/instant"
+    },
+    "occurred_at_local": { "type": "string" },
+    "timezone": {
+      "description": "The zone used to derive the local date. Recorded so the assumption is inspectable.",
+      "$ref": "../common.schema.json#/$defs/timezone"
+    },
+    "participant": { "$ref": "../common.schema.json#/$defs/id" },
+    "capacity": { "$ref": "../common.schema.json#/$defs/capacity" },
+    "counterparties": { "type": "array", "items": { "type": "string" } },
+    "assets_given": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/assetRef" } },
+    "assets_received": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/assetRef" } },
+    "gross_amount": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "fees": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "royalties": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "commissions": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "net_amount": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "amount_currency": { "$ref": "../common.schema.json#/$defs/currency" },
+    "jurisdiction_facts": {
+      "description": "Boolean or scalar facts a rule may test. Not a place for conclusions.",
+      "type": "object"
+    },
+    "source_evidence": {
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/id" },
+      "minItems": 1
+    },
+    "user_annotations": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/id" } },
+    "classification": {
+      "description": "Factual classification of the event, not a tax outcome.",
+      "type": "string"
+    },
+    "classification_source": { "enum": ["user", "adapter", "heuristic", "ai_candidate"] },
+    "classification_confidence": {
+      "description": "Data confidence, not legal certainty.",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "status": { "$ref": "../common.schema.json#/$defs/factStatus" },
+    "created_at": { "$ref": "../common.schema.json#/$defs/instant" },
+    "legs": {
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/id" },
+      "minItems": 1
+    },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

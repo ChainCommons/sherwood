@@ -1,0 +1,16 @@
+{
+  "$schema": "https://schemas.opencryptotaxcommons.org/lot/lot.schema.json",
+  "lot_id": "01J8Z3QKQ0T010000000000000",
+  "asset": { "chain": "tezos", "contract": "KT1SyntheticFa2TokenContract000000000", "token_id": "42" },
+  "quantity_original": "1",
+  "quantity_remaining": "0",
+  "acquired_at": "2021-03-02T10:15:00.000Z",
+  "acquisition_event": "01J8Z3QKQ0EVENTACQ00000000",
+  "cost_basis_currency": "EUR",
+  "cost_basis_status": "UNKNOWN",
+  "valuation_ref": null,
+  "holding_period_start": "2021-03-02T10:15:00.000Z",
+  "owner": "01J8Z3QKQ0PARTCPNT01000000",
+  "method_context": "SPECIFIC_IDENTIFICATION",
+  "schema_version": "0.1.0"
+}

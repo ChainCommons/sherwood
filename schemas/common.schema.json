@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/common.schema.json",
+  "title": "Shared primitives",
+  "description": "Reusable definitions. Amounts are decimal strings: JSON numbers are IEEE doubles and MUST NOT carry money or on-chain quantities (plan 17 §89).",
+  "$defs": {
+    "ulid": { "type": "string", "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "id": {
+      "description": "A machine ULID or a hand-authored kebab-case slug.",
+      "anyOf": [
+        { "$ref": "#/$defs/ulid" },
+        { "$ref": "#/$defs/slug" }
+      ]
+    },
+    "decimal": {
+      "description": "Exact decimal as a string, e.g. \"0.000001\". Never a JSON number.",
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+    },
+    "date": { "type": "string", "format": "date" },
+    "instant": { "type": "string", "format": "date-time" },
+    "timezone": { "type": "string", "minLength": 1 },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3,10}$" },
+    "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "url": { "type": "string", "format": "uri" },
+    "schemaVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "factStatus": {
+      "description": "Provenance of a derived fact (plan 03 §16).",
+      "enum": ["OBSERVED", "IMPORTED", "USER_CONFIRMED", "INFERRED", "ESTIMATED", "UNKNOWN"]
+    },
+    "assetRef": {
+      "description": "Chain-neutral asset reference. Tezos: chain+contract+token_id, or native XTZ.",
+      "type": "object",
+      "properties": {
+        "asset_id": { "$ref": "#/$defs/id" },
+        "chain": { "type": "string" },
+        "contract": { "type": "string" },
+        "token_id": { "type": "string" },
+        "symbol": { "type": "string" }
+      },
+      "anyOf": [
+        { "required": ["asset_id"] },
+        { "required": ["chain"] }
+      ],
+      "additionalProperties": false
+    },
+    "certainty": {
+      "description": "Legal certainty, not model confidence (plan 05 §30).",
+      "type": "object",
+      "required": ["level"],
+      "properties": {
+        "level": {
+          "enum": ["AUTHORITATIVE_CLEAR", "AUTHORITATIVE_INTERPRETIVE", "EXPERT_INTERPRETATION", "AMBIGUOUS", "CONFLICTING_AUTHORITIES", "UNSETTLED", "UNKNOWN"]
+        },
+        "reason": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "reviewStatus": {
+      "enum": ["EXPERT_REVIEWED", "SOURCE_VERIFIED", "COMMUNITY_DRAFT", "STALE", "DISPUTED"]
+    },
+    "review": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": { "$ref": "#/$defs/reviewStatus" },
+        "reviewer": { "type": "string" },
+        "reviewer_qualification": { "type": "string" },
+        "reviewed_at": { "$ref": "#/$defs/date" },
+        "scope": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "taxDomain": {
+      "enum": ["personal_income_tax", "professional_business_income", "corporation_tax", "capital_gains", "vat", "gst_hst", "sales_use_tax", "social_security", "artist_social_regime", "self_employment_contributions", "withholding", "business_registration", "reporting", "crypto_reporting", "foreign_asset_reporting", "deductible_expenses", "tax_lot_accounting", "recordkeeping", "filing", "corrections", "voluntary_disclosure", "audit_procedure", "administrative_appeals", "payment_collection", "court_deadlines"]
+    },
+    "capacityEnum": {
+      "enum": ["ARTIST", "CREATOR", "COLLECTOR", "PRIVATE_INVESTOR", "ACTIVE_TRADER", "PROFESSIONAL_TRADER", "FOUNDER", "EMPLOYEE", "CONTRACTOR", "PROTOCOL_CONTRIBUTOR", "DAO_CONTRIBUTOR", "MARKETPLACE_OPERATOR", "TOKEN_ISSUER", "VALIDATOR", "BAKER", "MINER", "STAKER", "DELEGATOR", "LIQUIDITY_PROVIDER", "LENDER", "BORROWER", "BUSINESS_OWNER", "DONOR", "RECIPIENT", "UNKNOWN"]
+    },
+    "capacity": {
+      "description": "Capacity is date-sensitive, user-correctable and may stay UNKNOWN (INV-004/005).",
+      "type": "object",
+      "required": ["primary", "status"],
+      "properties": {
+        "primary": { "$ref": "#/$defs/capacityEnum" },
+        "secondary": { "type": "array", "items": { "$ref": "#/$defs/capacityEnum" } },
+        "as_of": { "$ref": "#/$defs/date" },
+        "status": { "enum": ["USER_CONFIRMED", "INFERRED", "UNKNOWN"] },
+        "candidates": {
+          "description": "Competing interpretations; none is authoritative until confirmed.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["capacity"],
+            "properties": {
+              "capacity": { "$ref": "#/$defs/capacityEnum" },
+              "reason": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "semanticEventType": {
+      "enum": ["ASSET_PURCHASE", "ASSET_SALE", "ASSET_EXCHANGE", "ASSET_TRANSFER", "SELF_TRANSFER", "GIFT", "DONATION", "BARTER", "LOSS", "THEFT", "BURN", "REFUND", "ART_PRIMARY_SALE", "ART_SECONDARY_SALE", "COMMISSION_INCOME", "ROYALTY_RECEIPT", "LICENCE_INCOME", "COPYRIGHT_ASSIGNMENT", "GALLERY_CONSIGNMENT", "GALLERY_SETTLEMENT", "GRANT", "PRIZE", "PATRONAGE", "COLLABORATION_SPLIT", "NFT_MINT", "NFT_PURCHASE", "NFT_SALE", "NFT_TRANSFER", "NFT_ROYALTY", "NFT_GIFT", "NFT_DONATION", "NFT_BURN", "NFT_REDEMPTION", "SALARY_PAYMENT", "CONTRACTOR_PAYMENT", "FOUNDER_COMPENSATION", "TOKEN_COMPENSATION", "TOKEN_GRANT", "TOKEN_VESTING", "TOKEN_UNLOCK", "BOUNTY", "DAO_COMPENSATION", "FOUNDER_ALLOCATION", "TEAM_ALLOCATION", "CRYPTO_RECEIPT", "CRYPTO_PURCHASE", "CRYPTO_SALE", "CRYPTO_SWAP", "CRYPTO_PAYMENT", "AIRDROP", "FORK_RECEIPT", "MINING_REWARD", "VALIDATOR_REWARD", "BAKING_REWARD", "STAKING_REWARD", "DELEGATION_REWARD", "LIQUIDITY_DEPOSIT", "LIQUIDITY_WITHDRAWAL", "LIQUIDITY_REWARD", "LENDING_DEPOSIT", "LOAN_ADVANCE", "LOAN_REPAYMENT", "INTEREST_RECEIPT", "INTEREST_PAYMENT", "COLLATERAL_DEPOSIT", "COLLATERAL_RELEASE", "LIQUIDATION", "WRAP", "UNWRAP", "BRIDGE_DEPOSIT", "BRIDGE_WITHDRAWAL", "SPOT_TRADE", "DERIVATIVE_OPEN", "DERIVATIVE_CLOSE", "OPTION_EXERCISE", "OPTION_EXPIRY", "PERPETUAL_FUNDING", "UNKNOWN"]
+    },
+    "economicCharacter": {
+      "enum": ["consideration", "transfer", "fee", "royalty", "reward", "collateral", "loan_principal", "repayment", "interest", "compensation", "distribution", "grant", "gift", "unknown"]
+    },
+    "lotMethod": {
+      "enum": ["FIFO", "LIFO", "HIFO", "SPECIFIC_IDENTIFICATION", "AVERAGE_COST", "POOLING", "OTHER"]
+    },
+    "valuationMethod": {
+      "enum": ["exact_timestamp", "nearest_trade", "daily", "marketplace_implied", "user_supplied", "professional"]
+    },
+    "authorityLevel": {
+      "enum": ["BINDING_LEGISLATION", "BINDING_DOCTRINE", "ADMINISTRATIVE_GUIDANCE", "OFFICIAL_FAQ", "PROFESSIONAL_GUIDANCE", "COMMENTARY", "UNKNOWN"]
+    },
+    "maturityLevel": { "type": "integer", "minimum": 0, "maximum": 6 }
+  }
+}

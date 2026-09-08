@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.opencryptotaxcommons.org/valuation/valuation.schema.json",
+  "valuation_id": "01J8Z3QKQ0VATN010000000000",
+  "asset": { "chain": "tezos", "symbol": "XTZ" },
+  "quantity": "100",
+  "timestamp": "2021-06-15T21:40:00.000Z",
+  "target_currency": "EUR",
+  "unit_price": "2.41",
+  "total_value": "241.00",
+  "provider": "synthetic-fixture-provider",
+  "provider_market": "XTZ/EUR",
+  "method": "nearest_trade",
+  "time_resolution": "PT5M",
+  "raw_source_reference": "synthetic://xtz-eur/2021-06-15T21:40:00Z",
+  "raw_payload_hash": "sha256:9b1a0d3c2e5f4a7b8c9d0e1f2a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d",
+  "fallback_used": true,
+  "fallback_chain": ["exact_timestamp_provider_miss", "nearest_trade"],
+  "confidence": 0.8,
+  "generated_at": "2026-01-10T09:00:07.000Z",
+  "engine_version": "valuation@0.0.0",
+  "spread": "0.03",
+  "alternatives": [
+    { "provider": "synthetic-alt-provider", "provider_market": "XTZ/EUR", "unit_price": "2.38", "method": "daily", "confidence": 0.6 }
+  ],
+  "schema_version": "0.1.0"
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/lot/lot.schema.json",
+  "title": "Tax lot",
+  "description": "Plan 04 §21. Lots are not transactions (INV-017). The matching method is recorded per lot and on the snapshot — it is an analysis input, never a hidden global default, and FIFO is not assumed.",
+  "type": "object",
+  "required": ["lot_id", "asset", "quantity_original", "quantity_remaining", "acquired_at", "owner", "schema_version"],
+  "properties": {
+    "lot_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "asset": { "$ref": "../common.schema.json#/$defs/assetRef" },
+    "quantity_original": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "quantity_remaining": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "acquired_at": { "$ref": "../common.schema.json#/$defs/instant" },
+    "acquisition_event": { "$ref": "../common.schema.json#/$defs/id" },
+    "cost_basis": {
+      "description": "Absent when unknown. A missing basis produces a gap and a finding — it is never invented.",
+      "$ref": "../common.schema.json#/$defs/decimal"
+    },
+    "cost_basis_currency": { "$ref": "../common.schema.json#/$defs/currency" },
+    "cost_basis_status": { "$ref": "../common.schema.json#/$defs/factStatus" },
+    "valuation_ref": { "oneOf": [{ "$ref": "../common.schema.json#/$defs/id" }, { "type": "null" }] },
+    "holding_period_start": {
+      "description": "Recorded as a fact. Jurisdiction packs decide what it means; the lots engine does not.",
+      "$ref": "../common.schema.json#/$defs/instant"
+    },
+    "owner": { "$ref": "../common.schema.json#/$defs/id" },
+    "method_context": { "$ref": "../common.schema.json#/$defs/lotMethod" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

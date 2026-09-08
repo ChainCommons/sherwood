@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/rule/interpretation.schema.json",
+  "title": "Interpretation",
+  "description": "Plan 05 §100. A competing reading of the same source material. Two interpretations may coexist as UNRESOLVED (AC-011).",
+  "type": "object",
+  "required": ["interpretation_id", "jurisdiction_id", "summary", "sources", "certainty", "review", "schema_version"],
+  "properties": {
+    "interpretation_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "rule_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "summary": { "type": "string" },
+    "reasoning": { "type": "string" },
+    "sources": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" }, "minItems": 1 },
+    "certainty": { "$ref": "../common.schema.json#/$defs/certainty" },
+    "held_by": { "type": "string" },
+    "conflicts_with": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" } },
+    "review": { "$ref": "../common.schema.json#/$defs/review" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

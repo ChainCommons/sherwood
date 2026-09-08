@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/scenario/scenario.schema.json",
+  "title": "Scenario",
+  "description": "Plan 14. A scenario is a factual pattern plus the questions analysis needs — never a tax answer. Scenarios are kept separate from jurisdiction rules on purpose.",
+  "type": "object",
+  "required": ["scenario_id", "title", "domain_pack", "event_pattern", "factual_questions", "schema_version"],
+  "properties": {
+    "scenario_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "title": { "type": "string" },
+    "domain_pack": { "enum": ["artists", "collectors", "builders", "crypto"] },
+    "event_pattern": {
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/semanticEventType" },
+      "minItems": 1
+    },
+    "factual_questions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "typical_capacities": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/capacityEnum" } },
+    "typical_missing_facts": { "type": "array", "items": { "type": "string" } },
+    "example_fixture": {
+      "description": "Path to a synthetic fixture. Public tests never use real taxpayers (§87).",
+      "type": "string"
+    },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

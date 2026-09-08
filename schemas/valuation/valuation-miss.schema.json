@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/valuation/valuation-miss.schema.json",
+  "title": "Valuation miss",
+  "description": "Plan 06. A recorded absence of price. Storing the miss is what keeps AC-005 honest: the gap becomes a finding instead of a fabricated number.",
+  "type": "object",
+  "required": ["valuation_miss_id", "asset", "timestamp", "target_currency", "reason", "providers_tried", "generated_at"],
+  "properties": {
+    "valuation_miss_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "asset": { "$ref": "../common.schema.json#/$defs/assetRef" },
+    "timestamp": { "$ref": "../common.schema.json#/$defs/instant" },
+    "target_currency": { "$ref": "../common.schema.json#/$defs/currency" },
+    "reason": { "enum": ["no_market", "hole", "unsupported_asset", "network"] },
+    "providers_tried": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "detail": { "type": "string" },
+    "generated_at": { "$ref": "../common.schema.json#/$defs/instant" }
+  },
+  "additionalProperties": false
+}

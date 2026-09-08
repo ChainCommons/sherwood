@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/asset/legal-classification.schema.json",
+  "title": "Asset legal classification",
+  "description": "Plan 04, INV-014. How one jurisdiction classifies an asset at a point in time. Separate record per jurisdiction so conflicting classifications can coexist without a global flag.",
+  "type": "object",
+  "required": ["classification_id", "asset_id", "jurisdiction_id", "class", "as_of", "certainty"],
+  "properties": {
+    "classification_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "asset_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "class": { "type": "string", "minLength": 1 },
+    "as_of": { "$ref": "../common.schema.json#/$defs/date" },
+    "sources": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/id" } },
+    "certainty": { "$ref": "../common.schema.json#/$defs/certainty" },
+    "notes": { "type": "string" }
+  },
+  "additionalProperties": false
+}

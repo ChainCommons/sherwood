@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/asset/asset.schema.json",
+  "title": "Asset",
+  "description": "Plan 04 §17. `economic_category` is a factual description. There is deliberately no global 'security vs commodity' flag — legal class is jurisdiction-specific and lives in legal-classification records (INV-014).",
+  "type": "object",
+  "required": ["asset_id", "asset_type", "fungibility", "economic_category", "schema_version"],
+  "properties": {
+    "asset_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "asset_type": { "type": "string", "minLength": 1 },
+    "native_chain": { "type": "string" },
+    "contract": { "type": "string" },
+    "token_id": { "type": "string" },
+    "symbol": { "type": "string" },
+    "name": { "type": "string" },
+    "fungibility": { "enum": ["fungible", "nonfungible", "semi_fungible"] },
+    "economic_category": {
+      "enum": ["fiat", "cryptocurrency", "stablecoin", "governance_token", "utility_token", "nft", "wrapped_asset", "staking_receipt", "liquidity_position", "derivative", "tokenized_real_world_asset", "physical_asset", "intellectual_property", "other"]
+    },
+    "underlying_assets": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/assetRef" } },
+    "issuer": { "type": "string" },
+    "decimals": { "type": "integer", "minimum": 0 },
+    "decimals_status": {
+      "description": "Metadata decimals are untrusted; a user override is ESTIMATED, not OBSERVED.",
+      "$ref": "../common.schema.json#/$defs/factStatus"
+    },
+    "price_sources": { "type": "array", "items": { "type": "string" } },
+    "classification_status": { "enum": ["unknown", "user_set", "inferred"] },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/valuation/valuation.schema.json",
+  "title": "Valuation",
+  "description": "Plan 06 §§35–37. Every historical valuation exposes provider, timestamp and method (AC-005). Fallbacks are recorded, never silent. An engine that cannot find a price emits a miss — it does not invent one.",
+  "type": "object",
+  "required": ["valuation_id", "asset", "quantity", "timestamp", "target_currency", "method", "provider", "generated_at", "schema_version"],
+  "properties": {
+    "valuation_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "asset": { "$ref": "../common.schema.json#/$defs/assetRef" },
+    "quantity": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "timestamp": {
+      "description": "Valued at the operation instant, not local midnight, unless the method is `daily`.",
+      "$ref": "../common.schema.json#/$defs/instant"
+    },
+    "target_currency": { "$ref": "../common.schema.json#/$defs/currency" },
+    "unit_price": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "total_value": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "provider": { "type": "string", "minLength": 1 },
+    "provider_market": { "type": "string" },
+    "method": { "$ref": "../common.schema.json#/$defs/valuationMethod" },
+    "time_resolution": { "type": "string" },
+    "raw_source_reference": { "type": "string" },
+    "raw_payload_hash": {
+      "description": "Content hash of the cached provider response, so a rerun needs no network.",
+      "$ref": "../common.schema.json#/$defs/contentHash"
+    },
+    "fallback_used": { "type": "boolean" },
+    "fallback_chain": { "type": "array", "items": { "type": "string" } },
+    "confidence": {
+      "description": "Data quality, not legal certainty.",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "generated_at": { "$ref": "../common.schema.json#/$defs/instant" },
+    "engine_version": { "type": "string" },
+    "spread": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "alternatives": {
+      "description": "Other providers' values, shown as non-authoritative comparisons.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["provider", "unit_price"],
+        "properties": {
+          "provider": { "type": "string" },
+          "provider_market": { "type": "string" },
+          "unit_price": { "$ref": "../common.schema.json#/$defs/decimal" },
+          "method": { "$ref": "../common.schema.json#/$defs/valuationMethod" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

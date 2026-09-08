@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/event/leg.schema.json",
+  "title": "Economic leg",
+  "description": "Plan 03 §14. An asset movement with an economic character. One semantic event may hold several legs — gross, fee, royalty, net — which is how a marketplace fee avoids being double counted.",
+  "type": "object",
+  "required": ["leg_id", "asset", "quantity", "direction", "economic_character", "timestamp", "source_evidence"],
+  "properties": {
+    "leg_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "event_id": {
+      "description": "Filled when the leg is grouped into a semantic event.",
+      "oneOf": [{ "$ref": "../common.schema.json#/$defs/id" }, { "type": "null" }]
+    },
+    "from_party": { "type": "string" },
+    "to_party": { "type": "string" },
+    "asset": { "$ref": "../common.schema.json#/$defs/assetRef" },
+    "quantity": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "direction": { "enum": ["inbound", "outbound"] },
+    "economic_character": {
+      "description": "Economics only. Tax treatment is decided later by the rules engine (INV-003).",
+      "$ref": "../common.schema.json#/$defs/economicCharacter"
+    },
+    "timestamp": { "$ref": "../common.schema.json#/$defs/instant" },
+    "source_evidence": {
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/id" },
+      "minItems": 1
+    },
+    "valuation_ref": {
+      "oneOf": [{ "$ref": "../common.schema.json#/$defs/id" }, { "type": "null" }]
+    },
+    "status": { "$ref": "../common.schema.json#/$defs/factStatus" }
+  },
+  "additionalProperties": false
+}

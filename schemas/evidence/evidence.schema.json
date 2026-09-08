@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/evidence/evidence.schema.json",
+  "title": "Raw evidence",
+  "description": "Plan 03 §12. Imported raw evidence is immutable (INV-001): corrections are annotations or derived records, never edits (AC-009). Importers MUST NOT produce tax outcomes.",
+  "type": "object",
+  "required": ["evidence_id", "evidence_type", "source_system", "content_hash", "imported_at", "schema_version"],
+  "properties": {
+    "evidence_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "evidence_type": {
+      "enum": ["blockchain_operation", "marketplace_transaction", "generic_csv", "manual_user_record", "exchange_export", "bank_record", "payment_processor_record", "invoice", "gallery_statement", "contract", "grant_document", "token_allocation_agreement", "vesting_schedule", "accounting_csv"]
+    },
+    "source_system": { "type": "string", "minLength": 1 },
+    "source_identifier": { "type": "string" },
+    "timestamp": { "$ref": "../common.schema.json#/$defs/instant" },
+    "raw_payload_ref": {
+      "description": "Blob store key or OPFS path. The payload itself stays local.",
+      "type": "string"
+    },
+    "content_hash": { "$ref": "../common.schema.json#/$defs/contentHash" },
+    "imported_at": { "$ref": "../common.schema.json#/$defs/instant" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

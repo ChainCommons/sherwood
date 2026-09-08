@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.opencryptotaxcommons.org/evidence/evidence.schema.json",
+  "evidence_id": "01J8Z3QKQ0EVDENCE010000000",
+  "evidence_type": "blockchain_operation",
+  "source_system": "tzkt",
+  "source_identifier": "oo1SyntheticOperationHashForContractFixture0000000000",
+  "timestamp": "2021-06-15T21:40:00.000Z",
+  "raw_payload_ref": "opfs://blobs/sha256-2f0c1d...",
+  "content_hash": "sha256:2f0c1dcd9a1f3d1b1f8ba1f0c1cf1a5e2c8ad9c86e2be7c1b0a9f4d3e2c1b0a9",
+  "imported_at": "2026-01-10T09:00:00.000Z",
+  "schema_version": "0.1.0"
+}

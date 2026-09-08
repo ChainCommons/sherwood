@@ -1,0 +1,43 @@
+# LEVEL 0 skeleton: the ID exists so records can reference it.
+# Nothing here is tax guidance. No rules are modelled yet.
+$schema: https://schemas.opencryptotaxcommons.org/jurisdiction/jurisdiction.schema.json
+jurisdiction_id: singapore
+name: Singapore
+parent_jurisdiction: null
+jurisdiction_type: national
+currency: SGD
+timezone_reference: Asia/Singapore
+tax_year_convention: CALENDAR_YEAR
+supported_tax_domains: []
+unsupported_tax_domains:
+  - personal_income_tax
+  - professional_business_income
+  - corporation_tax
+  - capital_gains
+  - vat
+  - social_security
+  - artist_social_regime
+  - self_employment_contributions
+  - withholding
+  - business_registration
+  - reporting
+  - crypto_reporting
+  - foreign_asset_reporting
+  - deductible_expenses
+  - tax_lot_accounting
+  - recordkeeping
+  - filing
+  - corrections
+  - voluntary_disclosure
+  - audit_procedure
+  - administrative_appeals
+  - payment_collection
+  - court_deadlines
+maintainers: []
+review_status: COMMUNITY_DRAFT
+maturity_level: 0
+notes: >-
+  Skeleton only. Every tax domain is listed as unsupported until a sourced
+  rule exists, so the UI reports 'not modelled' rather than implying that
+  silence means no tax applies.
+schema_version: 0.1.0
