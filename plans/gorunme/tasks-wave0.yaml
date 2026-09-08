@@ -1,0 +1,24 @@
+campaign: sherwood-p0-wave0
+status: open
+visibility: maintainer-only
+repo: https://github.com/ChainCommons/sherwood.git
+result_schema: pr_url
+tasks:
+  - id: P0-0-01
+    lane: steward
+    title: Wave 0 foundation (schemas, CI, core, contract fixtures)
+    covers: [P0-0-01, P0-0-02, P0-0-03, P0-0-04, P0-0-05, P0-0-06, P0-0-07, P0-0-08, P0-0-09, P0-0-10]
+    owned_paths:
+      - schemas/
+      - packages/core
+      - packages/validate
+      - .github/
+      - tests/contracts/
+      - CODEOWNERS
+      - pnpm-lock.yaml
+    packet:
+      - plans/agents/PREAMBLE.md
+      - plans/agents/lane-steward.md
+      - plans/gorunme/PROMPT-FOR-STEWARD.md
+    branch: agent/steward/P0-0-01
+    pr_title: Implements P0-0-01

@@ -9,7 +9,8 @@ Read in this order:
 3. [22-architecture-workstreams.md](22-architecture-workstreams.md) — package contracts, parallel ownership, and sequencing.
 4. [23-implementation.md](23-implementation.md) — TODOs, owners, and calendar to complete the MASTER (P0).
 5. [24-multi-agent.md](24-multi-agent.md) — split work across multiple agents/providers; paste-ready briefs in [agents/](agents/README.md).
-6. [SPEC-COVERAGE.md](SPEC-COVERAGE.md) — map of all 116 spec sections to plans.
+6. [25-gorunme-kickoff.md](25-gorunme-kickoff.md) — GoRunMe scheduler + GitHub PRs; paste packets in [gorunme/](gorunme/PROMPT-FOR-GORUNME-AGENT.md).
+7. [SPEC-COVERAGE.md](SPEC-COVERAGE.md) — map of all 116 spec sections to plans.
 
 ## Index
 
@@ -40,6 +41,7 @@ Read in this order:
 | [22-architecture-workstreams.md](22-architecture-workstreams.md) | §§83, 106–107, 111–112 | bootstrap |
 | [23-implementation.md](23-implementation.md) | execution of MASTER | P0 W1–W24 |
 | [24-multi-agent.md](24-multi-agent.md) | multi-agent / multi-provider split | operating model |
+| [25-gorunme-kickoff.md](25-gorunme-kickoff.md) | GoRunMe + GitHub coordination | scheduler |
 
 Normative requirements live in `INITIAL_PROMPT.md`. These plans decompose that spec into buildable work. If a plan and the spec conflict, the spec wins.
 

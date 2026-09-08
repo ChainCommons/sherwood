@@ -1,0 +1,47 @@
+campaign: sherwood-p0-wave1
+status: blocked_until_wave0_merged
+visibility: public
+repo: https://github.com/ChainCommons/sherwood.git
+result_schema: pr_url
+publish_first:
+  - P0-1-01
+  - P0-1-04
+  - P0-1-06
+  - P0-3-01
+tasks:
+  - id: P0-1-01
+    lane: events
+    packet: [plans/agents/PREAMBLE.md, plans/agents/lane-events.md]
+    owned_paths: [packages/evidence, packages/event-engine, packages/positions]
+  - id: P0-1-02
+    lane: events
+    packet: [plans/agents/PREAMBLE.md, plans/agents/lane-events.md]
+    owned_paths: [packages/evidence, packages/event-engine, packages/positions]
+  - id: P0-1-03
+    lane: events
+    packet: [plans/agents/PREAMBLE.md, plans/agents/lane-events.md]
+    owned_paths: [packages/evidence, packages/event-engine, packages/positions]
+  - id: P0-1-08
+    lane: events
+    packet: [plans/agents/PREAMBLE.md, plans/agents/lane-events.md]
+    owned_paths: [packages/evidence, packages/event-engine, packages/positions]
+  - id: P0-1-04
+    lane: rules
+    packet: [plans/agents/PREAMBLE.md, plans/agents/lane-rules.md]
+    owned_paths: [packages/source-registry, packages/rules-engine]
+  - id: P0-1-05
+    lane: rules
+    packet: [plans/agents/PREAMBLE.md, plans/agents/lane-rules.md]
+    owned_paths: [packages/source-registry, packages/rules-engine]
+  - id: P0-1-06
+    lane: vallots
+    packet: [plans/agents/PREAMBLE.md, plans/agents/lane-vallots.md]
+    owned_paths: [packages/valuation, packages/lots]
+  - id: P0-1-07
+    lane: vallots
+    packet: [plans/agents/PREAMBLE.md, plans/agents/lane-vallots.md]
+    owned_paths: [packages/valuation, packages/lots]
+  - id: P0-3-01
+    lane: france
+    packet: [plans/agents/PREAMBLE.md, plans/agents/lane-france.md]
+    owned_paths: [jurisdictions/france, jurisdictions/eu]
