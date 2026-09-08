@@ -15,44 +15,39 @@ This is the execution schedule for the MASTER plan. Individual how-to remains in
 | Start | 2026-09-08 |
 | Team | 2 engineers + 1 France/source researcher (can be one person wearing two hats; then add ~6 weeks) |
 | Cadence | weekly integration; **inter-lane contract fixtures** frozen after a live-op spike; internal schemas stay versioned through Wave 2 |
-| P0 target | **2027-02-20** (24 calendar weeks, including 2-week hardening) |
-| Parallelism | France research (K) starts the day schemas exist, in parallel with engines and Tezos |
+| P0 (§102) target | **TBD** — re-estimate only after P0-alpha (P0-A-06) lands. Do not keep a fake date while adding scope. |
+| Parallelism | Long-lead France reviewer + counsel start W1/W3. France *source* work may run beside alpha. Engine Phase 1 does **not**. |
 
-Calendar is back-plan-able: keep week numbers (W1–W24) if the start date moves.
+Week numbers after W8 are *indicative order*, not a calendar commitment.
 
 ## Timeline overview
 
 ```mermaid
 gantt
-  title Sherwood P0 MASTER completion
+  title Sherwood through P0-alpha (later phases TBD)
   dateFormat YYYY-MM-DD
   axisFormat %b %d
   section Phase0
-  Repo schemas CI governance     :p0, 2026-09-08, 14d
-  section Phase1
-  Deterministic engines          :p1, 2026-09-22, 35d
-  section Phase2
-  Tezos adapters valuation live  :p2, 2026-10-27, 28d
-  section Phase3
-  France EU research             :fr, 2026-09-22, 91d
-  Tax Tools and public web       :p3, 2026-11-24, 35d
-  section Phase4
-  Workspace export AI            :p4, 2026-12-29, 35d
-  section Gate
-  Demos AC hardening             :gate, 2027-02-02, 19d
+  Repo schemas spike             :p0, 2026-09-08, 14d
+  section LongLead
+  Recruit French reviewer        :ll1, 2026-09-08, 56d
+  Counsel on review pack         :ll2, 2026-09-22, 42d
+  section Alpha
+  Vertical slice owns engineers  :pa, 2026-09-22, 42d
 ```
 
 | Phase | Weeks | Dates | Outcome |
 |---|---|---|---|
-| **0** Repo, schemas, CI | W1–W2 | 2026-09-08 → 2026-09-21 | Monorepo builds; schemas authored; **contracts** frozen only after TzKT/OBJKT/HEN spike; LICENSE in tree |
-| **alpha** Vertical slice | W3–W8 | overlap with 1–2 | One real HEN or OBJKT sale → legs → value or miss → France as-of or UNKNOWN; TOOL-003 + TOOL-010 only |
-| **1** Deterministic core | W3–W7 | 2026-09-22 → 2026-10-26 | Engines on synthetic **and** spiked live JSON |
-| **2** Tezos proving ground | W8–W11 | 2026-10-27 → 2026-11-23 | Live wallet import, OBJKT decode, XTZ/EUR, AC-015 |
-| **3** Knowledge + Tax Tools | W3–W12 research; W12–W16 tools | researcher from 2026-09-22; tools 2026-11-24 → 2026-12-28 | France v0.1 + EU stub; TOOL-001–013; AC-013 |
-| **4** Workspace, export, AI | W17–W21 | 2026-12-29 → 2027-02-01 | Local workspace, pack export, AI prototype |
-| **Gate** Demos + hardening | W22–W24 | 2027-02-02 → 2027-02-20 | §113–114 demos; AC-001–015; P0 declared |
+| **0** Repo, schemas, CI | W1–W2 | 2026-09-08 → 2026-09-21 | Monorepo; schemas authored; contract fixtures after live-op spike |
+| **L** Long-lead (parallel) | W1→ | reviewer from 2026-09-08; counsel from 2026-09-22 | Named French reviewer search; counsel on professional pack. Does not wait on code. |
+| **alpha** Vertical slice | W3–W8 | 2026-09-22 → 2026-11-02 | **Owns both engineers.** One real sale → legs → value/miss → France as-of or UNKNOWN; TOOL-003 + TOOL-010; accountant feedback (P0-A-06) |
+| **1** Deterministic core | W9+ | **after P0-A-06**; dates TBD | Engines informed by the slice. Do not start this beside alpha. |
+| **2** Tezos proving ground | after 1 | TBD | Live wallet, OBJKT + HEN/Teia, XTZ/EUR, AC-015 |
+| **3** Knowledge + Tax Tools | after 2 | TBD | France v0.1; remaining tools; AC-013 |
+| **4** Workspace, export, AI | after 3 | TBD | May be re-scoped when §102 is re-dated |
+| **Gate** §102 P0 | after 4 | **TBD after alpha** | AC-001–015; demos §113–114 |
 
-France YAML is a long pole: it **overlaps** Phases 1–3. Tools wait on engines + Tezos + enough France sources for Time Machine / Rule Diff.
+France *source collection* (P0-0-11, P0-A-03) runs during alpha because Time Machine needs it. Full pack depth and engine generalization wait until after the slice.
 
 ---
 
@@ -79,9 +74,16 @@ P0 items: 1, 2, 3, 53.
 
 **Phase 0 exit:** `pnpm validate` and `pnpm test` pass; LICENSE + DISCLAIMER present; **contract fixtures** exist. Internal JSON Schemas may still change (`schema_version` bump, no Steward RFC theater for every field).
 
-### P0-alpha — first external proof (not a replacement for §102)
+### Long-lead (parallel with Phase 0 / alpha — not engineer-owned)
 
-Target: ~6 weeks. Spec P0 items stay the later gate.
+These gate credibility and item 46. They are social/legal work. Start them before they become the critical path.
+
+- [ ] **P0-L-01** Recruit a **named** qualified French reviewer (expert-comptable or avocat) willing to attach a name and scope to the pack. Start **W1**. `review_status` stays `COMMUNITY_DRAFT` until this lands. → [15](15-france-eu.md), [19](19-governance.md)
+- [ ] **P0-L-02** Get **counsel** (not UI copy) on whether a professional review pack with findings and basis tables is regulated tax advice in France. Start **W3**. Gates P0 item 46; restructure the pack if counsel says so **before** Phase 4. → [15](15-france-eu.md), [13](13-exports-api-cli.md)
+
+### P0-alpha — W3–W8 — first external proof (owns the engineers)
+
+Spec P0 items stay the later completeness gate. **§102 calendar is TBD until P0-A-06 is done.** Do not run Phase 1 beside this.
 
 - [ ] **P0-A-01** Decode one real marketplace sale (prefer HEN/Teia 2021 if fixtures exist, else OBJKT) to legs. No tax types. → [07](07-adapters-import-reconciliation.md), [03](03-evidence-economic-events.md)
 - [ ] **P0-A-02** Historical XTZ/EUR or explicit miss. → [06](06-valuation.md)
@@ -90,7 +92,7 @@ Target: ~6 weeks. Spec P0 items stay the later gate.
 - [ ] **P0-A-05** TOOL-010 Guidance Time Machine for France / NFT artist / that year. → [08](08-tax-tools.md)
 - [ ] **P0-A-06** Put the pair in front of a French accountant or qualified reviewer; record what broke.
 
-### Phase 1 — W3–W7 — Deterministic engines
+### Phase 1 — W9+ — Deterministic engines (after alpha)
 
 P0 items: 4–13, 51–52. Workstreams A/B/C/E/F.
 
@@ -111,7 +113,7 @@ P0 items: 4–13, 51–52. Workstreams A/B/C/E/F.
 
 **Phase 1 exit:** OBJKT-like *fixture JSON* (not live TzKT) produces legs, events, lots, sourced findings or UNKNOWN; no float money.
 
-### Phase 2 — W8–W11 — Tezos proving ground
+### Phase 2 — after Phase 1 — Tezos proving ground (dates TBD)
 
 P0 items: 14–20. Workstream D + live E.
 
@@ -128,7 +130,7 @@ P0 items: 14–20. Workstream D + live E.
 
 **Phase 2 exit:** a public Tezos address (or recorded golden ops) reconstructs primary/secondary/royalty/fees/self-transfers/rewards with valuations or explicit misses.
 
-### Phase 3a — W3–W16 — France / EU content (parallel)
+### Phase 3a — France / EU content (sources during alpha; pack depth after)
 
 P0 items: 21–25. Workstream K. Researcher-led; engineers support YAML/CI.
 
@@ -143,7 +145,7 @@ P0 items: 21–25. Workstream K. Researcher-led; engineers support YAML/CI.
 
 **Phase 3a exit:** France pack v0.1 at honest LEVEL 1–3; Time Machine and Rule Diff have real dated sources.
 
-### Phase 3b — W12–W16 — Tax Tools + public web
+### Phase 3b — after Phase 2 — Tax Tools + public web (dates TBD)
 
 P0 items: 26–38. Workstreams G + UI. Depends on Phases 1–2 and 3a sources.
 
@@ -167,7 +169,7 @@ P0 items: 26–38. Workstreams G + UI. Depends on Phases 1–2 and 3a sources.
 
 **Phase 3b exit:** homepage lists all P0 tools; several work from a public address or op hash with no account.
 
-### Phase 4 — W17–W21 — Workspace, professional export, AI
+### Phase 4 — after Phase 3 — Workspace, professional export, AI (dates TBD; item 46 gated on P0-L-02)
 
 P0 items: 13 (storage complete), 39–50, 54. Workstreams H, I, J, L.
 
@@ -188,7 +190,7 @@ P0 items: 13 (storage complete), 39–50, 54. Workstreams H, I, J, L.
 
 **Phase 4 exit:** local project can run the primary demo narrative without uploading a ledger (AC-008).
 
-### Gate — W22–W24 — Demos and P0 declaration
+### Gate — Demos and P0 declaration (dates TBD after P0-A-06)
 
 - [ ] **P0-G-01** Primary demo fixture + click-through (§113, 18 steps). → [14](14-scenarios.md), [20](20-p0-mvp-acceptance.md)
 - [ ] **P0-G-02** Secondary demo: entity vs personal, fees vs transfers, corporate UNKNOWN (§114). → [14](14-scenarios.md), [02](02-domain-model.md)
@@ -198,7 +200,7 @@ P0 items: 13 (storage complete), 39–50, 54. Workstreams H, I, J, L.
 - [ ] **P0-G-06** Success-condition copy review against §115 / maxims (MASTER §13–14). → [00-MASTER.md](00-MASTER.md)
 - [ ] **P0-G-07** Explicit P1 backlog only; no silent scope creep from [21](21-p1-p2.md).
 
-**MASTER complete (P0):** 2027-02-20 target.
+**MASTER complete (P0):** date **TBD**. Re-estimate in writing after P0-A-06 (what the accountant broke, what HEN taught the schemas, counsel on the pack). Until then, do not publish a §102 ship date.
 
 ---
 
@@ -220,11 +222,11 @@ P0 items: 13 (storage complete), 39–50, 54. Workstreams H, I, J, L.
 | 12 Privacy / security | P0-1-01, P0-4-01, P0-4-11, P0-4-14 |
 | 13 Export / API / CLI | P0-1-10, P0-1-11, P0-3-08, P0-3-22, P0-3-23, P0-4-09 |
 | 14 Scenarios / demos | P0-1-12, P0-3-06, P0-3-07, P0-G-01, P0-G-02 |
-| 15 France / EU | P0-3-01 … P0-3-04 |
+| 15 France / EU | P0-0-11, P0-3-01 … P0-3-04, P0-L-01, P0-L-02 |
 | 16 Repo / CI | P0-0-01, P0-0-08, P0-1-12, P0-1-13, P0-3-03 |
 | 17 Quality / ACs | P0-0-07, P0-1-10, P0-1-13, P0-1-14, P0-2-09, P0-2-10, P0-3-25, P0-4-08, P0-G-03 |
 | 18 UI / a11y | P0-3-09, P0-3-24, P0-G-05 |
-| 19 Governance | P0-0-02, P0-1-05, P0-3-05 |
+| 19 Governance | P0-0-02, P0-1-05, P0-3-05, P0-L-01, P0-L-02 |
 | 20 P0 gate | P0-2-10, P0-G-01 … P0-G-04, P0-G-06 |
 | 21 P1/P2 | P0-G-07 only (exclude from P0) |
 | 22 Architecture | P0-0-01, Phase 0 freeze |
@@ -234,17 +236,19 @@ P0 items: 13 (storage complete), 39–50, 54. Workstreams H, I, J, L.
 ## Staffing and critical path
 
 ```text
-Engineer A: schemas → engines → lots/findings → workspace
-Engineer B: schemas support → Tezos/OBJKT/CSV → tools 001–009, 012–013
-Researcher: France/EU sources from W3 → tools 010–011 content → demo legal labels
-Shared W22–W24: demos, a11y, AC, pack export polish
+W1–W2   both engineers: Phase 0. Maintainer: start P0-L-01 (reviewer search).
+W3–W8   both engineers: P0-alpha only. Researcher: sources for Time Machine + P0-0-11.
+        Maintainer: P0-L-02 (counsel). Do not start Phase 1 engines here.
+W9+     Phase 1+ as re-estimated after P0-A-06.
 ```
 
-**Critical path:** schemas (W2) → event+rule engines (W7) → Tezos OBJKT (W11) → tools 003/004/005 (W16) → workspace explainability (W21) → primary demo (W24).
+**Critical path through alpha:** schemas/spike (W2) → one real op decode → valuation or miss → France as-of → TOOL-003 + TOOL-010 → accountant (P0-A-06).
 
-**Second critical path:** schemas (W2) → France sources (ongoing) → Time Machine (W16). If research slips, tools 010/011 ship on a thin sourced set plus explicit UNKNOWN; do not invent rules to hit the date.
+**Long-lead path (social):** P0-L-01 from W1; P0-L-02 from W3. These gate `EXPERT_REVIEWED` and item 46, not the alpha demo.
 
-## Risk buffer (already inside W22–W24)
+**Second path after alpha:** generalize engines, HEN/OBJKT coverage, remaining tools. Dates TBD.
+
+## Risk buffer (re-estimated after alpha; do not pretend W22–W24 still exists)
 
 | Risk | Mitigation |
 |---|---|

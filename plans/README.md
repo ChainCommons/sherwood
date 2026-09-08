@@ -40,7 +40,7 @@ Read in this order:
 | [20-p0-mvp-acceptance.md](20-p0-mvp-acceptance.md) | §§102, 105, 113–115 | definition of done |
 | [21-p1-p2.md](21-p1-p2.md) | §§46, 103–104, 108 | later |
 | [22-architecture-workstreams.md](22-architecture-workstreams.md) | §§83, 106–107, 111–112 | bootstrap |
-| [23-implementation.md](23-implementation.md) | execution of MASTER | P0 W1–W24 |
+| [23-implementation.md](23-implementation.md) | execution of MASTER | alpha W3–W8; §102 date TBD |
 | [24-multi-agent.md](24-multi-agent.md) | multi-agent / multi-provider split | operating model |
 | [25-gorunme-kickoff.md](25-gorunme-kickoff.md) | GoRunMe + GitHub coordination | scheduler |
 | [26-review-response.md](26-review-response.md) | review adopted / rejected | plan delta |

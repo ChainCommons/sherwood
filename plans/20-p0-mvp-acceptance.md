@@ -91,13 +91,17 @@ P0 is complete **only when** all of the following exist.
 ## Suggested build order (do not shuffle casually)
 
 ```text
-Phase 0  items 1–3, 53
-Phase 1  items 4–13, 51–52
-Phase 2  items 14–20
-Phase 3  items 21–38
-Phase 4  items 39–50, 54
-Demos    §113–114 as integration tests throughout phases 2–4
+Phase 0     items 1–3, 53
+P0-alpha    TOOL-003, TOOL-010, one real decode (not a §102 substitute)
+            then re-date the rest
+Phase 1     items 4–13, 51–52          (after alpha)
+Phase 2     items 14–20
+Phase 3     items 21–38
+Phase 4     items 39–50, 54            (item 46 gated on P0-L-02 counsel)
+Demos       §113–114 after the above
 ```
+
+§102 ship date is **TBD** until P0-A-06. Do not keep a calendar that assumes Phase 1 overlaps alpha.
 
 ## Product success condition (§115)
 

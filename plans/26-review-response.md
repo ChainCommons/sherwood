@@ -26,8 +26,15 @@ Reviewer argued the thinking is strong and the planning-to-code ratio is bad. Ad
 
 **7 (rename / rebrand).** `INITIAL_PROMPT.md` stays the canonical spec filename for now (every plan and GoRunMe pack cites it). Public product name is already **Open Crypto Tax Commons**; Sherwood is the repo/codename. sherwood.news is a weak collision; we will not rename the GitHub repo for it.
 
+## Follow-up (timeline) — adopted
+
+The first reply added scope and left **2027-02-20** / overlapping Phase 1. That was a lying plan. Written down now:
+
+- **P0-alpha is a schedule reset.** Spec §102 date is **TBD** until P0-A-06. We did not cut workspace/AI from the spec gate; we stopped dating the gate.
+- **Alpha owns W3–W8.** Phase 1 starts **W9+**, after the slice, so lessons can change the engines.
+- **P0-L-01** (W1): recruit named French reviewer. Gates leaving `COMMUNITY_DRAFT`.
+- **P0-L-02** (W3): counsel on the professional pack. Gates item 46.
+
 ## Next code, not next essay
 
-The next document that matters is a TypeScript slice: one real HEN or OBJKT sale → legs → valuation or miss → sourced French finding or `UNKNOWN`, shown in TOOL-003 and TOOL-010. That work is **P0-alpha** in [23](23-implementation.md).
-
-The BOFiP archival check is **P0-0-11** and can run in parallel with the slice.
+Ship the slice. [23](23-implementation.md) P0-A-01…06. Do not start Phase 1 beside it.

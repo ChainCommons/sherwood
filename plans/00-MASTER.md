@@ -159,7 +159,7 @@ These satisfy the spec; they can change if constraints remain met.
 
 **Phase 4 — Workspace, professional export, AI prototype.**
 
-**Calendar, TODO IDs, and staffing:** [23-implementation.md](23-implementation.md). Target MASTER (P0) complete **2027-02-20** from a 2026-09-08 start (24 weeks, 2-engineer + researcher default).
+**Calendar, TODO IDs, and staffing:** [23-implementation.md](23-implementation.md). **P0-alpha** (W3–W8) is the current calendar. Spec §102 P0 date is **TBD** until P0-A-06.
 
 **Multi-agent / multi-provider split:** [24-multi-agent.md](24-multi-agent.md) and [agents/](agents/README.md). Shared contracts first; then parallel lanes with exclusive directories; author and reviewer from different providers.
 

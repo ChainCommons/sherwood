@@ -85,11 +85,11 @@ K and D are independent: France YAML vs TzKT can proceed in parallel once schema
 **Phase 0 — Repo + schemas + CI**  
 Scaffold, governance docs, LICENSE, JSON Schemas (authored, not all frozen), validators, live-op spike (TzKT/OBJKT/HEN), inter-lane contract fixtures, empty jurisdiction skeletons, invariant import tests (no france in engine).
 
-**P0-alpha — Vertical slice**  
-One real marketplace sale through legs, valuation-or-miss, France as-of or UNKNOWN, TOOL-003 + TOOL-010. First external feedback. Does not replace §102 P0.
+**P0-alpha — Vertical slice (W3–W8, owns engineers)**  
+One real marketplace sale through legs, valuation-or-miss, France as-of or UNKNOWN, TOOL-003 + TOOL-010. First external feedback. Does not replace §102 P0. §102 date TBD until this lands.
 
-**Phase 1 — Deterministic engines**  
-Evidence store, event-engine with synthetic marketplace JSON, source-registry, rules-engine DSL, valuation with mock provider, lots, findings, snapshots. AC-001–006, 009–012 on synthetics.
+**Phase 1 — Deterministic engines (after alpha)**  
+Evidence store, event-engine, source-registry, rules-engine, valuation, lots, findings, snapshots — **informed by** the slice. Do not build this beside alpha.
 
 **Phase 2 — Tezos proving ground**  
 TzKT, OBJKT **and HEN/Teia**, baking, CSV, XTZ/EUR, reconciliation. AC-015. Incremental ingest.
@@ -116,12 +116,14 @@ Situation explorer, corrections, professional pack, AC-007, 008, 014. Demos §11
 ```mermaid
 flowchart LR
   schemas[Phase0_schemas]
+  alpha[P0_alpha]
   engines[Phase1_engines]
   tezos[Phase2_tezos]
   france[Phase3_france]
   tools[Phase3_tools]
   ws[Phase4_workspace]
-  schemas --> engines
+  schemas --> alpha
+  alpha --> engines
   schemas --> france
   engines --> tezos
   engines --> tools

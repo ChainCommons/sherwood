@@ -132,12 +132,9 @@ Steward merges only after Reviewer (different provider) or a human + CI.
 
 | Wave | When (plan 23) | Agents alive |
 |---|---|---|
-| 0 | W1–W2 | Steward only |
-| 1 | W3–W7 | Steward, Events, Rules, ValLots, France, Reviewer |
-| 2 | W8–W11 | + Tezos, + QA; Findings if not done |
-| 3 | W12–W16 | + Tools, + KnowledgeUI; France continues |
-| 4 | W17–W21 | + Workspace, + Export; Tools may still polish |
-| 5 | W22–W24 | Steward + QA + one Demo agent; freeze feature lanes |
+| 0 | W1–W2 | Steward only (+ P0-L-01 reviewer search) |
+| alpha | W3–W8 | Slice pair (decode + Time Machine content); Reviewer; P0-L-02 counsel. **Not** four engine lanes. |
+| 1+ | W9+ (TBD after P0-A-06) | Events, Rules, ValLots, Tezos, Tools — re-opened after the slice teaches the contracts |
 
 France (K) is the only lane that stays up from Wave 1 through Wave 3. Do not put France and Tezos on the same agent: different skills, zero file overlap, and mixing them produces invented tax-from-chain.
 
