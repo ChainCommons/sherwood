@@ -1,0 +1,28 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-res-tva-000140-2024
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: ADMINISTRATIVE_RULING
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  BOI-RES-TVA-000140 (14/02/2024) — Rescrit : qualification des opérations
+  réalisées à l'aide de jetons non fongibles (« NFT ») au regard de la TVA
+canonical_reference: BOI-RES-TVA-000140-20240214
+original_language: fr
+publication_date: '2024-02-14'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/14103-PGP.html/identifiant=BOI-RES-TVA-000140-20240214
+content_hash: sha256:bb19d95e85a8453f3c679e6c44a3718c07413a5cfbe4e27e387b805300be3807
+permitted_extract: >-
+  « Les JNF ne font l'objet d'aucun dispositif spécifique en matière de TVA »
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. THE dated boundary for NFT VAT in France, and the
+  single most important date in this pack. Published 2024-02-14: nothing in it
+  was available to a 2021, 2022 or 2023 taxpayer, and the pack MUST NOT let it
+  answer an as-of query for those years. It looks through the token to the
+  underlying good or service, and states that a JNF is not a payment, utility or
+  investment token, so NFT operations fall outside the financial exemption of
+  CGI art. 261 C. No earlier NFT VAT doctrine was found, which is why there is
+  no `supersedes` here — the absence is the finding.
+schema_version: 0.1.0

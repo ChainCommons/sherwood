@@ -1,0 +1,21 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-actu-2023-00099
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_NOTICE
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  ACTU-2023-00099 — Régime fiscal des opérations d'achat, de vente et d'échange
+  d'actifs numériques effectuées dans des conditions analogues à un
+  professionnel (LF 2022, art. 70)
+canonical_reference: ACTU-2023-00099
+original_language: fr
+publication_date: '2023-06-28'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/13985-PGP.html/ACTU-2023-00099
+content_hash: sha256:c7f90a57f97572752300a9ac92924993550286b8eeb747d6be1cf85a9f4bcf16
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. Dates the BIC-to-BNC shift for "professional-like"
+  trading. Guidance published 2023-06-28 for a rule effective 2023-01-01.
+schema_version: 0.1.0

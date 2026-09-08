@@ -1,0 +1,21 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-cf-cpf-30-20
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_MANUAL
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  BOI-CF-CPF-30-20 — Déclaration des comptes ouverts, détenus, utilisés ou clos
+  hors de France
+canonical_reference: BOI-CF-CPF-30-20-20210526
+original_language: fr
+publication_date: '2021-05-26'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/580-PGP.html/identifiant=BOI-CF-CPF-30-20-20210526
+content_hash: sha256:fcaa6be71039fa310b0b98b6e8d86789c6941ccddcefb46291cc47dfb9bc8f7f
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. Doctrine behind the art. 1649 bis C reporting duty
+  and the 3916/3916-bis form. Published 2021-05-26, so it IS available for as-of
+  queries from that date onward.
+schema_version: 0.1.0

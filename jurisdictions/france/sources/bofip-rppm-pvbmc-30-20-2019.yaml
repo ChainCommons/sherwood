@@ -1,0 +1,22 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-rppm-pvbmc-30-20-2019
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_MANUAL
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  BOI-RPPM-PVBMC-30-20 (02/09/2019) — Cession d'actifs numériques à titre
+  occasionnel : base d'imposition
+canonical_reference: BOI-RPPM-PVBMC-30-20-20190902
+original_language: fr
+publication_date: '2019-09-02'
+effective_from: '2019-01-01'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/11968-PGP.html/identifiant=BOI-RPPM-PVBMC-30-20-20190902
+content_hash: sha256:cb20a78a266150b0800873803884ccb24b4a9a0b0a2e6185bfcbe50ac7406538
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. Carries the portfolio-wide computation of art. 150 VH
+  bis (prix total d'acquisition rapporté à la valeur globale du portefeuille).
+  That is NOT FIFO and MUST NOT be modelled as such.
+schema_version: 0.1.0

@@ -1,0 +1,21 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-actu-2019-00174
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_NOTICE
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  ACTU-2019-00174 — Création d'un régime fiscal spécifique applicable aux
+  cessions d'actifs numériques réalisées à titre occasionnel par les
+  particuliers (LF 2019, art. 41)
+canonical_reference: ACTU-2019-00174
+original_language: fr
+publication_date: '2019-09-02'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/11978-PGP.html/identifiant=ACTU-2019-00174
+content_hash: sha256:2edeefd9904aef02c0b960e35aea7f1ddff65bacf14b067401b8543fbeb475b2
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. Dates the first publication of the art. 150 VH bis
+  doctrine — the anchor for "what existed in 2019/2021".
+schema_version: 0.1.0

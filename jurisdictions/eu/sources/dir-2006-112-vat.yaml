@@ -1,0 +1,25 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: eu-dir-2006-112-vat
+jurisdiction_id: eu
+issuing_authority: Council of the European Union
+source_type: REGULATION
+authority_level: BINDING_LEGISLATION
+title: >-
+  Council Directive 2006/112/EC of 28 November 2006 on the common system of
+  value added tax (VAT Directive)
+canonical_reference: Council Directive 2006/112/EC, OJ L 347, 11.12.2006.
+original_language: en
+publication_date: '2006-12-11'
+retrieved_at: '2026-09-08'
+canonical_url: https://eur-lex.europa.eu/eli/dir/2006/112/oj/eng
+licence: >-
+  © European Union. Reuse authorised under Commission Decision 2011/833/EU,
+  with acknowledgement of source.
+notes: >-
+  redistribution: extract. The frame French NFT VAT analysis sits in: supply of
+  goods vs supply of services, place of supply, electronically supplied
+  services, and the art. 135(1) financial exemptions. France's rules should
+  reference this rather than restate it. No consolidated version is pinned
+  here; a rule that depends on a specific article MUST pin the consolidated
+  text in force for its period.
+schema_version: 0.1.0

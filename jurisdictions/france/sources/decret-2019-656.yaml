@@ -1,0 +1,22 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-decret-2019-656
+jurisdiction_id: france
+issuing_authority: Premier ministre / ministre de l'action et des comptes publics
+source_type: REGULATION
+authority_level: BINDING_LEGISLATION
+title: >-
+  Décret n° 2019-656 du 27 juin 2019 relatif aux obligations déclaratives des
+  cessions d'actifs numériques et des comptes détenus à l'étranger
+canonical_reference: >-
+  Décret n° 2019-656 du 27 juin 2019, pris pour l'application du B du V de
+  l'article 150 VH bis et du dernier alinéa de l'article 1649 bis C du CGI.
+original_language: fr
+publication_date: '2019-06-27'
+retrieved_at: '2026-09-08'
+canonical_url: https://www.legifrance.gouv.fr/loda/id/JORFTEXT000038695963
+licence: Licence Ouverte 2.0 (Etalab) for the LEGI open-data distribution.
+notes: >-
+  redistribution: extract. This is the source behind forms 2086 and 3916-bis;
+  publication_date is the decree's own date, the Journal officiel issue was not
+  re-verified.
+schema_version: 0.1.0

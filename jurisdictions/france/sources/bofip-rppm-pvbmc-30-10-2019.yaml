@@ -1,0 +1,22 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-rppm-pvbmc-30-10-2019
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_MANUAL
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  BOI-RPPM-PVBMC-30-10 (02/09/2019) — Cession d'actifs numériques à titre
+  occasionnel : champ d'application
+canonical_reference: BOI-RPPM-PVBMC-30-10-20190902
+original_language: fr
+publication_date: '2019-09-02'
+effective_from: '2019-01-01'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/11967-PGP.html/identifiant=BOI-RPPM-PVBMC-30-10-20190902
+content_hash: sha256:a79c535ebacc7731d76478facad81bd059f98cfc1da96cf7d1743fcf7517c317
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. Only captured version, and the one a 2021 taxpayer
+  could read. Published 2019-09-02 for a regime governing disposals from
+  2019-01-01, so the temporal check's AC-002 warning is correct and expected.
+schema_version: 0.1.0

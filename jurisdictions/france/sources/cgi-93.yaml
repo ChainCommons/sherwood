@@ -1,0 +1,24 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-cgi-93
+jurisdiction_id: france
+issuing_authority: République française (Parlement)
+source_type: STATUTE
+authority_level: BINDING_LEGISLATION
+title: >-
+  Code général des impôts, article 93 — détermination du bénéfice non
+  commercial, dont le 1 quater sur les droits d'auteur
+canonical_reference: >-
+  CGI, art. 93, 1 quater : les droits d'auteur perçus par les auteurs des œuvres
+  de l'esprit mentionnées à l'article L. 112-2 du code de la propriété
+  intellectuelle, lorsqu'ils sont intégralement déclarés par les tiers, sont
+  imposés selon les règles des traitements et salaires.
+original_language: fr
+retrieved_at: '2026-09-08'
+canonical_url: https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000053559885
+licence: Licence Ouverte 2.0 (Etalab) for the LEGI open-data distribution.
+notes: >-
+  redistribution: extract. Central to the artist-author question: whether an
+  on-chain NFT royalty is a "droit d'auteur" declared by a third party is
+  unresolved and MUST stay UNSETTLED — no marketplace is a "tiers déclarant" in
+  the sense of this text on any authority indexed here.
+schema_version: 0.1.0

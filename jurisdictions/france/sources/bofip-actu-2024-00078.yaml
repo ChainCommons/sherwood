@@ -1,0 +1,21 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-actu-2024-00078
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_NOTICE
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  ACTU-2024-00078 — Droit d'option pour l'application du barème progressif aux
+  plus-values de cession d'actifs numériques (LF 2022, art. 79)
+canonical_reference: ACTU-2024-00078
+original_language: fr
+publication_date: '2024-04-23'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/14201-PGP.html/ACTU-2024-00078
+content_hash: sha256:57bd35a88b12309b5a4bbff32d56358c396dbd3f264af0e473e43dc85c2a92f6
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. The option applies to disposals from 2023-01-01 but
+  the doctrine only appeared on 2024-04-23 — a clean Time Machine case where the
+  law and its published commentary are more than a year apart.
+schema_version: 0.1.0

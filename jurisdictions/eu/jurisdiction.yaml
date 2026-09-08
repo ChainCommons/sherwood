@@ -1,11 +1,13 @@
-# LEVEL 0 skeleton: the ID exists so records can reference it.
-# Nothing here is tax guidance. No rules are modelled yet.
+# LEVEL 1: official sources are indexed with dates, links and hashes.
+# Nothing here is tax guidance. No rules are modelled yet — see RESEARCH.md.
 $schema: https://schemas.opencryptotaxcommons.org/jurisdiction/jurisdiction.schema.json
 jurisdiction_id: eu
 name: European Union
 parent_jurisdiction: null
 jurisdiction_type: supranational
 currency: EUR
+official_languages:
+  - en
 timezone_reference: Europe/Brussels
 tax_year_convention: CALENDAR_YEAR
 supported_tax_domains: []
@@ -35,9 +37,12 @@ unsupported_tax_domains:
   - court_deadlines
 maintainers: []
 review_status: COMMUNITY_DRAFT
-maturity_level: 0
+maturity_level: 1
+last_source_verification: '2026-09-08'
 notes: >-
-  Skeleton only. Every tax domain is listed as unsupported until a sourced
-  rule exists, so the UI reports 'not modelled' rather than implying that
-  silence means no tax applies.
+  Dependency pack for France, not an EU tax pack. Five instruments are indexed
+  (MiCA, the VAT Directive, the 2022 VAT-rates amendment, DAC8, CJEU Hedqvist)
+  so national packs can reference them instead of duplicating them. Every tax
+  domain stays unsupported until a sourced rule exists; the VAT and
+  place-of-supply skeleton is P0-3-04.
 schema_version: 0.1.0

@@ -1,0 +1,23 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-rppm-pvbmc-30-30-2024
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_MANUAL
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  BOI-RPPM-PVBMC-30-30 (23/04/2024) — Modalités d'imposition et obligations
+  déclaratives
+canonical_reference: BOI-RPPM-PVBMC-30-30-20240423
+original_language: fr
+publication_date: '2024-04-23'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/11969-PGP.html/identifiant=BOI-RPPM-PVBMC-30-30-20240423
+content_hash: sha256:a12064d1a8adb44fd8d1cdd6b02ccaa0f4946f6f751c77b75039ded6e01f4c12
+supersedes:
+  - fr-bofip-rppm-pvbmc-30-30-2019
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. Integrates the option for the barème progressif (LF
+  2022, art. 79) available for disposals from 2023-01-01. Paired with the 2019
+  text this is the rule-diff fixture plan 15 asks for.
+schema_version: 0.1.0

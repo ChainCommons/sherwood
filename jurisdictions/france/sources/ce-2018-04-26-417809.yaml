@@ -1,0 +1,23 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-ce-2018-04-26-417809
+jurisdiction_id: france
+issuing_authority: Conseil d'État
+source_type: COURT_DECISION
+authority_level: BINDING_DOCTRINE
+title: >-
+  Conseil d'État, 8e et 3e chambres réunies, 26 avril 2018, n° 417809 et autres
+canonical_reference: >-
+  CE, 8e et 3e ch. réunies, 26 avril 2018, nos 417809, 418030, 418031, 418032,
+  418033, publié au recueil Lebon.
+original_language: fr
+publication_date: '2018-04-26'
+retrieved_at: '2026-09-08'
+canonical_url: https://www.legifrance.gouv.fr/ceta/id/CETATEXT000036845274/
+licence: Licence Ouverte 2.0 (Etalab) for the CETAT open-data distribution.
+notes: >-
+  redistribution: extract. Pre-150 VH bis law: bitcoin units are biens meubles
+  incorporels; occasional disposals fall under art. 150 UA, habitual buying and
+  selling under the BIC category, and mining under art. 92 (BNC). Still the
+  operative authority for tax years before 2019 and still the reasoning behind
+  the mining doctrine.
+schema_version: 0.1.0

@@ -1,0 +1,31 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-cgi-150-vh-ter
+jurisdiction_id: france
+issuing_authority: République française (Parlement)
+source_type: STATUTE
+authority_level: BINDING_LEGISLATION
+title: >-
+  Code général des impôts, article 150 VH ter — crypto-actifs uniques et non
+  fongibles
+canonical_reference: >-
+  CGI, art. 150 VH ter, créé par la loi n° 2026-534 du 25 juin 2026 relative à
+  la lutte contre les fraudes sociales et fiscales, art. 91.
+original_language: fr
+publication_date: '2026-06-25'
+effective_from: '2026-01-01'
+retrieved_at: '2026-09-08'
+canonical_url: https://www.legifrance.gouv.fr/jorf/article_jo/JORFARTI000054310089
+permitted_extract: >-
+  « Les 2° et 3° du I s'appliquent aux cessions réalisées à compter du 1er
+  janvier 2026. »
+licence: >-
+  Licence Ouverte 2.0 (Etalab) for the LEGI open-data distribution. The
+  Légifrance web rendering was not separately checked.
+notes: >-
+  redistribution: extract. Retrospective: enacted 2026-06-25 for disposals from
+  2026-01-01, so the temporal check reports the AC-002 warning on purpose. The
+  article taxes a unique, non-fungible crypto-asset under the regime of the
+  asset or right it represents, rather than under art. 150 VH bis. The
+  consolidated codified text was read through the JORF article; the codified
+  Légifrance article page for 150 VH ter has not been captured separately.
+schema_version: 0.1.0
