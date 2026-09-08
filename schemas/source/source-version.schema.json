@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/source/source-version.schema.json",
+  "title": "Source version",
+  "description": "Plan 05 §28. Current text MUST NOT overwrite historical text: each capture is its own record, chained by predecessor/successor.",
+  "type": "object",
+  "required": ["source_version_id", "source_id", "retrieved_at", "schema_version"],
+  "properties": {
+    "source_version_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "source_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "version_label": { "type": "string" },
+    "publication_date": { "$ref": "../common.schema.json#/$defs/date" },
+    "published_from": { "$ref": "../common.schema.json#/$defs/date" },
+    "effective_from": { "$ref": "../common.schema.json#/$defs/date" },
+    "effective_to": { "$ref": "../common.schema.json#/$defs/date" },
+    "retrieved_at": { "$ref": "../common.schema.json#/$defs/date" },
+    "archive_url": { "$ref": "../common.schema.json#/$defs/url" },
+    "content_hash": { "$ref": "../common.schema.json#/$defs/contentHash" },
+    "predecessor": { "oneOf": [{ "$ref": "../common.schema.json#/$defs/slug" }, { "type": "null" }] },
+    "successor": { "oneOf": [{ "$ref": "../common.schema.json#/$defs/slug" }, { "type": "null" }] },
+    "permitted_extract": { "type": "string" },
+    "extracted_facts": { "type": "object" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

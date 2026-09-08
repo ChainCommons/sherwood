@@ -1,0 +1,11 @@
+{
+  "$schema": "https://schemas.opencryptotaxcommons.org/valuation/valuation-miss.schema.json",
+  "valuation_miss_id": "01J8Z3QKQ0VAMSS01000000000",
+  "asset": { "chain": "tezos", "contract": "KT1SyntheticFa2TokenContract000000000", "token_id": "42" },
+  "timestamp": "2021-06-15T21:40:00.000Z",
+  "target_currency": "EUR",
+  "reason": "no_market",
+  "providers_tried": ["synthetic-fixture-provider", "synthetic-alt-provider"],
+  "detail": "No secondary index exists for this token. A floor price is not a fact and is not substituted here.",
+  "generated_at": "2026-01-10T09:00:07.000Z"
+}

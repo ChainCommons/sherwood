@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/rule/reporting-rule.schema.json",
+  "title": "Reporting rule",
+  "description": "Plan 10 §57, INV-018. Information reporting is a separate type from substantive taxation: REPORTABLE is not TAXABLE, and NOT REPORTED is not NOT TAXABLE. A finding must never use a reporting rule as a tax-base rule.",
+  "type": "object",
+  "required": ["reporting_rule_id", "jurisdiction", "framework", "effective_from", "sources", "schema_version"],
+  "properties": {
+    "reporting_rule_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "jurisdiction": { "$ref": "../common.schema.json#/$defs/slug" },
+    "framework": { "type": "string", "minLength": 1 },
+    "reporting_party": { "type": "string" },
+    "reported_person": { "type": "string" },
+    "event_types": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/semanticEventType" } },
+    "reported_fields": { "type": "array", "items": { "type": "string" } },
+    "reporting_period": { "type": "string" },
+    "effective_from": { "$ref": "../common.schema.json#/$defs/date" },
+    "effective_to": { "$ref": "../common.schema.json#/$defs/date" },
+    "published_from": { "$ref": "../common.schema.json#/$defs/date" },
+    "sources": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" }, "minItems": 1 },
+    "review": { "$ref": "../common.schema.json#/$defs/review" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

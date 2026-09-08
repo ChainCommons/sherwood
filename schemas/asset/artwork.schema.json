@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/asset/artwork.schema.json",
+  "title": "Artwork",
+  "description": "Plan 02 §18. Artwork is modelled separately from the token that may represent it: an FA2 transfer MUST NOT be read as a copyright assignment. Rights stay unknown unless evidence or the user says otherwise.",
+  "type": "object",
+  "required": ["artwork_id", "title", "creator_ids", "schema_version"],
+  "properties": {
+    "artwork_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "title": { "type": "string" },
+    "creator_ids": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/id" } },
+    "medium": { "type": "string" },
+    "physical_or_digital": { "enum": ["physical", "digital", "both"] },
+    "edition_size": { "type": "integer", "minimum": 1 },
+    "creation_date": { "$ref": "../common.schema.json#/$defs/date" },
+    "copyright_owner": { "type": "string" },
+    "rights_transferred": { "type": "array", "items": { "type": "string" } },
+    "licence_terms": { "type": "string" },
+    "commercial_rights": { "type": "string" },
+    "reproduction_rights": { "type": "string" },
+    "rights_status": { "$ref": "../common.schema.json#/$defs/factStatus" },
+    "tokenized": { "type": "boolean" },
+    "token_contract": { "type": "string" },
+    "token_id": { "type": "string" },
+    "associated_physical_object": { "type": "string" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

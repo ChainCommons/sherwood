@@ -1,0 +1,61 @@
+# Code ownership.
+#
+# The split that matters is legal content vs engine code: a change to French tax
+# material and a change to the rule engine need different reviewers, and must
+# not land in the same pull request.
+#
+# GitHub teams below are placeholders until the org teams exist. Until then,
+# review falls to the repository maintainers.
+
+# Default
+*                               @ChainCommons/maintainers
+
+# Shared contracts — changing these changes every lane at once.
+/schemas/                       @ChainCommons/stewards
+/tests/contracts/               @ChainCommons/stewards
+/tests/invariants/              @ChainCommons/stewards
+/docs/invariants.md             @ChainCommons/stewards
+/packages/core/                 @ChainCommons/stewards
+/packages/validate/             @ChainCommons/stewards
+/.github/                       @ChainCommons/stewards
+/CODEOWNERS                     @ChainCommons/stewards
+/package.json                   @ChainCommons/stewards
+/pnpm-lock.yaml                 @ChainCommons/stewards
+/pnpm-workspace.yaml            @ChainCommons/stewards
+/turbo.json                     @ChainCommons/stewards
+/tsconfig.base.json             @ChainCommons/stewards
+
+# Governance and policy.
+/GOVERNANCE.md                  @ChainCommons/maintainers
+/CODE_OF_CONDUCT.md             @ChainCommons/maintainers
+/SECURITY.md                    @ChainCommons/maintainers
+/PRIVACY.md                     @ChainCommons/maintainers
+/DISCLAIMER.md                  @ChainCommons/maintainers
+/LICENSE                        @ChainCommons/maintainers
+/LICENSE-CONTENT.md             @ChainCommons/maintainers
+
+# Engines. Generic by construction — see docs/invariants.md (INV-013).
+/packages/event-engine/         @ChainCommons/engines
+/packages/rules-engine/         @ChainCommons/engines
+/packages/source-registry/      @ChainCommons/engines
+/packages/valuation/            @ChainCommons/engines
+/packages/lots/                 @ChainCommons/engines
+/packages/positions/            @ChainCommons/engines
+/packages/reconciliation/       @ChainCommons/engines
+/packages/findings/             @ChainCommons/engines
+/packages/evidence/             @ChainCommons/engines
+/packages/exporters/            @ChainCommons/engines
+/packages/ai/                   @ChainCommons/ai
+
+# Chain adapters. Chain specifics live here and nowhere else.
+/adapters/                      @ChainCommons/adapters
+
+# Legal content. Sourcing and review status are the responsibility here.
+/jurisdictions/                 @ChainCommons/knowledge
+/jurisdictions/eu/              @ChainCommons/knowledge-eu
+/jurisdictions/france/          @ChainCommons/knowledge-france
+/cases/                         @ChainCommons/knowledge
+/scenarios/                     @ChainCommons/knowledge
+
+# Applications.
+/apps/                          @ChainCommons/apps

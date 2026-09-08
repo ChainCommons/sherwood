@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.opencryptotaxcommons.org/snapshot/snapshot.schema.json",
+  "snapshot_id": "01J8Z3QKQ0SNAPSHT010000000",
+  "participant_profile_version": "1",
+  "ledger_version": "1",
+  "ownership_mappings_version": "1",
+  "jurisdiction_pack_version": "france@0.0.0-level0",
+  "rule_versions": [],
+  "pack_git_commit": "0000000000000000000000000000000000000000",
+  "valuation_methodology": "nearest_trade with recorded fallback chain",
+  "price_dataset_refs": ["sha256:9b1a0d3c2e5f4a7b8c9d0e1f2a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d"],
+  "lot_method": "SPECIFIC_IDENTIFICATION",
+  "rounding_mode": "HALF_EVEN",
+  "timezone_assumption": "Europe/Paris",
+  "engine_version": "analyze@0.0.0",
+  "analysis_date": "2026-01-10T09:00:12.000Z",
+  "finding_refs": ["01J8Z3QKQ0FNDNG01000000000"],
+  "schema_version": "0.1.0"
+}

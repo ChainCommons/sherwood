@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/event/fact-status.schema.json",
+  "title": "Fact status",
+  "description": "Plan 03 §16. Every derived fact carries where it came from, so 'we saw this' is never displayed the same way as 'we guessed this'.",
+  "type": "object",
+  "required": ["value", "status"],
+  "properties": {
+    "value": {},
+    "status": { "$ref": "../common.schema.json#/$defs/factStatus" },
+    "reason": { "type": "string" },
+    "source_evidence": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/id" } }
+  },
+  "additionalProperties": false
+}

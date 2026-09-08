@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/event/marketplace-overlay.schema.json",
+  "title": "Marketplace decode overlay",
+  "description": "Plan 03. A marketplace decode is an *input overlay* on chain evidence, never a replacement for it. It proposes semantics; the event engine decides.",
+  "type": "object",
+  "required": ["overlay_id", "marketplace", "technical_tx_id", "source_evidence", "schema_version"],
+  "properties": {
+    "overlay_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "marketplace": { "type": "string", "minLength": 1 },
+    "technical_tx_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "suggested_event_type": { "$ref": "../common.schema.json#/$defs/semanticEventType" },
+    "sale_kind": { "enum": ["primary", "secondary", "unknown"] },
+    "components": {
+      "description": "Proposed split of the deal. Characters use the leg vocabulary so nothing has to be re-mapped later.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["economic_character", "amount"],
+        "properties": {
+          "economic_character": { "$ref": "../common.schema.json#/$defs/economicCharacter" },
+          "amount": { "$ref": "../common.schema.json#/$defs/decimal" },
+          "asset": { "$ref": "../common.schema.json#/$defs/assetRef" },
+          "beneficiary": { "type": "string" },
+          "role": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "status": { "$ref": "../common.schema.json#/$defs/factStatus" },
+    "source_evidence": {
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/id" },
+      "minItems": 1
+    },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

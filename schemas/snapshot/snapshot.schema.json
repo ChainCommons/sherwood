@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/snapshot/snapshot.schema.json",
+  "title": "Analysis snapshot",
+  "description": "Plans 09 §93 / 17. The unit of reproducibility (AC-006): re-running with these recorded versions and methods reproduces the stored findings, or reports an explicit engine diff. The lot method lives here because it is an analysis input, not a hidden global.",
+  "type": "object",
+  "required": ["snapshot_id", "analysis_date", "engine_version", "lot_method", "schema_version"],
+  "properties": {
+    "snapshot_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "participant_profile_version": { "type": "string" },
+    "ledger_version": { "type": "string" },
+    "ownership_mappings_version": { "type": "string" },
+    "jurisdiction_pack_version": { "type": "string" },
+    "rule_versions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule_id", "version"],
+        "properties": {
+          "rule_id": { "$ref": "../common.schema.json#/$defs/slug" },
+          "version": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "pack_git_commit": { "type": "string" },
+    "valuation_methodology": { "type": "string" },
+    "price_dataset_refs": { "type": "array", "items": { "type": "string" } },
+    "lot_method": { "$ref": "../common.schema.json#/$defs/lotMethod" },
+    "rounding_mode": { "enum": ["HALF_UP", "HALF_EVEN", "HALF_DOWN", "UP", "DOWN", "CEILING", "FLOOR"] },
+    "timezone_assumption": { "$ref": "../common.schema.json#/$defs/timezone" },
+    "engine_version": { "type": "string", "minLength": 1 },
+    "analysis_date": { "$ref": "../common.schema.json#/$defs/instant" },
+    "finding_refs": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/id" } },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

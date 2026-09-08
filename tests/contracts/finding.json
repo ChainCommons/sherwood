@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schemas.opencryptotaxcommons.org/finding/finding.schema.json",
+  "finding_id": "01J8Z3QKQ0FNDNG01000000000",
+  "participant": "01J8Z3QKQ0PARTCPNT01000000",
+  "capacity": { "primary": "COLLECTOR", "as_of": "2021-06-15", "status": "USER_CONFIRMED" },
+  "event_refs": ["01J8Z3QKQ0EVENTSAE00000000"],
+  "rule_refs": [],
+  "source_refs": [],
+  "jurisdiction": "france",
+  "issue": "Treatment of a 2021 secondary NFT disposal by a private individual",
+  "status": "unknown",
+  "posture": "reconstruction",
+  "assumptions": [
+    "Tax residency in France for the whole of 2021, as declared by the user",
+    "The seller acted as a private collector rather than in a professional capacity"
+  ],
+  "missing_facts": [
+    "Whether the disposal falls under the regime for movable property or the regime for digital assets",
+    "Acquisition cost of the token: no basis record exists in the imported ledger"
+  ],
+  "valuation_refs": ["01J8Z3QKQ0VATN010000000000"],
+  "lot_refs": [],
+  "certainty": {
+    "level": "UNKNOWN",
+    "reason": "The France pack is LEVEL 0. No sourced rule has been modelled for this event type, so no treatment is asserted."
+  },
+  "explanation": "The sale was reconstructed from chain evidence: 100 XTZ gross, less a 2.5 XTZ marketplace fee and a 10 XTZ creator royalty, leaving 87.5 XTZ net, valued at EUR 241.00 for the gross leg. No French rule covering this event type has been sourced and reviewed, so no tax treatment is stated. This is a gap in the pack, not a conclusion that no tax applies.",
+  "trace": [
+    { "step": "RAW_EVIDENCE", "refs": ["01J8Z3QKQ0EVDENCE010000000"], "detail": "TzKT operation, content-hashed at import" },
+    { "step": "ECONOMIC_EVENT", "refs": ["01J8Z3QKQ0EVENTSAE00000000"], "detail": "Four legs: gross, fee, royalty, token transfer" },
+    { "step": "CAPACITY", "refs": ["COLLECTOR"], "detail": "User confirmed; ARTIST retained as a competing candidate" },
+    { "step": "VALUATION", "refs": ["01J8Z3QKQ0VATN010000000000"], "detail": "XTZ/EUR nearest trade at block time, fallback recorded" },
+    { "step": "RULE", "refs": [], "detail": "No rule matched: the France pack models no rule for this event type yet" },
+    { "step": "SOURCE", "refs": [], "detail": "No source cited, because no rule was applied" },
+    { "step": "RESULT_OR_UNCERTAINTY", "refs": [], "detail": "UNKNOWN — professional review recommended" }
+  ],
+  "professional_review_recommended": true,
+  "generated_at": "2026-01-10T09:00:10.000Z",
+  "engine_version": "findings@0.0.0",
+  "rule_pack_version": "france@0.0.0-level0",
+  "schema_version": "0.1.0"
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/entity/entity-relationship.schema.json",
+  "title": "Entity relationship",
+  "description": "Edge in the entity graph (plan 02). Personal vs company control is modelled explicitly rather than assumed.",
+  "type": "object",
+  "required": ["relationship_id", "relationship_type", "from_id", "to_id", "schema_version"],
+  "properties": {
+    "relationship_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "relationship_type": {
+      "enum": ["OWNS", "CONTROLS", "EMPLOYED_BY", "CONTRACTS_FOR", "FOUNDED", "DIRECTOR_OF", "MEMBER_OF", "CONTRIBUTES_TO", "BENEFICIARY_OF", "WALLET_OWNED_BY", "ACCOUNT_OWNED_BY"]
+    },
+    "from_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "to_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "from": { "$ref": "../common.schema.json#/$defs/date" },
+    "to": { "$ref": "../common.schema.json#/$defs/date" },
+    "confirmation": { "enum": ["USER_CONFIRMED", "INFERRED", "UNKNOWN"] },
+    "notes": { "type": "string" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

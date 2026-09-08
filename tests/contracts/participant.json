@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schemas.opencryptotaxcommons.org/participant/participant.schema.json",
+  "participant_id": "01J8Z3QKQ0PARTCPNT01000000",
+  "participant_type": "individual",
+  "display_name": "Synthetic Taxpayer (fixture)",
+  "tax_residencies": [
+    { "jurisdiction_id": "france", "from": "2019-01-01", "status": "declared" }
+  ],
+  "functional_currencies": [{ "currency": "EUR", "from": "2019-01-01" }],
+  "capacities": [
+    { "primary": "ARTIST", "secondary": ["COLLECTOR"], "as_of": "2021-01-01", "status": "USER_CONFIRMED" }
+  ],
+  "accounting_methods": [
+    { "jurisdiction_id": "france", "method": "SPECIFIC_IDENTIFICATION", "from": "2021-01-01" }
+  ],
+  "wallet_ownership": ["01J8Z3QKQ0WAET010000000000", "01J8Z3QKQ0WAET020000000000"],
+  "exchange_accounts": [],
+  "related_entities": [],
+  "schema_version": "0.1.0"
+}

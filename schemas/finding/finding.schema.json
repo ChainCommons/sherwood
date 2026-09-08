@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/finding/finding.schema.json",
+  "title": "Finding",
+  "description": "Plan 09 §51. No material legal conclusion is displayed without rule and source refs (AC-001, INV-020). Anything unsupported resolves to `unknown` rather than a guess (AC-003).",
+  "type": "object",
+  "required": ["finding_id", "jurisdiction", "issue", "status", "certainty", "explanation", "generated_at", "engine_version", "rule_pack_version", "schema_version"],
+  "properties": {
+    "finding_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "participant": { "$ref": "../common.schema.json#/$defs/id" },
+    "capacity": { "$ref": "../common.schema.json#/$defs/capacity" },
+    "event_refs": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/id" } },
+    "rule_refs": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" } },
+    "source_refs": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" } },
+    "jurisdiction": { "$ref": "../common.schema.json#/$defs/slug" },
+    "issue": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["relevant", "potentially_relevant", "not_relevant", "unknown"] },
+    "posture": {
+      "description": "Plan 10 §55 — correcting your own error is not the same as challenging the authority.",
+      "enum": ["reconstruction", "correction_of_own_error", "challenge_of_authority_position", "unspecified"]
+    },
+    "calculation": {
+      "type": "object",
+      "properties": {
+        "amount": { "$ref": "../common.schema.json#/$defs/decimal" },
+        "currency": { "$ref": "../common.schema.json#/$defs/currency" },
+        "formula": { "type": "string" },
+        "rounding_mode": { "enum": ["HALF_UP", "HALF_EVEN", "HALF_DOWN", "UP", "DOWN", "CEILING", "FLOOR"] },
+        "inputs": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "assumptions": { "type": "array", "items": { "type": "string" } },
+    "missing_facts": { "type": "array", "items": { "type": "string" } },
+    "valuation_refs": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/id" } },
+    "lot_refs": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/id" } },
+    "certainty": { "$ref": "../common.schema.json#/$defs/certainty" },
+    "competing_interpretations": {
+      "description": "Populated when authorities conflict; the finding stays UNRESOLVED rather than picking a winner.",
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/slug" }
+    },
+    "explanation": { "type": "string", "minLength": 1 },
+    "trace": {
+      "description": "Plan 09 §52 — the explainability chain the UI renders. AI prose is additional, never a substitute.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step", "refs"],
+        "properties": {
+          "step": {
+            "enum": ["FACTS", "RAW_EVIDENCE", "ECONOMIC_EVENT", "CAPACITY", "VALUATION", "LOT_OR_POSITION", "RULE", "SOURCE", "CALCULATION", "RESULT_OR_UNCERTAINTY"]
+          },
+          "refs": { "type": "array", "items": { "type": "string" } },
+          "detail": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "professional_review_recommended": { "type": "boolean" },
+    "generated_at": { "$ref": "../common.schema.json#/$defs/instant" },
+    "engine_version": { "type": "string" },
+    "rule_pack_version": { "type": "string" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "allOf": [
+    {
+      "description": "AC-001: a relevant finding must cite the rule and source it rests on.",
+      "if": { "properties": { "status": { "const": "relevant" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "rule_refs": { "minItems": 1 },
+          "source_refs": { "minItems": 1 }
+        },
+        "required": ["rule_refs", "source_refs"]
+      }
+    }
+  ],
+  "additionalProperties": false
+}

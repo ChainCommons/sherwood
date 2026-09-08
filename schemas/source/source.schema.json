@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/source/source.schema.json",
+  "title": "Source",
+  "description": "Plan 05 §§25–27. Three clocks are kept apart: when the rule applies (effective_*), when the guidance became public (publication_date/published_from), and when this project captured it (retrieved_at). A 2026 page about 2021 was not available to a 2021 taxpayer (AC-002). Prefer metadata, links and hashes over republishing text.",
+  "type": "object",
+  "required": ["source_id", "jurisdiction_id", "source_type", "authority_level", "title", "schema_version"],
+  "properties": {
+    "source_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "issuing_authority": { "type": "string" },
+    "source_type": {
+      "enum": ["STATUTE", "REGULATION", "TREATY", "COURT_DECISION", "ADMINISTRATIVE_RULING", "ADMINISTRATIVE_GUIDANCE", "OFFICIAL_MANUAL", "OFFICIAL_FAQ", "FORM", "FORM_INSTRUCTIONS", "OFFICIAL_NOTICE", "LEGISLATIVE_HISTORY", "GOVERNMENT_REPORT", "PROFESSIONAL_GUIDANCE", "ACADEMIC_ANALYSIS", "SECONDARY_COMMENTARY", "PUBLIC_FIRST_PERSON_CASE", "NEWS_REPORT", "OTHER"]
+    },
+    "authority_level": { "$ref": "../common.schema.json#/$defs/authorityLevel" },
+    "title": { "type": "string" },
+    "canonical_reference": { "type": "string" },
+    "original_language": { "type": "string" },
+    "publication_date": { "$ref": "../common.schema.json#/$defs/date" },
+    "effective_from": { "$ref": "../common.schema.json#/$defs/date" },
+    "effective_to": { "$ref": "../common.schema.json#/$defs/date" },
+    "repealed_at": { "$ref": "../common.schema.json#/$defs/date" },
+    "retrieved_at": { "$ref": "../common.schema.json#/$defs/date" },
+    "canonical_url": { "$ref": "../common.schema.json#/$defs/url" },
+    "archive_reference": { "type": "string" },
+    "content_hash": { "$ref": "../common.schema.json#/$defs/contentHash" },
+    "supersedes": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" } },
+    "superseded_by": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" } },
+    "licence": { "type": "string" },
+    "permitted_extract": { "type": "string" },
+    "notes": { "type": "string" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

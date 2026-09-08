@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/position/position.schema.json",
+  "title": "Position",
+  "description": "Plan 04 §20. Positions are distinct from events (INV-017). A vesting position opens on TOKEN_GRANT and stays open across vest, unlock and delivery so those never collapse into one income event.",
+  "type": "object",
+  "required": ["position_id", "participant", "position_type", "opened_at", "source_events", "schema_version"],
+  "properties": {
+    "position_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "participant": { "$ref": "../common.schema.json#/$defs/id" },
+    "protocol": { "type": "string" },
+    "position_type": {
+      "enum": ["liquidity", "lending", "borrowing", "staking", "collateral", "derivative", "vesting", "other"]
+    },
+    "assets_deposited": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/assetRef" } },
+    "assets_received": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/assetRef" } },
+    "opened_at": { "$ref": "../common.schema.json#/$defs/instant" },
+    "closed_at": { "oneOf": [{ "$ref": "../common.schema.json#/$defs/instant" }, { "type": "null" }] },
+    "source_events": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/id" }, "minItems": 1 },
+    "support_status": {
+      "description": "P0 models the schema but not full LP/lending accounting; UI shows UNSUPPORTED honestly.",
+      "enum": ["SUPPORTED", "PARTIAL", "UNSUPPORTED"]
+    },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/event/technical-transaction.schema.json",
+  "title": "Technical transaction",
+  "description": "Chain-neutral normalization of an operation (plan 03 §13). This is what adapters emit — never a semantic NFT_SALE (INV-002). A failed operation is evidence, not an economic event.",
+  "type": "object",
+  "required": ["technical_tx_id", "chain", "block_time_utc", "status", "source_evidence", "schema_version"],
+  "properties": {
+    "technical_tx_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "chain": { "type": "string", "minLength": 1 },
+    "block_height": { "type": "integer", "minimum": 0 },
+    "block_time_utc": { "$ref": "../common.schema.json#/$defs/instant" },
+    "operation_hash": { "type": "string" },
+    "op_index": { "type": "integer", "minimum": 0 },
+    "from_address": { "type": "string" },
+    "to_address": { "type": "string" },
+    "entrypoint": { "type": "string" },
+    "parameter": {},
+    "token_transfers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["contract", "amount", "from", "to"],
+        "properties": {
+          "contract": { "type": "string" },
+          "token_id": { "type": "string" },
+          "amount": { "$ref": "../common.schema.json#/$defs/decimal" },
+          "from": { "type": "string" },
+          "to": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "native_transfers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["amount", "from", "to"],
+        "properties": {
+          "amount": { "$ref": "../common.schema.json#/$defs/decimal" },
+          "from": { "type": "string" },
+          "to": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "internal_operations": { "type": "array", "items": {} },
+    "fees": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["amount", "kind"],
+        "properties": {
+          "amount": { "$ref": "../common.schema.json#/$defs/decimal" },
+          "kind": { "type": "string" },
+          "payer": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "status": { "enum": ["applied", "failed", "backtracked", "skipped"] },
+    "source_evidence": {
+      "description": "Always an array (INV-016).",
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/id" },
+      "minItems": 1
+    },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

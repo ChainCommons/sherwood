@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/evidence/annotation.schema.json",
+  "title": "User annotation",
+  "description": "Plan 03. An annotation layers a correction or tag over a record without mutating imported evidence (AC-009).",
+  "type": "object",
+  "required": ["annotation_id", "target_type", "target_id", "created_at", "schema_version"],
+  "properties": {
+    "annotation_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "target_type": { "enum": ["evidence", "technical_tx", "leg", "event", "asset", "wallet", "valuation", "lot"] },
+    "target_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "note": { "type": "string" },
+    "asserted_capacity": { "$ref": "../common.schema.json#/$defs/capacity" },
+    "asserted_event_type": { "$ref": "../common.schema.json#/$defs/semanticEventType" },
+    "asserted_economic_character": { "$ref": "../common.schema.json#/$defs/economicCharacter" },
+    "status": { "$ref": "../common.schema.json#/$defs/factStatus" },
+    "author": { "type": "string" },
+    "created_at": { "$ref": "../common.schema.json#/$defs/instant" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/case/case.schema.json",
+  "title": "Public case",
+  "description": "Plan 05 §§33–34. Public information only. Known facts are separated from claimed ones, and similarities between cases are never manufactured. Social-media accounts may be recorded but are not precedent.",
+  "type": "object",
+  "required": ["case_id", "jurisdiction_id", "title", "public_information_only", "precedential_status", "sources", "schema_version"],
+  "properties": {
+    "case_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "title": { "type": "string" },
+    "public_information_only": { "const": true },
+    "decided_at": { "$ref": "../common.schema.json#/$defs/date" },
+    "forum": { "type": "string" },
+    "precedential_status": {
+      "enum": ["binding", "persuasive", "administrative", "settlement", "allegation_only", "anecdotal"]
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["statement", "status"],
+        "properties": {
+          "statement": { "type": "string" },
+          "status": { "enum": ["KNOWN", "INFERRED", "CLAIMED", "UNKNOWN"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "issues": { "type": "array", "items": { "type": "string" } },
+    "outcome": { "type": "string" },
+    "research_topics": {
+      "description": "Loose grouping only. Sharing a topic is not a claim of identical legal issues.",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sources": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" }, "minItems": 1 },
+    "review": { "$ref": "../common.schema.json#/$defs/review" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

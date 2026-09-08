@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/participant/participant.schema.json",
+  "title": "Participant",
+  "description": "Root domain object (plan 02 §9). Not 'Artist' — an individual may act as artist, collector and builder at once. Residency is never inferred from IP.",
+  "type": "object",
+  "required": ["participant_id", "participant_type", "schema_version"],
+  "properties": {
+    "participant_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "participant_type": {
+      "enum": ["individual", "company", "partnership", "association", "foundation", "trust", "DAO", "other"]
+    },
+    "display_name": { "type": "string" },
+    "tax_residencies": {
+      "description": "Missing residency does not default to anything: findings that need it resolve UNKNOWN.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["jurisdiction_id", "from", "status"],
+        "properties": {
+          "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
+          "from": { "$ref": "../common.schema.json#/$defs/date" },
+          "to": { "$ref": "../common.schema.json#/$defs/date" },
+          "status": { "enum": ["declared", "unknown"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "citizenships_if_relevant": {
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/slug" }
+    },
+    "business_activities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["description"],
+        "properties": {
+          "description": { "type": "string" },
+          "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
+          "from": { "$ref": "../common.schema.json#/$defs/date" },
+          "to": { "$ref": "../common.schema.json#/$defs/date" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "professional_statuses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": { "type": "string" },
+          "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
+          "from": { "$ref": "../common.schema.json#/$defs/date" },
+          "to": { "$ref": "../common.schema.json#/$defs/date" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "tax_registrations": {
+      "description": "Registration identifiers stay in the local workspace; only a local ref is modelled here.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "jurisdiction_id"],
+        "properties": {
+          "type": { "type": "string" },
+          "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
+          "identifier_ref": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "accounting_methods": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["jurisdiction_id", "method", "from"],
+        "properties": {
+          "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
+          "method": { "$ref": "../common.schema.json#/$defs/lotMethod" },
+          "from": { "$ref": "../common.schema.json#/$defs/date" },
+          "to": { "$ref": "../common.schema.json#/$defs/date" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "functional_currencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["currency", "from"],
+        "properties": {
+          "currency": { "$ref": "../common.schema.json#/$defs/currency" },
+          "from": { "$ref": "../common.schema.json#/$defs/date" },
+          "to": { "$ref": "../common.schema.json#/$defs/date" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "capacities": {
+      "description": "Historical capacity records. The same participant may be ARTIST on one event and COLLECTOR on another (AC-010).",
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/capacity" }
+    },
+    "wallet_ownership": {
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/id" }
+    },
+    "exchange_accounts": {
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/id" }
+    },
+    "related_entities": {
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/id" }
+    },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}

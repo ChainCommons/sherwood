@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.opencryptotaxcommons.org/event/marketplace-overlay.schema.json",
+  "overlay_id": "01J8Z3QKQ0VERAY01000000000",
+  "marketplace": "objkt",
+  "technical_tx_id": "01J8Z3QKQ0TECHTX0100000000",
+  "suggested_event_type": "NFT_SALE",
+  "sale_kind": "secondary",
+  "components": [
+    { "economic_character": "consideration", "amount": "100", "asset": { "chain": "tezos", "symbol": "XTZ" }, "beneficiary": "tz1SyntheticSellerAddress0000000000000", "role": "gross_sale_price" },
+    { "economic_character": "fee", "amount": "2.5", "asset": { "chain": "tezos", "symbol": "XTZ" }, "beneficiary": "KT1SyntheticMarketplaceContract0000000", "role": "marketplace_fee" },
+    { "economic_character": "royalty", "amount": "10", "asset": { "chain": "tezos", "symbol": "XTZ" }, "beneficiary": "tz1SyntheticCreatorAddress000000000000", "role": "creator_royalty" }
+  ],
+  "confidence": 0.95,
+  "status": "INFERRED",
+  "source_evidence": ["01J8Z3QKQ0EVDENCE010000000"],
+  "schema_version": "0.1.0"
+}

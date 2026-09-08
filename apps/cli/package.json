@@ -1,0 +1,13 @@
+{
+  "name": "@octc/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": { "octc": "./src/main.mjs" },
+  "scripts": {
+    "build": "echo \"@octc/cli: stub, no build yet\"",
+    "typecheck": "echo \"@octc/cli: stub, nothing to typecheck\"",
+    "lint": "echo \"@octc/cli: stub, nothing to lint\""
+  },
+  "dependencies": { "@octc/validate": "workspace:*" }
+}

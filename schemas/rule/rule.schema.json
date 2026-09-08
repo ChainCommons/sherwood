@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/rule/rule.schema.json",
+  "title": "Rule",
+  "description": "Plan 05 §29. A rule MUST carry sources, effective dates, published_from and an authority status (INV-006/007/008). The condition DSL is deliberately small and versioned — no general-purpose scripting inside a rule.",
+  "type": "object",
+  "required": ["rule_id", "jurisdiction_id", "tax_domain", "title", "effective_from", "published_from", "sources", "authority_status", "certainty", "review", "schema_version"],
+  "properties": {
+    "rule_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
+    "tax_domain": { "$ref": "../common.schema.json#/$defs/taxDomain" },
+    "title": { "type": "string" },
+    "applies_to": {
+      "type": "object",
+      "properties": {
+        "participant_types": { "type": "array", "items": { "type": "string" } },
+        "capacities": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/capacityEnum" } },
+        "event_types": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/semanticEventType" } },
+        "asset_types": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "dsl_version": { "type": "string" },
+    "conditions": { "$ref": "#/$defs/predicate" },
+    "effects": {
+      "type": "object",
+      "properties": {
+        "classification": { "type": "string" },
+        "valuation_rule": { "type": "string" },
+        "reporting_rule": { "$ref": "../common.schema.json#/$defs/slug" },
+        "tax_base_rule": { "type": "string" },
+        "calculation_rule": { "type": "string" },
+        "rounding_mode": { "enum": ["HALF_UP", "HALF_EVEN", "HALF_DOWN", "UP", "DOWN", "CEILING", "FLOOR"] }
+      },
+      "additionalProperties": false
+    },
+    "effective_from": { "$ref": "../common.schema.json#/$defs/date" },
+    "effective_to": { "$ref": "../common.schema.json#/$defs/date" },
+    "published_from": {
+      "description": "When the underlying guidance became publicly available. Distinct from effective_from (AC-002).",
+      "$ref": "../common.schema.json#/$defs/date"
+    },
+    "sources": {
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/slug" },
+      "minItems": 1
+    },
+    "authority_status": { "$ref": "../common.schema.json#/$defs/authorityLevel" },
+    "certainty": { "$ref": "../common.schema.json#/$defs/certainty" },
+    "supersedes": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" } },
+    "superseded_by": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" } },
+    "review": { "$ref": "../common.schema.json#/$defs/review" },
+    "test_cases": { "type": "array", "items": { "type": "string" } },
+    "interpretations": {
+      "description": "Competing readings coexist (§100, AC-011). The engine emits both rather than manufacturing consensus.",
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/slug" }
+    },
+    "notes": { "type": "string" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "predicate": {
+      "description": "DSL v0: boolean combinators over a fixed set of comparisons.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["all"],
+          "properties": { "all": { "type": "array", "items": { "$ref": "#/$defs/predicate" } } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["any"],
+          "properties": { "any": { "type": "array", "items": { "$ref": "#/$defs/predicate" } } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["not"],
+          "properties": { "not": { "$ref": "#/$defs/predicate" } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["field", "op"],
+          "properties": {
+            "field": { "type": "string", "minLength": 1 },
+            "op": { "enum": ["in", "not_in", "eq", "ne", "gt", "gte", "lt", "lte", "exists", "missing"] },
+            "value": {}
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

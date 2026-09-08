@@ -1,0 +1,38 @@
+[
+  {
+    "$schema": "https://schemas.opencryptotaxcommons.org/entity/wallet-ownership.schema.json",
+    "wallet_id": "01J8Z3QKQ0WAET010000000000",
+    "address": "tz1SyntheticSellerAddress0000000000000",
+    "chain": "tezos",
+    "ownership_class": "USER_PERSONAL",
+    "owner_participant_id": "01J8Z3QKQ0PARTCPNT01000000",
+    "related_entity_id": null,
+    "confirmation": "USER_CONFIRMED",
+    "label": "main wallet",
+    "schema_version": "0.1.0"
+  },
+  {
+    "$schema": "https://schemas.opencryptotaxcommons.org/entity/wallet-ownership.schema.json",
+    "wallet_id": "01J8Z3QKQ0WAET020000000000",
+    "address": "tz1SyntheticColdStorage000000000000000",
+    "chain": "tezos",
+    "ownership_class": "USER_PERSONAL",
+    "owner_participant_id": "01J8Z3QKQ0PARTCPNT01000000",
+    "related_entity_id": null,
+    "confirmation": "USER_CONFIRMED",
+    "label": "cold storage — transfers to here are not disposals (AC-004)",
+    "schema_version": "0.1.0"
+  },
+  {
+    "$schema": "https://schemas.opencryptotaxcommons.org/entity/wallet-ownership.schema.json",
+    "wallet_id": "01J8Z3QKQ0WAET030000000000",
+    "address": "KT1SyntheticMarketplaceContract0000000",
+    "chain": "tezos",
+    "ownership_class": "MARKETPLACE",
+    "owner_participant_id": null,
+    "related_entity_id": null,
+    "confirmation": "INFERRED",
+    "label": "marketplace contract",
+    "schema_version": "0.1.0"
+  }
+]

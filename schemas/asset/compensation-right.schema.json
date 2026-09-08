@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opencryptotaxcommons.org/asset/compensation-right.schema.json",
+  "title": "Token compensation right",
+  "description": "Plan 02 §19. Grant, vest, delivery and unlock are distinct events and MUST NOT be collapsed into a single income event.",
+  "type": "object",
+  "required": ["compensation_right_id", "right_type", "participant_id", "schema_version"],
+  "properties": {
+    "compensation_right_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "right_type": {
+      "enum": ["TOKEN_OPTION", "TOKEN_WARRANT", "RESTRICTED_TOKEN", "VESTING_TOKEN", "LOCKED_TOKEN", "SAFT_OR_SIMILAR_RIGHT", "OTHER_CONTINGENT_RIGHT"]
+    },
+    "participant_id": { "$ref": "../common.schema.json#/$defs/id" },
+    "granted_by": { "type": "string" },
+    "granted_at": { "$ref": "../common.schema.json#/$defs/date" },
+    "underlying_asset": { "$ref": "../common.schema.json#/$defs/assetRef" },
+    "quantity": { "$ref": "../common.schema.json#/$defs/decimal" },
+    "vesting_schedule": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["date", "quantity"],
+        "properties": {
+          "date": { "$ref": "../common.schema.json#/$defs/date" },
+          "quantity": { "$ref": "../common.schema.json#/$defs/decimal" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "lockup_until": { "$ref": "../common.schema.json#/$defs/date" },
+    "source_evidence": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/id" } },
+    "status": { "$ref": "../common.schema.json#/$defs/factStatus" },
+    "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
+  },
+  "additionalProperties": false
+}
