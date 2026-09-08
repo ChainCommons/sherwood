@@ -1,0 +1,25 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-bnc-champ-10-10-20-40-2019
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_MANUAL
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  BOI-BNC-CHAMP-10-10-20-40 (02/09/2019) — BNC : professions et activités
+  diverses, dont le minage d'actifs numériques
+canonical_reference: BOI-BNC-CHAMP-10-10-20-40-20190902
+original_language: fr
+publication_date: '2019-09-02'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/2824-PGP.html/identifiant=BOI-BNC-CHAMP-10-10-20-40-20190902
+content_hash: sha256:3a3ed8921478046ea514b52ebdd759697d4ac27b71ce76924d51f2b4632d1978
+superseded_by:
+  - fr-bofip-bnc-champ-10-10-20-40-2023
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. The version available in 2021. Treats mining
+  consideration as art. 92 income with a nil acquisition value where units were
+  allocated for free. It addresses proof-of-work mining; it does NOT name Tezos
+  baking, delegation rewards or staking, and MUST NOT be stretched to cover
+  them.
+schema_version: 0.1.0

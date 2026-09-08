@@ -1,0 +1,21 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-impots-form-3916
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: FORM
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  Formulaire n° 3916 / 3916-bis — Déclaration par un résident d'un compte ouvert
+  à l'étranger, y compris un compte d'actifs numériques
+canonical_reference: Formulaire 3916-3916 bis, CERFA n° 11916.
+original_language: fr
+retrieved_at: '2026-09-08'
+canonical_url: https://www.impots.gouv.fr/formulaire/3916/declaration-par-un-resident-dun-compte-letranger-ou-dun-contrat-de-capitalisation-o
+content_hash: sha256:d3e669bddb119b0cff9f7d7e08a0e6cf00b3be92f136d92bb2c7756bc14f0982
+licence: Not verified.
+notes: >-
+  redistribution: extract. Implements CGI art. 1649 bis C. A self-custodied
+  wallet is not, on the sources indexed here, a "compte ouvert auprès d'une
+  entreprise, personne morale, institution ou organisme" — that boundary is a
+  live question for on-chain users and MUST stay UNSETTLED until sourced.
+schema_version: 0.1.0

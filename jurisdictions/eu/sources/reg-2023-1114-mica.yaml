@@ -1,0 +1,27 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: eu-reg-2023-1114-mica
+jurisdiction_id: eu
+issuing_authority: European Parliament and Council of the European Union
+source_type: REGULATION
+authority_level: BINDING_LEGISLATION
+title: >-
+  Regulation (EU) 2023/1114 of 31 May 2023 on markets in crypto-assets (MiCA)
+canonical_reference: Regulation (EU) 2023/1114, OJ L 150, 9.6.2023.
+original_language: en
+publication_date: '2023-06-09'
+retrieved_at: '2026-09-08'
+canonical_url: https://eur-lex.europa.eu/eli/reg/2023/1114/oj/eng
+permitted_extract: >-
+  "This Regulation does not apply to crypto-assets that are unique and not
+  fungible with other crypto-assets." (art. 2(3))
+licence: >-
+  © European Union. Reuse authorised under Commission Decision 2011/833/EU,
+  with acknowledgement of source.
+notes: >-
+  redistribution: extract. Not a tax instrument, but France now defines its tax
+  perimeter by reference to it: CGI art. 150 VH bis (from 2026-06-28) covers
+  crypto-assets in scope of MiCA, and CGI art. 150 VH ter covers the unique,
+  non-fungible ones art. 2(3) excludes. Recitals treat issuance in a large
+  series or collection as an indicator of fungibility, so "it is an NFT" is not
+  by itself a classification — this is a facts question, not a rule.
+schema_version: 0.1.0

@@ -1,0 +1,24 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: eu-cjeu-c-264-14-hedqvist
+jurisdiction_id: eu
+issuing_authority: Court of Justice of the European Union
+source_type: COURT_DECISION
+authority_level: BINDING_DOCTRINE
+title: >-
+  CJEU, 22 October 2015, Skatteverket v David Hedqvist, C-264/14
+canonical_reference: Case C-264/14, ECLI:EU:C:2015:718.
+original_language: en
+publication_date: '2015-10-22'
+retrieved_at: '2026-09-08'
+canonical_url: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex:62014CJ0264
+licence: >-
+  © European Union. Reuse authorised under Commission Decision 2011/833/EU,
+  with acknowledgement of source.
+notes: >-
+  redistribution: extract. Exchanging a traditional currency for bitcoin and
+  back is a supply of services exempt under the currency limb of art. 135(1)(e)
+  of the VAT Directive. It is about a fungible payment token exchanged for
+  currency. It does NOT decide the VAT treatment of an NFT, a mint, or a
+  royalty stream, and the 2024 French rescrit expressly puts NFTs outside the
+  financial-operations exemption.
+schema_version: 0.1.0

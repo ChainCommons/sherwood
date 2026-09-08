@@ -1,0 +1,20 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-impots-actu-comptes-actifs-numeriques-etranger
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_NOTICE
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  impots.gouv.fr — Modalités de déclaration des comptes d'actifs numériques
+  détenus à l'étranger
+canonical_reference: impots.gouv.fr, actualité.
+original_language: fr
+retrieved_at: '2026-09-08'
+canonical_url: https://www.impots.gouv.fr/actualite/modalites-de-declaration-des-comptes-dactifs-numeriques-detenus-letranger
+content_hash: sha256:d46bcc5e85bc4a48a40f1b2ed880ee2426ef48f1015a0f3df4fc46e1b96ea029
+licence: Not verified.
+notes: >-
+  redistribution: extract. NO publication_date recorded: the notice carries no
+  date we could read from the page, so its as-of availability is UNKNOWN. States
+  the 750 €/125 € penalties, capped at 10 000 € per declaration.
+schema_version: 0.1.0

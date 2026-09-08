@@ -1,0 +1,23 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-bic-champ-60-50-2019
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_MANUAL
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  BOI-BIC-CHAMP-60-50 (02/09/2019) — BIC : achat-vente d'actifs numériques à
+  titre habituel
+canonical_reference: BOI-BIC-CHAMP-60-50-20190902
+original_language: fr
+publication_date: '2019-09-02'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/4755-PGP.html/identifiant=BOI-BIC-CHAMP-60-50-20190902
+content_hash: sha256:646280a3229ab87211b491466698a5cc3907b3d90e3dc4d3110e59a54d9168bd
+superseded_by:
+  - fr-bofip-bic-champ-60-50-2023
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. The version available in 2021, when habitual buying
+  and selling was BIC. An as-of query for a 2021 trader must land here, not on
+  the post-2023 BNC treatment.
+schema_version: 0.1.0

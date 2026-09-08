@@ -1,0 +1,23 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-impots-form-2086
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: FORM
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  Formulaire n° 2086 — Déclaration des plus ou moins-values de cessions d'actifs
+  numériques (CERFA 16043)
+canonical_reference: Formulaire 2086, CERFA n° 16043.
+original_language: fr
+retrieved_at: '2026-09-08'
+canonical_url: https://www.impots.gouv.fr/formulaire/2086/declaration-des-plus-ou-moins-values-de-cessions-dactifs-numeriques
+content_hash: sha256:1ec0e80915cbece896e56d82e5c4fd0417e2e9dc29c49172b33b358343b8244e
+licence: Not verified.
+notes: >-
+  redistribution: extract. The landing page lists one PDF per income year
+  (16043*03 for 2021 … 16043*07 for 2025). The per-year PDFs are the real as-of
+  artefacts and are NOT yet captured — tracked in RESEARCH.md as an open item.
+  Only capture them per year; a single "latest" PDF cannot answer a historical
+  question. The form's line structure is the concrete shape a P0 export must
+  produce.
+schema_version: 0.1.0

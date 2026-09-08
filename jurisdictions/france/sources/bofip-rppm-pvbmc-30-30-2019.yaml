@@ -1,0 +1,24 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-rppm-pvbmc-30-30-2019
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_MANUAL
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  BOI-RPPM-PVBMC-30-30 (02/09/2019) — Modalités d'imposition et obligations
+  déclaratives
+canonical_reference: BOI-RPPM-PVBMC-30-30-20190902
+original_language: fr
+publication_date: '2019-09-02'
+effective_from: '2019-01-01'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/11969-PGP.html/identifiant=BOI-RPPM-PVBMC-30-30-20190902
+content_hash: sha256:861a4ba4a54eb1d725a685cfa735b4c0f36ecc0ab3f624c49e63d5992577a189
+superseded_by:
+  - fr-bofip-rppm-pvbmc-30-30-2024
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. The version available in 2021. It knows nothing of
+  the option for the barème progressif, which is the whole point of keeping it:
+  an as-of query for 2021 must return this text, not the 2024 one.
+schema_version: 0.1.0

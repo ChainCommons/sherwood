@@ -1,0 +1,23 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-bic-champ-60-50-2023
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_MANUAL
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  BOI-BIC-CHAMP-60-50 (28/06/2023) — BIC : achat-vente d'actifs numériques
+  exercé à titre professionnel
+canonical_reference: BOI-BIC-CHAMP-60-50-20230628
+original_language: fr
+publication_date: '2023-06-28'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/4755-PGP.html/identifiant=BOI-BIC-CHAMP-60-50-20230628
+content_hash: sha256:c40d114f3b8a2cc1b3217a369e84cc0fb6a0b6b1623142c91d6076ba09b63718
+supersedes:
+  - fr-bofip-bic-champ-60-50-2019
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. Post-2023 boundary: BIC now covers the activity
+  carried on as an actual profession, while the 'professional-like' test sits in
+  art. 92 (BNC). The BIC/BNC line is period-sensitive and MUST NOT be flattened.
+schema_version: 0.1.0

@@ -1,0 +1,20 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-cgi-annexe3-98-a
+jurisdiction_id: france
+issuing_authority: République française (pouvoir réglementaire)
+source_type: REGULATION
+authority_level: BINDING_LEGISLATION
+title: >-
+  Code général des impôts, annexe III, article 98 A — définition des œuvres
+  d'art pour la TVA
+canonical_reference: CGI, ann. III, art. 98 A.
+original_language: fr
+retrieved_at: '2026-09-08'
+canonical_url: https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006298775
+licence: Licence Ouverte 2.0 (Etalab) for the LEGI open-data distribution.
+notes: >-
+  redistribution: extract. The list is closed and enumerates physical media
+  (tableaux, gravures, sculptures, photographies signées et numérotées dans la
+  limite de 30 exemplaires, etc.). Nothing in it addresses a purely digital
+  work, which is why the reduced 5,5 % rate cannot be asserted for an NFT.
+schema_version: 0.1.0

@@ -1,0 +1,23 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-bnc-champ-10-10-20-40-2023
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_MANUAL
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  BOI-BNC-CHAMP-10-10-20-40 (28/06/2023) — BNC : professions et activités
+  diverses
+canonical_reference: BOI-BNC-CHAMP-10-10-20-40-20230628
+original_language: fr
+publication_date: '2023-06-28'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/2824-PGP.html/identifiant=BOI-BNC-CHAMP-10-10-20-40-20230628
+content_hash: sha256:aa7df53fae65b786c1b8de917d47e213a9c5bd0aedc2f906fac22b838b84b0f2
+supersedes:
+  - fr-bofip-bnc-champ-10-10-20-40-2019
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. Revised after the loi de finances pour 2022, art. 70
+  moved the 'conditions analogues à un professionnel' test into art. 92 for
+  disposals from 2023-01-01.
+schema_version: 0.1.0

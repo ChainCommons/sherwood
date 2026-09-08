@@ -1,0 +1,25 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-impots-faq-cessions-actifs-numeriques
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_FAQ
+authority_level: OFFICIAL_FAQ
+title: >-
+  impots.gouv.fr — Comment déclarer les plus ou moins-values sur cessions
+  d'actifs numériques (cryptomonnaies…) ?
+canonical_reference: >-
+  impots.gouv.fr, rubrique Particulier / Questions.
+original_language: fr
+retrieved_at: '2026-09-08'
+canonical_url: https://www.impots.gouv.fr/particulier/questions/comment-declarer-les-plus-ou-moins-values-sur-cessions-dactifs-numeriques
+content_hash: sha256:f864678f7cb880e557f1751b81ea1e94e27d9ac0dcbe843b5e30ba555900eae1
+licence: >-
+  Not verified. impots.gouv.fr editorial pages are not part of the BOFiP
+  open-data distribution.
+notes: >-
+  redistribution: extract. NO publication_date: the page carries no visible
+  publication or revision date, so its as-of availability is UNKNOWN and it MUST
+  NOT be used to answer a historical query. Lowest authority tier in this pack —
+  an FAQ is not opposable doctrine. Restates the 305 € annual disposal-proceeds
+  exemption and the 2086 filing route.
+schema_version: 0.1.0

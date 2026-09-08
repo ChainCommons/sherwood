@@ -1,0 +1,24 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: eu-dir-2023-2226-dac8
+jurisdiction_id: eu
+issuing_authority: Council of the European Union
+source_type: REGULATION
+authority_level: BINDING_LEGISLATION
+title: >-
+  Council Directive (EU) 2023/2226 of 17 October 2023 amending Directive
+  2011/16/EU on administrative cooperation in the field of taxation (DAC8)
+canonical_reference: Council Directive (EU) 2023/2226.
+original_language: en
+publication_date: '2023-10-24'
+retrieved_at: '2026-09-08'
+canonical_url: https://eur-lex.europa.eu/eli/dir/2023/2226/oj/eng
+licence: >-
+  © European Union. Reuse authorised under Commission Decision 2011/833/EU,
+  with acknowledgement of source.
+notes: >-
+  redistribution: extract. Brings the OECD Crypto-Asset Reporting Framework
+  into EU administrative cooperation. Reporting-side only: it changes what
+  service providers report about a taxpayer, not how the taxpayer is taxed.
+  publication_date is the OJ date reported by EUR-Lex search and was not read
+  off the document itself.
+schema_version: 0.1.0

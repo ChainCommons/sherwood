@@ -1,0 +1,21 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-cgi-150-ua
+jurisdiction_id: france
+issuing_authority: République française (Parlement)
+source_type: STATUTE
+authority_level: BINDING_LEGISLATION
+title: >-
+  Code général des impôts, article 150 UA — plus-values de cession de biens
+  meubles
+canonical_reference: CGI, art. 150 UA.
+original_language: fr
+retrieved_at: '2026-09-08'
+canonical_url: https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037988296
+licence: Licence Ouverte 2.0 (Etalab) for the LEGI open-data distribution.
+notes: >-
+  redistribution: extract. Indexed because it is the regime the Conseil d'État
+  applied to occasional bitcoin disposals before art. 150 VH bis existed, and
+  because art. 150 VH ter can route a non-fungible crypto-asset back to the
+  regime of the underlying good. publication_date is not recorded: this article
+  predates the crypto question and the relevant date is version-specific.
+schema_version: 0.1.0

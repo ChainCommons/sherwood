@@ -1,0 +1,19 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: fr-bofip-rppm-pvbmc-30
+jurisdiction_id: france
+issuing_authority: Direction générale des finances publiques (DGFiP)
+source_type: OFFICIAL_MANUAL
+authority_level: ADMINISTRATIVE_GUIDANCE
+title: >-
+  BOI-RPPM-PVBMC-30 — Cession d'actifs numériques à titre occasionnel (division)
+canonical_reference: BOI-RPPM-PVBMC-30-20240423
+original_language: fr
+publication_date: '2024-04-23'
+retrieved_at: '2026-09-08'
+canonical_url: https://bofip.impots.gouv.fr/bofip/11966-PGP.html/identifiant=BOI-RPPM-PVBMC-30-20240423
+content_hash: sha256:df466363315c8d88ee14afb430dca9f7d11bd38b6612feb9615a99c2bd6791e3
+licence: Licence Ouverte 2.0 (Etalab) for the BOFiP open-data distribution.
+notes: >-
+  redistribution: extract. Division head for the occasional-disposal regime; the
+  operative content is in the -10, -20 and -30 subdivisions.
+schema_version: 0.1.0

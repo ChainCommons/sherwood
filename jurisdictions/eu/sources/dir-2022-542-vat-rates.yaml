@@ -1,0 +1,26 @@
+$schema: https://schemas.opencryptotaxcommons.org/source/source.schema.json
+source_id: eu-dir-2022-542-vat-rates
+jurisdiction_id: eu
+issuing_authority: Council of the European Union
+source_type: REGULATION
+authority_level: BINDING_LEGISLATION
+title: >-
+  Council Directive (EU) 2022/542 of 5 April 2022 amending Directives
+  2006/112/EC and (EU) 2020/285 as regards rates of value added tax
+canonical_reference: Council Directive (EU) 2022/542.
+original_language: en
+publication_date: '2022-04-06'
+retrieved_at: '2026-09-08'
+canonical_url: https://eur-lex.europa.eu/eli/dir/2022/542/oj/eng
+licence: >-
+  © European Union. Reuse authorised under Commission Decision 2011/833/EU,
+  with acknowledgement of source.
+notes: >-
+  redistribution: extract. Transposed in France by the loi n° 2023-1322 du
+  29 décembre 2023 de finances pour 2024, art. 83, which generalised the 5,5 %
+  reduced rate on supplies of works of art from 2025-01-01. Whether a digital
+  work qualifies as an œuvre d'art turns on CGI ann. III art. 98 A, whose list
+  is physical; the reduced rate MUST NOT be asserted for an NFT.
+  publication_date is the OJ date reported by EUR-Lex search and was not read
+  off the document itself.
+schema_version: 0.1.0
