@@ -83,13 +83,16 @@ K and D are independent: France YAML vs TzKT can proceed in parallel once schema
 ## Phase timeline
 
 **Phase 0 — Repo + schemas + CI**  
-Scaffold, governance docs, all JSON Schemas, validators, empty jurisdiction skeletons, invariant import tests (no france in engine).
+Scaffold, governance docs, LICENSE, JSON Schemas (authored, not all frozen), validators, live-op spike (TzKT/OBJKT/HEN), inter-lane contract fixtures, empty jurisdiction skeletons, invariant import tests (no france in engine).
+
+**P0-alpha — Vertical slice**  
+One real marketplace sale through legs, valuation-or-miss, France as-of or UNKNOWN, TOOL-003 + TOOL-010. First external feedback. Does not replace §102 P0.
 
 **Phase 1 — Deterministic engines**  
 Evidence store, event-engine with synthetic marketplace JSON, source-registry, rules-engine DSL, valuation with mock provider, lots, findings, snapshots. AC-001–006, 009–012 on synthetics.
 
 **Phase 2 — Tezos proving ground**  
-TzKT, OBJKT, baking, CSV, XTZ/EUR, reconciliation. AC-015. Incremental ingest.
+TzKT, OBJKT **and HEN/Teia**, baking, CSV, XTZ/EUR, reconciliation. AC-015. Incremental ingest.
 
 **Phase 3 — France/EU + Tax Tools**  
 Pack v0.1, search, time machine, rule diff, tools 001–013, homepage. AC-013.

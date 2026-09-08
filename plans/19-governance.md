@@ -48,13 +48,13 @@ Third-party source redistribution rights MUST be respected.
 
 Prefer: structured metadata; source links; hashes; permitted extracts — over unnecessary republishing.
 
-P0 proposal (implementation choice):
+Decided (do this before any France YAML PR):
 
-- Code: Apache-2.0
-- Original project prose (explanations): CC-BY-4.0
-- Official source texts: not re-licensed; store metadata + hash + URL + archive link + short quotation where fair dealing/quotation rights allow; `redistribution: forbidden | extract | full` field on sources
+- Code: Apache-2.0 — root `LICENSE`
+- Original project prose: CC-BY-4.0 — `LICENSE-CONTENT.md`
+- Official source texts: not re-licensed; metadata + hash + URL + archive; fuller mirror only if Licence Ouverte (or equivalent) allows; `redistribution: forbidden | extract | full`
 
-`DISCLAIMER.md`: not a tax adviser; no guarantee; UNKNOWN is expected.
+`DISCLAIMER.md` is in the tree. It is not a substitute for counsel on the professional review pack.
 
 ## Implementation tasks
 

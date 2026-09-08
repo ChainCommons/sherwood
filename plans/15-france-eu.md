@@ -95,7 +95,9 @@ France VAT rules `references: [eu:vat:...]` rather than copy-paste.
 
 A mature jurisdiction SHOULD have primary maintainer, backup maintainer, qualified local reviewer.
 
-P0: list maintainers as TBD if needed; `review_status: COMMUNITY_DRAFT`; UI MUST say expert review is absent.
+P0: `review_status: COMMUNITY_DRAFT` until a **named** qualified French reviewer is recorded; UI MUST say expert review is absent. Recruiting that reviewer is a first-class task, not a footnote. COMMUNITY_DRAFT is an honest ship state, not a fake “verified” badge.
+
+Seek counsel (not just UI copy) before shipping a professional review pack with findings and basis tables — tax advice in France may be a regulated activity. The public source index is the safer surface; the pack sits closer to the line.
 
 Legal disagreement (§100): competing interpretations coexist; do not manufacture consensus. Use this for known French crypto/NFT controversies rather than picking a winner.
 
@@ -105,7 +107,7 @@ Each rule PR: jurisdiction, tax domain, event/capacity applicability, affected p
 
 ## Implementation tasks
 
-1. Source research log (`jurisdictions/france/RESEARCH.md`) listing official URLs and retrieval dates — not blog recaps as authority.
+1. Source research log (`jurisdictions/france/RESEARCH.md`) listing official URLs and retrieval dates — not blog recaps as authority. Include **P0-0-11**: Wayback/official 2021 coverage and Licence Ouverte (full mirror if lawful; otherwise extract + hash + archive). Time Machine must not invent a 2021 page we cannot produce.
 2. Index 15–40 real sources with dates (statute, admin guidance, FAQ) as metadata.
 3. Human explanations for artist NFT primary/secondary/royalty, collector disposal, baking rewards, compensation-in-crypto — each with “what was published by year”.
 4. Machine rules only for the narrow set above + tests (§86 matrix).
@@ -117,4 +119,4 @@ Each rule PR: jurisdiction, tax domain, event/capacity applicability, affected p
 
 - Zero rules without `sources[]`
 - Original language preserved (French sources stay French); translations labeled (plan 18)
-- No wholesale republication of CGI/BOFiP; permitted short extracts + links + hashes
+- Default: no wholesale republication of CGI/BOFiP; permitted extracts + links + hashes. **Override** if Licence Ouverte (or equivalent) allows a dated mirror — then prefer the mirror. Record `redistribution: full | extract | forbidden` on each source.

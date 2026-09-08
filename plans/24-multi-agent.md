@@ -172,10 +172,18 @@ Cursor / Claude Code / Codex / Gemini CLI all work as lane agents if they respec
 | Interface drift | Frozen schemas; RFC for changes |
 | Agents idle waiting on Steward | Steward’s job in Wave 1+ is merge/RFC, not features |
 
-## 9. Minimum viable multi-agent (if you only have two providers)
+## 9. Default orchestration (until there are many humans)
 
-- Provider A = Steward + Events + ValLots (sequential in one thread is OK)
-- Provider B = France YAML + Reviewer on A’s PRs
-- After Wave 1: A does Tezos, B does Tools UI, they review each other
+Use **this** section, not the twelve-lane wave chart, as the operating plan:
 
-That is already most of the parallelism that matters (code vs sourced legal data).
+- Provider A = Steward + events/valuation slice (can be sequential)
+- Provider B = France YAML + Reviewer on A’s PRs (different provider)
+- After P0-alpha: A does Tezos/HEN, B does Time Machine content; they review each other
+
+Keep directory ownership and RFCs for *shared contract fixtures*. Do not freeze every internal schema.
+
+**GoRunMe** is an optional overlay for donated-inference experiments. Sherwood Wave 0 / P0-alpha MUST proceed if GoRunMe is down. Do not block TypeScript on claim/lease infrastructure.
+
+## 10. Minimum viable two-provider split
+
+Same as §9. That is already most of the parallelism that matters (code vs sourced legal data).

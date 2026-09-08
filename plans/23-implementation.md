@@ -14,7 +14,7 @@ This is the execution schedule for the MASTER plan. Individual how-to remains in
 |---|---|
 | Start | 2026-09-08 |
 | Team | 2 engineers + 1 France/source researcher (can be one person wearing two hats; then add ~6 weeks) |
-| Cadence | weekly integration; schemas frozen end of Phase 0 |
+| Cadence | weekly integration; **inter-lane contract fixtures** frozen after a live-op spike; internal schemas stay versioned through Wave 2 |
 | P0 target | **2027-02-20** (24 calendar weeks, including 2-week hardening) |
 | Parallelism | France research (K) starts the day schemas exist, in parallel with engines and Tezos |
 
@@ -44,8 +44,9 @@ gantt
 
 | Phase | Weeks | Dates | Outcome |
 |---|---|---|---|
-| **0** Repo, schemas, CI | W1–W2 | 2026-09-08 → 2026-09-21 | Monorepo builds; all JSON Schemas; governance docs; CI green on empty packs |
-| **1** Deterministic core | W3–W7 | 2026-09-22 → 2026-10-26 | Engines on synthetic data; several ACs green without chain I/O |
+| **0** Repo, schemas, CI | W1–W2 | 2026-09-08 → 2026-09-21 | Monorepo builds; schemas authored; **contracts** frozen only after TzKT/OBJKT/HEN spike; LICENSE in tree |
+| **alpha** Vertical slice | W3–W8 | overlap with 1–2 | One real HEN or OBJKT sale → legs → value or miss → France as-of or UNKNOWN; TOOL-003 + TOOL-010 only |
+| **1** Deterministic core | W3–W7 | 2026-09-22 → 2026-10-26 | Engines on synthetic **and** spiked live JSON |
 | **2** Tezos proving ground | W8–W11 | 2026-10-27 → 2026-11-23 | Live wallet import, OBJKT decode, XTZ/EUR, AC-015 |
 | **3** Knowledge + Tax Tools | W3–W12 research; W12–W16 tools | researcher from 2026-09-22; tools 2026-11-24 → 2026-12-28 | France v0.1 + EU stub; TOOL-001–013; AC-013 |
 | **4** Workspace, export, AI | W17–W21 | 2026-12-29 → 2027-02-01 | Local workspace, pack export, AI prototype |
@@ -73,8 +74,21 @@ P0 items: 1, 2, 3, 53.
 - [ ] **P0-0-08** CI: Ajv validate, unique IDs, temporal ranges, internal links, secret scan, invariant “engine must not import france/tezos”. → [16](16-repository-ci.md), [01](01-product-philosophy-constraints.md)
 - [ ] **P0-0-09** LEVEL 0 jurisdiction skeletons (`eu`, `france`, placeholders). → [05](05-knowledge-commons.md), [16](16-repository-ci.md)
 - [ ] **P0-0-10** `docs/invariants.md` mapping INV-001–020 to future tests. → [01](01-product-philosophy-constraints.md)
+- [ ] **P0-0-11** Archive spike: Wayback/official coverage of BOFiP (and related) for 2021; Licence Ouverte mirror vs extract-only. → [15](15-france-eu.md)
+- [ ] **P0-0-12** Persist 3–5 real TzKT operations (OBJKT + HEN/Teia if available) as `tests/adapters/` fixtures before treating contract JSON as stable. → [07](07-adapters-import-reconciliation.md)
 
-**Phase 0 exit:** `pnpm validate` and `pnpm test` pass; schemas frozen without a version bump process (breaking changes need explicit schema_version).
+**Phase 0 exit:** `pnpm validate` and `pnpm test` pass; LICENSE + DISCLAIMER present; **contract fixtures** exist. Internal JSON Schemas may still change (`schema_version` bump, no Steward RFC theater for every field).
+
+### P0-alpha — first external proof (not a replacement for §102)
+
+Target: ~6 weeks. Spec P0 items stay the later gate.
+
+- [ ] **P0-A-01** Decode one real marketplace sale (prefer HEN/Teia 2021 if fixtures exist, else OBJKT) to legs. No tax types. → [07](07-adapters-import-reconciliation.md), [03](03-evidence-economic-events.md)
+- [ ] **P0-A-02** Historical XTZ/EUR or explicit miss. → [06](06-valuation.md)
+- [ ] **P0-A-03** France as-of sources for that date or honest “no contemporaneous capture”. → [15](15-france-eu.md), [05](05-knowledge-commons.md)
+- [ ] **P0-A-04** TOOL-003 Tezos Transaction Explainer on that op. → [08](08-tax-tools.md)
+- [ ] **P0-A-05** TOOL-010 Guidance Time Machine for France / NFT artist / that year. → [08](08-tax-tools.md)
+- [ ] **P0-A-06** Put the pair in front of a French accountant or qualified reviewer; record what broke.
 
 ### Phase 1 — W3–W7 — Deterministic engines
 

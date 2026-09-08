@@ -72,10 +72,14 @@ timestamp, transaction hashes
 
 Generic blockchain evidence MUST remain available underneath.
 
-Implement:
+Implement (P0):
 
 - `adapters/marketplaces/objkt` — primary ask/fulfill, secondary, royalties, protocol fees
-- Optional stretch: Teia, fxhash (same interface)
+- `adapters/marketplaces/hen` / Teia — historical hic et nunc and Teia fulfill paths (2021 artist activity largely lives here, not on OBJKT)
+
+P1 unless the Wave 0 spike makes them cheap: fxhash, Versum.
+
+The primary demo MUST state which marketplaces it actually decodes. Do not imply full 2021 Tezos-art coverage from OBJKT alone.
 
 ```ts
 interface MarketplaceAdapter {
