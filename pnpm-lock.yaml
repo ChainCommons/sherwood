@@ -35,6 +35,21 @@ importers:
         specifier: ^10.4.3
         version: 10.6.0
 
+  packages/rules-engine:
+    dependencies:
+      '@octc/core':
+        specifier: workspace:*
+        version: link:../core
+      '@octc/source-registry':
+        specifier: workspace:*
+        version: link:../source-registry
+
+  packages/source-registry:
+    dependencies:
+      '@octc/core':
+        specifier: workspace:*
+        version: link:../core
+
   packages/validate:
     dependencies:
       '@octc/core':
@@ -49,6 +64,8 @@ importers:
       yaml:
         specifier: ^2.6.0
         version: 2.9.0
+
+  packages/valuation: {}
 
 packages:
 
