@@ -29,6 +29,10 @@ Both must pass before you open a pull request.
 
 ## Contributing code
 
+- Commit messages describe the change only. Do not name AI
+  providers, models, or agents, and do not add `Co-authored-by` trailers
+  for them. `.githooks/commit-msg` rejects those messages. After clone,
+  hooks are enabled by `pnpm install` (`prepare` sets `core.hooksPath`).
 - One TODO from [plan 23](plans/23-implementation.md) per pull request where
   possible. Name it in the title: `Implements P0-1-04`.
 - Branch as `agent/<lane>/<todo-id>` or `<your-handle>/<short-description>`.

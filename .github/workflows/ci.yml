@@ -20,6 +20,22 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Commit messages
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ] && [ -n "$BASE_REF" ]; then
+            bash scripts/check-commit-messages.sh "origin/${BASE_REF}..HEAD"
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            bash scripts/check-commit-messages.sh "${BEFORE}..HEAD"
+          else
+            bash scripts/check-commit-messages.sh
+          fi
 
       - uses: pnpm/action-setup@v4
         with:

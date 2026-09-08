@@ -1,0 +1,17 @@
+#!/bin/sh
+# Strip AI/tool trailers before the commit is created.
+# commit-msg still rejects if anything remains.
+
+msg="${1:-}"
+[ -n "$msg" ] && [ -f "$msg" ] || exit 0
+
+tmp=$(mktemp)
+# Drop Co-authored-by / session / generated-by lines that name tools.
+grep -viE \
+  '^(co-authored-by:.*(claude|cursor|anthropic|openai|codex|copilot)|claude-session:|generated (by|with).*(claude|cursor|codex|copilot|gpt|anthropic)|made-with:)' \
+  "$msg" > "$tmp" || true
+# Collapse leftover trailing blank lines
+# (portable: no GNU sed -zi)
+awk 'BEGIN{n=0} {lines[++n]=$0} END{while(n>0 && lines[n]=="") n--; for(i=1;i<=n;i++) print lines[i]; if(n>0) print ""}' "$tmp" > "$msg"
+rm -f "$tmp"
+exit 0

@@ -11,7 +11,8 @@
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit && turbo run typecheck",
     "lint": "turbo run lint",
-    "validate": "node packages/validate/bin/octc-validate.mjs"
+    "validate": "node packages/validate/bin/octc-validate.mjs",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {
     "@types/node": "^22.7.5",
