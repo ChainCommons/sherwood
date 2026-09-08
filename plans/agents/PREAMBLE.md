@@ -26,3 +26,4 @@ You are implementing **Open Crypto Tax Commons (Project Sherwood)**.
 - Add tests next to the change
 - Do not touch `pnpm-lock.yaml` or root `package.json` unless you are Steward
 - Do not mix jurisdiction YAML and engine TypeScript in one PR
+- Commit messages: the change only. Never name Claude, Cursor, Codex, GPT, Anthropic, OpenAI, Copilot, or add `Co-authored-by` / `Claude-Session` trailers. The hook `.githooks/commit-msg` rejects those. Do not use `--no-verify`.

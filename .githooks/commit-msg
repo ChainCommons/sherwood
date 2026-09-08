@@ -1,0 +1,24 @@
+#!/bin/sh
+# Reject commit messages that name AI providers, models, agents, or tooling.
+# Agents follow AGENTS.md / CLAUDE.md; this hook is the hard stop.
+
+msg="$1"
+if grep -qiE \
+  'co-authored-by:.*(claude|cursor|anthropic|openai|codex|copilot)|claude-session:|generated (by|with).*(claude|cursor|codex|copilot|gpt|anthropic)|cursoragent@|noreply@anthropic|openai\.com' \
+  "$msg"
+then
+  echo "commit-msg: refuse this message — it names an AI provider, model, or agent." >&2
+  echo "Write a human message about the change only. No Co-authored-by trailers." >&2
+  exit 1
+fi
+
+if grep -qiE \
+  '(^|[[:space:]])(claude|cursor|codex|anthropic|openai|copilot|chatgpt|gemini)([[:space:]]|:)' \
+  "$msg"
+then
+  echo "commit-msg: refuse this message — it names an AI provider, model, or agent." >&2
+  echo "Write a human message about the change only." >&2
+  exit 1
+fi
+
+exit 0

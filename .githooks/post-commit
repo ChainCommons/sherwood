@@ -1,0 +1,31 @@
+#!/bin/sh
+# If a commit landed with a forbidden message (e.g. --no-verify), rewrite HEAD
+# in place so a following push cannot carry the trailer.
+
+body=$(git log -1 --format='%B')
+printf '%s\n' "$body" | grep -qiE \
+  'co-authored-by:.*(claude|cursor|anthropic|openai|codex|copilot)|claude-session:|generated (by|with).*(claude|cursor|codex|copilot|gpt|anthropic)|cursoragent@|noreply@anthropic|(^|[[:space:]])(claude|cursor|codex|anthropic|openai|copilot|chatgpt|gemini)([[:space:]]|:)' \
+  || exit 0
+
+cleaned=$(printf '%s\n' "$body" | grep -viE \
+  'co-authored-by:|claude-session:|generated (by|with)|made-with:|cursoragent@|noreply@anthropic|(^|[[:space:]])(claude|cursor|codex|anthropic|openai|copilot|chatgpt|gemini)([[:space:]]|:)' \
+  | awk 'BEGIN{n=0} {lines[++n]=$0} END{while(n>0 && lines[n]=="") n--; for(i=1;i<=n;i++) print lines[i]}')
+[ -n "$cleaned" ] || cleaned="Update"
+
+tree=$(git rev-parse 'HEAD^{tree}')
+parents=""
+for p in $(git rev-parse 'HEAD^@'); do
+  parents="$parents -p $p"
+done
+
+export GIT_AUTHOR_NAME="$(git log -1 --format='%an')"
+export GIT_AUTHOR_EMAIL="$(git log -1 --format='%ae')"
+export GIT_AUTHOR_DATE="$(git log -1 --format='%aD')"
+export GIT_COMMITTER_NAME="$(git log -1 --format='%cn')"
+export GIT_COMMITTER_EMAIL="$(git log -1 --format='%ce')"
+
+# shellcheck disable=SC2086
+new=$(printf '%s\n' "$cleaned" | git commit-tree "$tree" $parents)
+git update-ref HEAD "$new"
+echo "post-commit: rewrote HEAD to drop a forbidden commit message ($new)." >&2
+exit 0
