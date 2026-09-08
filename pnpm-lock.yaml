@@ -21,6 +21,14 @@ importers:
         specifier: ^2.1.3
         version: 2.1.9(@types/node@22.20.1)
 
+  apps/cli:
+    dependencies:
+      '@octc/validate':
+        specifier: workspace:*
+        version: link:../../packages/validate
+
+  apps/web: {}
+
   packages/core:
     dependencies:
       decimal.js:
