@@ -18,6 +18,10 @@
     "content_hash": { "$ref": "../common.schema.json#/$defs/contentHash" },
     "predecessor": { "oneOf": [{ "$ref": "../common.schema.json#/$defs/slug" }, { "type": "null" }] },
     "successor": { "oneOf": [{ "$ref": "../common.schema.json#/$defs/slug" }, { "type": "null" }] },
+    "redistribution": {
+      "description": "Overrides the source's posture for this capture, so one archived version can differ from its source. Absent means the source's posture applies.",
+      "enum": ["full", "extract", "forbidden", "unknown"]
+    },
     "permitted_extract": { "type": "string" },
     "extracted_facts": { "type": "object" },
     "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }

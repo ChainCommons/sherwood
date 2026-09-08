@@ -51,6 +51,44 @@ describe('unique-ids', () => {
     write('jurisdictions/france/rules/b.yaml', 'rule_id: r2\njurisdiction_id: france\n')
     expect(uniqueIds.run({ root: sandbox })).toEqual([])
   })
+
+  it('does not mistake the source_id foreign key on a version for a declaration', () => {
+    // Plan 05 §28: historical text survives as dated versions of one source.
+    // Counting the back-reference as a declaration made that unrepresentable.
+    write('jurisdictions/france/sources/s.yaml', 'source_id: fr-bofip-x\njurisdiction_id: france\n')
+    write(
+      'jurisdictions/france/versions/v1.yaml',
+      'source_version_id: fr-bofip-x-2019\nsource_id: fr-bofip-x\nretrieved_at: "2019-09-02"\n'
+    )
+    write(
+      'jurisdictions/france/versions/v2.yaml',
+      'source_version_id: fr-bofip-x-2024\nsource_id: fr-bofip-x\nretrieved_at: "2024-04-23"\n'
+    )
+    expect(uniqueIds.run({ root: sandbox })).toEqual([])
+  })
+
+  it('still flags two sources claiming one source_id', () => {
+    const source = 'source_id: dup-src\njurisdiction_id: france\n'
+    write('jurisdictions/france/sources/a.yaml', source)
+    write('jurisdictions/france/sources/b.yaml', source)
+    const issues = uniqueIds.run({ root: sandbox })
+    expect(issues.length).toBe(1)
+    expect(issues[0]!.message).toMatch(/duplicate source_id "dup-src"/)
+  })
+
+  it('still flags two versions claiming one source_version_id', () => {
+    write(
+      'jurisdictions/france/versions/a.yaml',
+      'source_version_id: dup-v\nsource_id: fr-bofip-x\nretrieved_at: "2020-01-01"\n'
+    )
+    write(
+      'jurisdictions/france/versions/b.yaml',
+      'source_version_id: dup-v\nsource_id: fr-bofip-x\nretrieved_at: "2021-01-01"\n'
+    )
+    const issues = uniqueIds.run({ root: sandbox })
+    expect(issues.length).toBe(1)
+    expect(issues[0]!.message).toMatch(/duplicate source_version_id "dup-v"/)
+  })
 })
 
 describe('temporal', () => {

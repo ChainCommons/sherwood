@@ -21,11 +21,23 @@ const ID_FIELDS = [
 ] as const
 
 /**
+ * Some ID fields appear far more often as foreign keys than as declarations,
+ * and counting a reference as a second declaration makes a legitimate record
+ * unrepresentable. `references.ts` already draws these lines; keep them in step.
+ *
  * `jurisdiction_id` is a foreign key nearly everywhere, so only treat it as a
  * declaration on the pack's own jurisdiction document.
+ *
+ * `source_id` on a source version is the foreign key back to the source it is a
+ * version of (plan 05 §28) — the mechanism by which historical text survives
+ * alongside current text. Without this carve-out a source plus any of its
+ * versions is a duplicate, so `source-version.schema.json` could not be used.
  */
-const declaresId = (field: string, doc: Record<string, unknown>): boolean =>
-  field !== 'jurisdiction_id' || typeof doc.jurisdiction_type === 'string'
+const declaresId = (field: string, doc: Record<string, unknown>): boolean => {
+  if (field === 'jurisdiction_id') return typeof doc.jurisdiction_type === 'string'
+  if (field === 'source_id') return doc.source_version_id === undefined
+  return true
+}
 
 export const uniqueIds: SyncCheck = {
   name: 'unique-ids',

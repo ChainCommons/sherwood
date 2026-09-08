@@ -27,6 +27,10 @@
     "supersedes": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" } },
     "superseded_by": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" } },
     "licence": { "type": "string" },
+    "redistribution": {
+      "description": "Plan 15. What this repository may and does redistribute, which is not the same fact as the licence: a Licence Ouverte source permits a full dated mirror, but if we ship only extracts the posture is 'extract'. Absent means unknown, so a consumer can tell 'we may not mirror this' from 'we have not mirrored this yet'.",
+      "enum": ["full", "extract", "forbidden", "unknown"]
+    },
     "permitted_extract": { "type": "string" },
     "notes": { "type": "string" },
     "schema_version": { "$ref": "../common.schema.json#/$defs/schemaVersion" }
