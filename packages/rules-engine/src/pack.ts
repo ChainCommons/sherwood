@@ -7,6 +7,7 @@ import {
   loadSourceVersionsFromDir,
   readDataFile
 } from '@octc/source-registry'
+import { parsePredicate } from './dsl.ts'
 import type { Certainty, Interpretation, Review, Rule, RuleAppliesTo, RuleEffects } from './types.ts'
 
 const DATA_EXT = /\.(ya?ml|json)$/
@@ -140,7 +141,9 @@ export function parseRule(doc: unknown, path = '<rule>'): Rule {
     schema_version: asString(doc.schema_version, 'schema_version'),
     ...(applies !== undefined ? { applies_to: applies } : {}),
     ...opt('dsl_version', asOptionalString(doc.dsl_version)),
-    ...(doc.conditions !== undefined ? { conditions: doc.conditions } : {}),
+    ...(doc.conditions !== undefined
+      ? { conditions: parsePredicate(doc.conditions, `${path}.conditions`) }
+      : {}),
     ...(effects !== undefined ? { effects } : {}),
     ...opt('effective_to', asOptionalString(doc.effective_to)),
     ...optArr('supersedes', asOptionalStringArray(doc.supersedes)),

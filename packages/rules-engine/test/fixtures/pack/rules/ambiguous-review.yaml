@@ -1,0 +1,22 @@
+rule_id: fixture-ambiguous-review
+jurisdiction_id: fixture-juris
+tax_domain: personal_income_tax
+title: Ambiguous treatment requiring human review
+applies_to:
+  event_types:
+    - AIRDROP
+  capacities:
+    - COLLECTOR
+effective_from: 2020-01-01
+published_from: 2020-06-01
+sources:
+  - fixture-commentary-a
+authority_status: COMMENTARY
+certainty:
+  level: AMBIGUOUS
+  reason: Sources conflict on receipt character; do not invent certainty
+effects:
+  classification: contested_receipt
+review:
+  status: COMMUNITY_DRAFT
+schema_version: 0.0.0

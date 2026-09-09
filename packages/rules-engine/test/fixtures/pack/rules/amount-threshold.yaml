@@ -1,0 +1,36 @@
+rule_id: fixture-amount-threshold
+jurisdiction_id: fixture-juris
+tax_domain: personal_income_tax
+title: High-value disposal threshold (DSL v0)
+applies_to:
+  event_types:
+    - DISPOSAL
+  capacities:
+    - COLLECTOR
+dsl_version: "0"
+conditions:
+  all:
+    - field: amount
+      op: gte
+      value: "10000"
+    - field: asset_category
+      op: in
+      value:
+        - nft
+        - crypto
+    - field: jurisdiction_facts.reporting_threshold_applies
+      op: eq
+      value: true
+effective_from: 2020-01-01
+published_from: 2020-01-01
+sources:
+  - fixture-cgi-150-0
+authority_status: ADMINISTRATIVE_GUIDANCE
+certainty:
+  level: AUTHORITATIVE_INTERPRETIVE
+  reason: Synthetic amount-threshold rule for DSL v0
+effects:
+  classification: reporting_review
+review:
+  status: COMMUNITY_DRAFT
+schema_version: 0.0.0

@@ -8,6 +8,17 @@ applies_to:
   capacities:
     - ARTIST
     - COLLECTOR
+dsl_version: "0"
+conditions:
+  all:
+    - field: event_type
+      op: eq
+      value: SELF_TRANSFER
+    - field: capacity
+      op: in
+      value:
+        - ARTIST
+        - COLLECTOR
 effective_from: 2019-01-01
 published_from: 2019-01-01
 sources:
