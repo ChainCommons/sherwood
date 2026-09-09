@@ -1,5 +1,6 @@
 import { rangeContains } from '@octc/core'
 import { assertIsoDate } from '@octc/source-registry'
+import { isSupportedDslVersion, matchConditions } from './dsl.ts'
 import type { JurisdictionPack } from './pack.ts'
 import type {
   AsOfDates,
@@ -16,6 +17,8 @@ export interface EvaluateInput {
   readonly participant: EvaluationParticipant
   readonly asOf: AsOfDates
   readonly pack: JurisdictionPack
+  /** Optional boolean facts for DSL `jurisdiction_facts.*` fields. */
+  readonly jurisdiction_facts?: Readonly<Record<string, boolean>>
 }
 
 function ruleEffectiveOn(rule: Rule, date: string): boolean {
@@ -85,16 +88,36 @@ export function evaluate(input: EvaluateInput): EvaluationResult {
   const analysisDate = assertIsoDate(input.asOf.analysisDate, 'analysisDate')
   const asOf: AsOfDates = { transactionDate, analysisDate }
   const { pack, event, participant } = input
+  const dslCtx = {
+    event,
+    participant,
+    ...(input.jurisdiction_facts !== undefined
+      ? { jurisdiction_facts: input.jurisdiction_facts }
+      : {})
+  }
 
   const candidates = pack.rules.filter(
     (r) =>
       r.jurisdiction_id === pack.jurisdiction_id &&
       ruleEffectiveOn(r, transactionDate) &&
-      matchesAppliesTo(r, event, participant)
+      matchesAppliesTo(r, event, participant) &&
+      matchConditions(r.conditions, r.dsl_version, dslCtx)
   )
 
   const applicable: EvaluatedRule[] = []
   const laterGuidance: EvaluatedRule[] = []
+  const gaps: string[] = []
+
+  for (const rule of pack.rules) {
+    if (rule.jurisdiction_id !== pack.jurisdiction_id) continue
+    if (!ruleEffectiveOn(rule, transactionDate)) continue
+    if (!matchesAppliesTo(rule, event, participant)) continue
+    if (rule.conditions !== undefined && !isSupportedDslVersion(rule.dsl_version)) {
+      gaps.push(
+        `rule ${rule.rule_id} declares unsupported dsl_version ${String(rule.dsl_version)}`
+      )
+    }
+  }
 
   for (const rule of candidates) {
     const evaluated = attachSources(rule, pack, transactionDate)
@@ -105,7 +128,6 @@ export function evaluate(input: EvaluateInput): EvaluationResult {
     }
   }
 
-  const gaps: string[] = []
   if (applicable.length === 0 && laterGuidance.length === 0) {
     gaps.push('no rule matches event/capacity for this transaction date')
   } else if (applicable.length === 0 && laterGuidance.length > 0) {
@@ -121,12 +143,13 @@ export function evaluate(input: EvaluateInput): EvaluationResult {
       e.rule.certainty.level === 'UNSETTLED' ||
       e.rule.review.status === 'DISPUTED'
   )
+  const unsupportedDsl = gaps.some((g) => g.includes('unsupported dsl_version'))
 
   let status: EvaluationResult['status']
   if (dual.length > 0) {
     status = 'UNRESOLVED'
   } else if (applicable.length === 0) {
-    status = 'UNKNOWN'
+    status = unsupportedDsl ? 'REVIEW_REQUIRED' : 'UNKNOWN'
   } else if (needsReview) {
     status = 'REVIEW_REQUIRED'
   } else {

@@ -84,6 +84,40 @@ describe('acceptance AC-001 / AC-002 / AC-003 / AC-011', () => {
     ])
   })
 
+  it('REVIEW_REQUIRED when certainty is AMBIGUOUS without dual interpretations', () => {
+    const result = evaluate({
+      pack,
+      event: { event_type: 'AIRDROP' },
+      participant: { capacity: 'COLLECTOR' },
+      asOf: { transactionDate: '2021-06-15', analysisDate: '2026-01-01' }
+    })
+    expect(result.status).toBe('REVIEW_REQUIRED')
+    expect(result.applicable.map((e) => e.rule.rule_id)).toContain('fixture-ambiguous-review')
+  })
+
+  it('DSL v0 amount / asset_category / jurisdiction_facts gate applicability', () => {
+    const asOf = { transactionDate: '2021-06-15', analysisDate: '2026-01-01' }
+    const hit = evaluate({
+      pack,
+      event: { event_type: 'DISPOSAL', asset_category: 'nft', amount: '10000' },
+      participant: { capacity: 'COLLECTOR' },
+      jurisdiction_facts: { reporting_threshold_applies: true },
+      asOf
+    })
+    expect(hit.status).toBe('APPLICABLE')
+    expect(hit.applicable.map((e) => e.rule.rule_id)).toContain('fixture-amount-threshold')
+
+    const miss = evaluate({
+      pack,
+      event: { event_type: 'DISPOSAL', asset_category: 'nft', amount: '9999.99' },
+      participant: { capacity: 'COLLECTOR' },
+      jurisdiction_facts: { reporting_threshold_applies: true },
+      asOf
+    })
+    expect(miss.applicable.map((e) => e.rule.rule_id)).not.toContain('fixture-amount-threshold')
+    expect(miss.status).toBe('UNKNOWN')
+  })
+
   it('analysis after publication can still surface later guidance separately', () => {
     const result = evaluate({
       pack,

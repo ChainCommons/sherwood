@@ -1,7 +1,9 @@
 import type { AuthorityLevel, CertaintyLevel, ReviewStatus } from '@octc/core'
 import type { IsoDate, SourceAsOfView } from '@octc/source-registry'
+import type { Predicate } from './dsl.ts'
 
 export type { IsoDate }
+export type { CompareOp, Predicate } from './dsl.ts'
 
 export interface Certainty {
   readonly level: CertaintyLevel
@@ -33,15 +35,16 @@ export interface RuleEffects {
   readonly rounding_mode?: string
 }
 
-/** Plan 05 §29 — machine-readable rule. Full predicate DSL lands in P0-1-05. */
+/** Plan 05 §29 — machine-readable rule with versioned predicate DSL v0. */
 export interface Rule {
   readonly rule_id: string
   readonly jurisdiction_id: string
   readonly tax_domain: string
   readonly title: string
   readonly applies_to?: RuleAppliesTo
+  /** DSL version for `conditions` (`0` / `v0`). */
   readonly dsl_version?: string
-  readonly conditions?: unknown
+  readonly conditions?: Predicate
   readonly effects?: RuleEffects
   readonly effective_from: IsoDate
   readonly effective_to?: IsoDate
@@ -73,11 +76,15 @@ export interface Interpretation {
   readonly schema_version: string
 }
 
-/** Minimal event shape for as-of selection (no Tezos types). */
+/** Minimal event shape for as-of + DSL selection (no Tezos types). */
 export interface EvaluationEvent {
   readonly event_id?: string
   readonly event_type?: string
   readonly asset_type?: string
+  /** Broad category for DSL `asset_category` comparisons. */
+  readonly asset_category?: string
+  /** Decimal string or safe integer — never a float (plan 17). */
+  readonly amount?: string | number
 }
 
 export interface EvaluationParticipant {
