@@ -39,6 +39,8 @@ importers:
 
   packages/evidence: {}
 
+  packages/lots: {}
+
   packages/rules-engine:
     dependencies:
       '@octc/core':
