@@ -1,0 +1,71 @@
+# Plan 15: "Confirmed self-transfer is not a disposal" — the narrowest rule in
+# the pack and the one plan 05 §77 names as LEVEL 4 material.
+#
+# The reasoning is construction, not doctrine: art. 150 VH bis charges a
+# *cession à titre onéreux*. Moving a token between two wallets of the same
+# owner transfers nothing to anyone and receives nothing in return, so there is
+# no cession and no charge. No indexed source says "self-transfer" in those
+# words, which is why this is AUTHORITATIVE_INTERPRETIVE and not
+# AUTHORITATIVE_CLEAR.
+#
+# The condition is a fact the caller must confirm. Common ownership of two
+# addresses is not observable on-chain (INV-004/005), so an unconfirmed
+# transfer matches nothing and the engine answers UNKNOWN rather than assuming.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: fr-self-transfer-not-a-disposal-2019
+jurisdiction_id: france
+tax_domain: capital_gains
+title: >-
+  Confirmed transfer between wallets of the same owner is not a cession à titre
+  onéreux (art. 150 VH bis, rédaction 2019)
+applies_to:
+  capacities:
+    - COLLECTOR
+    - PRIVATE_INVESTOR
+    - ARTIST
+    - CREATOR
+  event_types:
+    - SELF_TRANSFER
+dsl_version: '0'
+conditions:
+  all:
+    - field: jurisdiction_facts.same_beneficial_owner_confirmed
+      op: eq
+      value: true
+effects:
+  classification: NOT_A_DISPOSAL
+effective_from: '2019-01-01'
+effective_to: '2026-06-27'
+published_from: '2018-12-28'
+sources:
+  - fr-cgi-150-vh-bis-2019
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_INTERPRETIVE
+  reason: >-
+    Art. 150 VH bis charges disposals « à titre onéreux ». A transfer between
+    addresses controlled by the same person is neither a transfer to another
+    person nor made for consideration, so it falls outside the charging words.
+    No indexed source addresses wallet-to-wallet transfers by name.
+superseded_by:
+  - fr-self-transfer-not-a-disposal-2026
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+test_cases:
+  - fr-t-self-transfer-confirmed-2021
+  - fr-t-self-transfer-unconfirmed-2021
+  - fr-t-self-transfer-missing-ownership-fact-2021
+  - fr-t-self-transfer-boundary-last-day-of-2019-text
+  - fr-t-self-transfer-boundary-first-day-of-2026-text
+  - fr-t-self-transfer-sale-is-not-covered-2021
+notes: >-
+  Applies to the 2019 wording, in force for disposals from 2019-01-01 until the
+  2026-06-28 recast. An as-of query for 2021 must return this record, not
+  fr-self-transfer-not-a-disposal-2026. The rule says nothing about VAT and
+  nothing about whether the transferred asset is inside art. 150 VH bis at all
+  — for a non-fungible token that question is open, see
+  fr-nft-disposal-perimeter-unsettled-2019-2025.
+schema_version: 0.1.0

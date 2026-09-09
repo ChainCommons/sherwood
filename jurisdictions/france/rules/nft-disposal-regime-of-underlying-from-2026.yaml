@@ -1,0 +1,71 @@
+# The successor to the 2019–2025 gap, and the pack's clearest AC-002 exhibit.
+#
+# CGI art. 150 VH ter governs disposals from 2026-01-01 but was created by the
+# loi n° 2026-534 of 2026-06-25 — roughly six months into the period it
+# governs. A disposal on 2026-03-01 is governed by words that did not exist on
+# 2026-03-01. The engine must show this rule as later guidance for such a date,
+# never as something the taxpayer could have read.
+#
+# The temporal validator warns that published_from follows effective_from. That
+# warning is correct and is the point of the record.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: fr-nft-disposal-regime-of-underlying-from-2026
+jurisdiction_id: france
+tax_domain: capital_gains
+title: >-
+  From 2026, a unique non-fungible crypto-asset is taxed under the regime of
+  the good or right it represents (art. 150 VH ter)
+applies_to:
+  capacities:
+    - COLLECTOR
+    - PRIVATE_INVESTOR
+    - ARTIST
+    - CREATOR
+  event_types:
+    - NFT_SALE
+    - ART_PRIMARY_SALE
+    - ART_SECONDARY_SALE
+dsl_version: '0'
+conditions:
+  all:
+    - field: asset_category
+      op: eq
+      value: non_fungible_token
+    - field: jurisdiction_facts.french_tax_resident
+      op: eq
+      value: true
+effects:
+  classification: REGIME_OF_UNDERLYING_GOOD_OR_RIGHT
+effective_from: '2026-01-01'
+published_from: '2026-06-25'
+sources:
+  - fr-cgi-150-vh-ter
+  - fr-cgi-150-vi
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_INTERPRETIVE
+  reason: >-
+    Art. 150 VH ter routes the disposal to the regime of the underlying good or
+    right, and to CGI art. 150 VI where that good is a listed object of art or
+    collection. Which regime applies therefore turns on identifying the
+    underlying, which the article does not do for you.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+test_cases:
+  - fr-t-nft-sale-2025-still-unresolved
+  - fr-t-nft-sale-2026-not-covered
+  - fr-t-nft-sale-2026-before-publication-is-later-guidance
+  - fr-t-nft-sale-2026-after-publication
+  - fr-t-nft-sale-2026-non-resident
+notes: >-
+  The classification is a routing instruction, not an answer: nothing here says
+  which regime the underlying attracts, and the pack does not model CGI art.
+  150 VI. RESEARCH.md §6 records that the codified Légifrance page for art. 150
+  VH ter was not captured — the article was read through the JORF text of the
+  loi n° 2026-534. In parallel, art. 150 VH bis was recast on 2026-06-28 to key
+  off the MiCA perimeter, whose art. 2(3) excludes unique non-fungible
+  crypto-assets, which is how NFTs left that article.
+schema_version: 0.1.0

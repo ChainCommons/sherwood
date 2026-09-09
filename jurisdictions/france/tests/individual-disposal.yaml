@@ -1,0 +1,255 @@
+# Rule tests for the individual disposal regime: the charge, the 305 € floor
+# and the prohibition on lot methods (§86 matrix).
+test_suite_id: fr-tests-individual-disposal
+jurisdiction: france
+todo: P0-3-03
+covers:
+  - fr-individual-occasional-disposal-in-charge
+  - fr-individual-occasional-disposal-below-floor
+  - fr-individual-disposal-basis-is-portfolio-wide
+cases:
+  - test_id: fr-t-disposal-above-floor-2021
+    matrix: [positive]
+    covers:
+      - fr-individual-disposal-basis-is-portfolio-wide
+      - fr-individual-occasional-disposal-below-floor
+      - fr-individual-occasional-disposal-in-charge
+    why: >-
+      A collector with 400 € of proceeds for the year is inside the charge, and
+      the basis rule rides along to say how the base is built.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts:
+        french_tax_resident: true
+        annual_disposal_proceeds_over_305_eur: true
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids:
+        - fr-individual-occasional-disposal-in-charge
+        - fr-individual-disposal-basis-is-portfolio-wide
+      not_applicable_rule_ids: [fr-individual-occasional-disposal-below-floor]
+      effects:
+        fr-individual-occasional-disposal-in-charge:
+          classification: TAXABLE_DISPOSAL
+          tax_base_rule: fr-150-vh-bis-portfolio-formula
+
+  - test_id: fr-t-basis-no-lot-method-2021
+    matrix: [positive]
+    covers:
+      - fr-individual-disposal-basis-is-portfolio-wide
+      - fr-individual-occasional-disposal-in-charge
+    why: >-
+      The regression that matters most for France. If this ever returns a lot
+      method — FIFO, LIFO, HIFO, average cost — the engine is computing a
+      different country's rule. BOI-RPPM-PVBMC-30-20 has no lots in it.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts:
+        french_tax_resident: true
+        annual_disposal_proceeds_over_305_eur: true
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids:
+        - fr-individual-occasional-disposal-in-charge
+        - fr-individual-disposal-basis-is-portfolio-wide
+      effects:
+        fr-individual-disposal-basis-is-portfolio-wide:
+          tax_base_rule: fr-150-vh-bis-portfolio-formula
+          calculation_rule: NO_LOT_METHOD_APPLIES
+
+  - test_id: fr-t-disposal-below-floor-2021
+    matrix: [negative]
+    covers:
+      - fr-individual-disposal-basis-is-portfolio-wide
+      - fr-individual-occasional-disposal-below-floor
+      - fr-individual-occasional-disposal-in-charge
+    why: >-
+      300 € of annual proceeds is under the floor, so the gains are exempt and
+      no base needs building — the basis rule must stay quiet too.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts:
+        french_tax_resident: true
+        annual_disposal_proceeds_over_305_eur: false
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-individual-occasional-disposal-below-floor]
+      not_applicable_rule_ids:
+        - fr-individual-occasional-disposal-in-charge
+        - fr-individual-disposal-basis-is-portfolio-wide
+      certainty_level: AUTHORITATIVE_CLEAR
+      effects:
+        fr-individual-occasional-disposal-below-floor:
+          classification: EXEMPT_BELOW_ANNUAL_PROCEEDS_FLOOR
+
+  - test_id: fr-t-floor-exactly-305-eur-2021
+    matrix: [threshold_boundary]
+    covers:
+      - fr-individual-occasional-disposal-below-floor
+    why: >-
+      Proceeds of exactly 305,00 € for the year are still exempt: the statute
+      exempts where the total does not *exceed* 305 €. The comparison happens
+      before the engine is called, so this case pins the boolean that
+      305,00 € must produce.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts:
+        french_tax_resident: true
+        annual_disposal_proceeds_over_305_eur: false
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-individual-occasional-disposal-below-floor]
+
+  - test_id: fr-t-floor-305-eur-and-one-cent-2021
+    matrix: [threshold_boundary]
+    covers:
+      - fr-individual-disposal-basis-is-portfolio-wide
+      - fr-individual-occasional-disposal-in-charge
+    why: >-
+      One cent over and the whole year's gains are in charge. Note what the
+      floor is measured on: 305,01 € of *proceeds* producing a 20 € gain is
+      inside; 300 € of proceeds producing a 250 € gain is not.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts:
+        french_tax_resident: true
+        annual_disposal_proceeds_over_305_eur: true
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids:
+        - fr-individual-occasional-disposal-in-charge
+        - fr-individual-disposal-basis-is-portfolio-wide
+
+  - test_id: fr-t-floor-missing-proceeds-fact-2021
+    matrix: [missing_fact]
+    covers:
+      - fr-individual-occasional-disposal-in-charge
+      - fr-individual-occasional-disposal-below-floor
+      - fr-individual-disposal-basis-is-portfolio-wide
+    why: >-
+      The floor is annual, so a single disposal never carries enough
+      information to decide it. Without the year's total the engine must say
+      UNKNOWN rather than assume either branch.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { french_tax_resident: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-disposal-missing-residence-fact-2021
+    matrix: [missing_fact]
+    covers:
+      - fr-individual-occasional-disposal-in-charge
+      - fr-individual-occasional-disposal-below-floor
+      - fr-individual-disposal-basis-is-portfolio-wide
+    why: >-
+      Residence is a fact about the person, not about the transaction, and
+      art. 150 VH bis is written for people domiciled in France.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { annual_disposal_proceeds_over_305_eur: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-disposal-active-trader-not-covered-2021
+    matrix: [negative]
+    covers:
+      - fr-individual-occasional-disposal-in-charge
+      - fr-individual-occasional-disposal-below-floor
+      - fr-individual-disposal-basis-is-portfolio-wide
+    why: >-
+      Habitual buying and selling is not occasional disposal. Where the line
+      sits is a facts question this pack does not model, so a confirmed
+      ACTIVE_TRADER gets UNKNOWN — not the collector answer by default.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: ACTIVE_TRADER }
+      jurisdiction_facts:
+        french_tax_resident: true
+        annual_disposal_proceeds_over_305_eur: true
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-disposal-nft-not-covered-2021
+    matrix: [negative]
+    covers:
+      - fr-individual-occasional-disposal-in-charge
+      - fr-individual-occasional-disposal-below-floor
+      - fr-individual-disposal-basis-is-portfolio-wide
+    why: >-
+      The fungibility guard. Whether an NFT was inside art. 150 VH bis in 2021
+      is the pack's headline open question, and the disposal rules must not
+      quietly answer it by matching anyway.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: non_fungible_token }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts:
+        french_tax_resident: true
+        annual_disposal_proceeds_over_305_eur: true
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-disposal-2026-after-recast-not-modelled
+    matrix: [boundary_date]
+    covers:
+      - fr-individual-occasional-disposal-in-charge
+      - fr-individual-occasional-disposal-below-floor
+      - fr-individual-disposal-basis-is-portfolio-wide
+    why: >-
+      All three rules close on 2026-06-27, the last day of the wording they
+      were read against. The recast article is indexed but not modelled.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts:
+        french_tax_resident: true
+        annual_disposal_proceeds_over_305_eur: true
+      as_of: { transaction_date: '2026-06-28', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-disposal-2019-before-bofip-published
+    matrix: [historical_version]
+    covers:
+      - fr-individual-disposal-basis-is-portfolio-wide
+      - fr-individual-occasional-disposal-in-charge
+    why: >-
+      A disposal on 2019-03-01 was governed by a statute published 2018-12-28
+      and explained by doctrine that did not appear until 2019-09-02. The
+      charge is contemporaneous; the portfolio formula that tells you how to
+      compute it is later guidance. AC-002 must keep those apart.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts:
+        french_tax_resident: true
+        annual_disposal_proceeds_over_305_eur: true
+      as_of: { transaction_date: '2019-03-01', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-individual-occasional-disposal-in-charge]
+      later_guidance_rule_ids: [fr-individual-disposal-basis-is-portfolio-wide]
+      published_after_transaction:
+        fr-individual-occasional-disposal-in-charge: false
+        fr-individual-disposal-basis-is-portfolio-wide: true

@@ -1,0 +1,61 @@
+# Plan 15: "NFT mint is not automatically a supply/sale."
+#
+# Minting writes a token to your own address. Nobody receives anything and
+# nothing is received in return, so there is no cession à titre onéreux —
+# whatever the answer turns out to be on whether art. 150 VH bis reaches NFTs
+# at all. That independence is why this rule can be stated while
+# fr-nft-disposal-perimeter-unsettled-2019-2025 stays UNSETTLED.
+#
+# The guard matters: a mint that is itself the sale (a buyer mints from the
+# contract and pays for it) is a different event, and the condition excludes it
+# rather than quietly swallowing it.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: fr-nft-mint-not-a-disposal
+jurisdiction_id: france
+tax_domain: capital_gains
+title: >-
+  Minting a token to one's own address, without consideration, is not a
+  disposal
+applies_to:
+  capacities:
+    - ARTIST
+    - CREATOR
+    - COLLECTOR
+    - PRIVATE_INVESTOR
+  event_types:
+    - NFT_MINT
+dsl_version: '0'
+conditions:
+  all:
+    - field: jurisdiction_facts.consideration_received
+      op: eq
+      value: false
+effects:
+  classification: NOT_A_DISPOSAL
+effective_from: '2019-01-01'
+published_from: '2018-12-28'
+sources:
+  - fr-cgi-150-vh-bis-2019
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_INTERPRETIVE
+  reason: >-
+    No indexed French source addresses minting. The conclusion is construction
+    from the charging words « cession à titre onéreux »: an issuance to oneself
+    for no consideration is neither a cession nor à titre onéreux.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+test_cases:
+  - fr-t-mint-without-consideration-2021
+  - fr-t-mint-with-consideration-2021
+  - fr-t-mint-missing-consideration-fact-2021
+  - fr-t-mint-boundary-2018
+notes: >-
+  Income tax only. Whether minting is a supply for VAT is a separate question
+  answered by nothing before 2024-02-14 — see fr-nft-vat-unsettled-before-2024.
+  The rule also says nothing about the artist's later primary sale, and nothing
+  about gas paid on the mint, which no indexed source treats.
+schema_version: 0.1.0

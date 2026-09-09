@@ -1,0 +1,62 @@
+# Plan 15: "Receipt of tez is not automatically professional income without
+# capacity/facts."
+#
+# No indexed French source names baking, staking or delegation. The mining
+# doctrine (BOI-BNC-CHAMP-10-10-20-40, art. 92) is cited here to mark the edge
+# of what is covered, not to extend it: mining is a different activity, and
+# stretching its doctrine to a delegation reward would be the pack inventing
+# doctrine.
+#
+# The rule exists so that receiving tokens produces a question rather than an
+# assumption. UNSETTLED certainty makes the engine answer REVIEW_REQUIRED.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: fr-crypto-reward-receipt-not-automatically-income
+jurisdiction_id: france
+tax_domain: professional_business_income
+title: >-
+  Receiving digital assets is not by itself professional income; the category
+  turns on facts the pack must ask for
+applies_to:
+  event_types:
+    - CRYPTO_RECEIPT
+    - BAKING_REWARD
+    - STAKING_REWARD
+    - DELEGATION_REWARD
+    - VALIDATOR_REWARD
+    - AIRDROP
+dsl_version: '0'
+effects:
+  classification: REVIEW_REQUIRED_CATEGORY_TURNS_ON_FACTS
+effective_from: '2019-01-01'
+published_from: '2019-09-02'
+sources:
+  - fr-cgi-92
+  - fr-bofip-bnc-champ-10-10-20-40-2019
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: UNSETTLED
+  reason: >-
+    CGI art. 92 and BOI-BNC-CHAMP-10-10-20-40 place mining in the BNC category.
+    Neither names baking, staking, delegation or airdrops, and no other indexed
+    source does. Whether a receipt is professional income depends on capacity,
+    on whether an activity is carried on, and on what was given in return —
+    facts about the person, not properties of the transaction.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+test_cases:
+  - fr-t-baking-reward-2021-review-required
+  - fr-t-airdrop-2021-review-required
+  - fr-t-reward-rule-does-not-catch-a-sale-2021
+  - fr-t-baking-reward-boundary-2018
+  - fr-t-baking-reward-2019-before-doctrine
+notes: >-
+  Deliberately carries no applies_to.capacities. Narrowing by capacity would
+  make the rule silent for the participant whose capacity is UNKNOWN, and that
+  participant is exactly the one who most needs to be told the question is
+  open. The 2023 revision of the mining doctrine
+  (fr-bofip-bnc-champ-10-10-20-40-2023) is indexed but not modelled: it moves
+  habitual trading from BIC to BNC and says nothing new about rewards.
+schema_version: 0.1.0

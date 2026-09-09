@@ -1,0 +1,67 @@
+# The French answer that most often differs from a tool built for another
+# country: a crypto-to-crypto exchange with no cash balancing payment is not a
+# taxable disposal under art. 150 VH bis.
+#
+# An engine that treats every swap as a realisation event does not approximate
+# the French rule, it computes a different one.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: fr-exchange-without-soulte-outside-charge
+jurisdiction_id: france
+tax_domain: capital_gains
+title: >-
+  Exchange of digital assets without soulte is outside the charge of art. 150
+  VH bis
+applies_to:
+  capacities:
+    - COLLECTOR
+    - PRIVATE_INVESTOR
+  event_types:
+    - CRYPTO_SWAP
+    - ASSET_EXCHANGE
+dsl_version: '0'
+conditions:
+  all:
+    - field: asset_category
+      op: eq
+      value: fungible_digital_asset
+    - field: jurisdiction_facts.french_tax_resident
+      op: eq
+      value: true
+    - field: jurisdiction_facts.soulte_paid
+      op: eq
+      value: false
+effects:
+  classification: OUT_OF_CHARGE_EXCHANGE_WITHOUT_SOULTE
+effective_from: '2019-01-01'
+effective_to: '2026-06-27'
+published_from: '2018-12-28'
+sources:
+  - fr-cgi-150-vh-bis-2019
+  - fr-bofip-rppm-pvbmc-30-10-2019
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_CLEAR
+  reason: >-
+    Art. 150 VH bis excludes exchanges between digital assets without soulte
+    from the charge, and BOI-RPPM-PVBMC-30-10 states the perimeter. Both were
+    readable from 2019-09-02 at the latest.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+test_cases:
+  - fr-t-swap-without-soulte-2021
+  - fr-t-swap-with-soulte-2021
+  - fr-t-swap-missing-soulte-fact-2021
+  - fr-t-swap-non-resident-2021
+  - fr-t-swap-after-2026-recast-not-modelled
+notes: >-
+  Deliberately closed at 2026-06-27. Whether the 2026 recast of art. 150 VH bis
+  carries the same treatment forward was not checked against the captured text,
+  and a rule that silently ran past the recast would be asserting something
+  nobody read. From 2026-06-28 the engine returns UNKNOWN for a swap until this
+  is authored. The rule also asks for asset_category: a swap of a non-fungible
+  token is a different question — see
+  fr-nft-disposal-perimeter-unsettled-2019-2025.
+schema_version: 0.1.0

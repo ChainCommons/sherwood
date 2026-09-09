@@ -1,0 +1,72 @@
+# The headline of the France pack, and the one rule where the answer is the
+# absence of an answer.
+#
+# For a disposal between 2019-01-01 and 2025-12-31 France had no NFT-specific
+# charging provision. Art. 150 VH bis defines its perimeter by reference to CMF
+# art. L. 54-10-1, which says nothing about fungibility. So whether an NFT was
+# inside that article is genuinely open — not open because nobody looked, open
+# because the text does not say.
+#
+# Two readings are recorded as interpretations rather than one being chosen
+# (plan 05 §100, AC-011). With both attached the engine returns UNRESOLVED and
+# emits them side by side.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: fr-nft-disposal-perimeter-unsettled-2019-2025
+jurisdiction_id: france
+tax_domain: capital_gains
+title: >-
+  Whether a non-fungible token is inside art. 150 VH bis is unsettled for
+  disposals from 2019 to 2025
+applies_to:
+  capacities:
+    - COLLECTOR
+    - PRIVATE_INVESTOR
+    - ARTIST
+    - CREATOR
+  event_types:
+    - NFT_SALE
+    - ART_PRIMARY_SALE
+    - ART_SECONDARY_SALE
+dsl_version: '0'
+conditions:
+  all:
+    - field: asset_category
+      op: eq
+      value: non_fungible_token
+effects:
+  classification: UNSETTLED_PERIMETER
+effective_from: '2019-01-01'
+effective_to: '2025-12-31'
+published_from: '2018-12-28'
+sources:
+  - fr-cgi-150-vh-bis-2019
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: UNSETTLED
+  reason: >-
+    Art. 150 VH bis takes its perimeter from CMF art. L. 54-10-1, which is
+    silent on fungibility. No French administrative guidance addressed NFT
+    income tax during this period, and CGI art. 150 VH ter — the first
+    NFT-specific charging provision — governs only disposals from 2026-01-01.
+    The silence is the finding; it is not a licence to pick a side.
+interpretations:
+  - fr-interp-nft-inside-150-vh-bis
+  - fr-interp-nft-outside-150-vh-bis
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+test_cases:
+  - fr-t-nft-sale-2021-unresolved
+  - fr-t-nft-sale-2025-still-unresolved
+  - fr-t-nft-sale-2026-not-covered
+  - fr-t-nft-rule-does-not-catch-fungible-sale-2021
+  - fr-t-nft-sale-missing-asset-category-2021
+notes: >-
+  MiCA does not settle the prior question either. Its recitals treat issuance
+  in a large series or collection as an indicator of fungibility and say a
+  unique identifier alone is not enough, so "is this an NFT" stays a question
+  about a specific collection that the user must answer. The rule therefore
+  guards on asset_category and matches nothing when that fact is absent.
+schema_version: 0.1.0

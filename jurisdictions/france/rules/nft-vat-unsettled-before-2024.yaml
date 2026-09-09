@@ -1,0 +1,73 @@
+# France published no VAT guidance specific to NFTs until 2024-02-14. This rule
+# records that absence for the years it covers, so that a 2021 or 2022 question
+# gets a dated "nothing was published" rather than the 2024 rescrit
+# back-projected onto it.
+#
+# The sources are the general framework that was in fact available — the VAT
+# Directive and Hedqvist — cited to show what a taxpayer had to work with, not
+# to suggest either resolves the question. Neither mentions non-fungible
+# tokens.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: fr-nft-vat-unsettled-before-2024
+jurisdiction_id: france
+tax_domain: vat
+title: >-
+  No French VAT guidance specific to NFTs existed before 2024-02-14
+applies_to:
+  capacities:
+    - ARTIST
+    - CREATOR
+    - COLLECTOR
+    - MARKETPLACE_OPERATOR
+  event_types:
+    - NFT_SALE
+    - NFT_MINT
+    - NFT_ROYALTY
+    - ART_PRIMARY_SALE
+    - ART_SECONDARY_SALE
+dsl_version: '0'
+conditions:
+  all:
+    - field: asset_category
+      op: eq
+      value: non_fungible_token
+effects:
+  classification: UNSETTLED_NO_CONTEMPORANEOUS_GUIDANCE
+effective_from: '2019-01-01'
+effective_to: '2024-02-13'
+published_from: '2015-10-22'
+sources:
+  - eu-dir-2006-112-vat
+  - eu-cjeu-c-264-14-hedqvist
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: UNSETTLED
+  reason: >-
+    Searching the publisher returned no French administrative doctrine on NFT
+    VAT before BOI-RES-TVA-000140 of 2024-02-14. The general VAT Directive does
+    not address non-fungible tokens, and Hedqvist concerns the exchange of
+    traditional currency for bitcoin, which is not the same transaction. The
+    absence is the finding.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+test_cases:
+  - fr-t-nft-sale-2021-unresolved
+  - fr-t-nft-sale-2025-still-unresolved
+  - fr-t-mint-without-consideration-2021
+  - fr-t-nft-vat-2021-unsettled
+  - fr-t-nft-vat-2021-does-not-see-2024-rescrit
+  - fr-t-nft-vat-boundary-2024-02-13
+  - fr-t-nft-vat-boundary-2024-02-14
+  - fr-t-nft-vat-cites-eu-sources-that-must-resolve
+  - fr-t-nft-royalty-2021-review-required
+  - fr-t-nft-royalty-collector-not-covered-2021
+notes: >-
+  effective_from is 2019-01-01 because that is where this pack's modelled
+  window opens, not because anything changed for VAT on that date. The rule
+  makes no claim about whether VAT was due — only that no French source
+  answered the question at the time. Plan 15 requires this to be visible rather
+  than smoothed over.
+schema_version: 0.1.0

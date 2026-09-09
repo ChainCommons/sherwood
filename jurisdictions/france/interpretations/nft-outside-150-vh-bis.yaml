@@ -1,0 +1,58 @@
+# Reading 2 of the 2019–2025 NFT perimeter question. Recorded, not endorsed.
+#
+# Note the asymmetry with reading 1: this argument leans on 2026 material and
+# so could not have been made in 2021. That does not disqualify it — it is an
+# argument about what the 2019 text always meant — but a consumer showing both
+# readings for a 2021 disposal must show this one as reasoning from later
+# events, and the reasoning field says so.
+# NOTE: this record carries no `rule_id`, although
+# `schemas/rule/interpretation.schema.json` offers one as the foreign key back
+# to the rule it interprets. Two validator checks read any document with a
+# `rule_id` as a *rule*: `unique-ids` counts the foreign key as a second
+# declaration of the rule's own id, and `temporal` demands a `published_from`
+# that the interpretation schema does not define. Using the field therefore
+# fails CI. The link is carried the other way instead, by
+# `interpretations: []` on the rule, which
+# `packages/rules-engine/src/evaluate.ts` already resolves. Both bugs are the
+# same shape as the `source_id` one in docs/rfc/P0-3-01.md and are filed in
+# docs/rfc/P0-3-03.md.
+$schema: https://schemas.opencryptotaxcommons.org/rule/interpretation.schema.json
+interpretation_id: fr-interp-nft-outside-150-vh-bis
+jurisdiction_id: france
+summary: >-
+  A non-fungible token was never inside art. 150 VH bis; the regime was built
+  for fungible digital assets and NFTs fell to the general rules on disposals
+  of biens meubles.
+reasoning: >-
+  The legislature created a separate charging provision for unique
+  non-fungible crypto-assets — CGI art. 150 VH ter — and recast art. 150 VH bis
+  to take its perimeter from MiCA, whose art. 2(3) excludes unique
+  non-fungible crypto-assets. Both moves are read as confirming a boundary that
+  was always there rather than drawing a new one, on the argument that the 2019
+  regime's portfolio-wide computation is unintelligible for assets that are by
+  definition not interchangeable: a formula that scales acquisition cost by a
+  global portfolio value presupposes fungibility. This argument reasons from
+  2026 enactments and could not have been made on the material available in
+  2021; it is an argument about what the earlier text meant, not a source a
+  2021 taxpayer could have read.
+sources:
+  - fr-cgi-150-vh-ter
+  - fr-cgi-150-vh-bis-2026
+  - eu-reg-2023-1114-mica
+  - fr-cgi-150-ua
+certainty:
+  level: EXPERT_INTERPRETATION
+  reason: >-
+    A reading built from later legislation. No indexed French source states it,
+    and no court has ruled on it.
+held_by: >-
+  Not attributed. Recorded as a reading of the indexed statutes, not as the
+  position of any named authority, practitioner or commentator.
+conflicts_with:
+  - fr-interp-nft-inside-150-vh-bis
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+schema_version: 0.1.0

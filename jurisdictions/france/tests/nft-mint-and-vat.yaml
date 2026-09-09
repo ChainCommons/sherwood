@@ -1,0 +1,200 @@
+# Rule tests for minting and for the NFT VAT pair (§86 matrix).
+#
+# The VAT cases use MARKETPLACE_OPERATOR where the point is to isolate VAT: it
+# is the one capacity the income-tax rules do not list, so the result contains
+# the VAT answer and nothing else.
+test_suite_id: fr-tests-nft-mint-and-vat
+jurisdiction: france
+todo: P0-3-03
+covers:
+  - fr-nft-mint-not-a-disposal
+  - fr-nft-vat-unsettled-before-2024
+  - fr-nft-vat-look-through-to-underlying-2024
+cases:
+  - test_id: fr-t-mint-without-consideration-2021
+    matrix: [positive]
+    covers:
+      - fr-nft-mint-not-a-disposal
+      - fr-nft-vat-unsettled-before-2024
+    why: >-
+      An artist minting to their own wallet in 2021. Income tax is settled — no
+      cession, no consideration, no disposal — while VAT is not, and the result
+      must carry both at once rather than letting the settled half imply the
+      other.
+    input:
+      event: { event_type: NFT_MINT, asset_category: non_fungible_token }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts: { consideration_received: false }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids:
+        - fr-nft-mint-not-a-disposal
+        - fr-nft-vat-unsettled-before-2024
+      effects:
+        fr-nft-mint-not-a-disposal: { classification: NOT_A_DISPOSAL }
+
+  - test_id: fr-t-mint-with-consideration-2021
+    matrix: [negative]
+    covers:
+      - fr-nft-mint-not-a-disposal
+    why: >-
+      A buyer minting from the contract and paying for it is a sale wearing a
+      mint's clothes. The rule must not reach it. PRIVATE_INVESTOR isolates the
+      mint rule from the VAT rules.
+    input:
+      event: { event_type: NFT_MINT, asset_category: non_fungible_token }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts: { consideration_received: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-mint-missing-consideration-fact-2021
+    matrix: [missing_fact]
+    covers:
+      - fr-nft-mint-not-a-disposal
+    why: >-
+      Whether anything was received for the mint is not always recoverable from
+      the transaction alone, and the rule turns entirely on it.
+    input:
+      event: { event_type: NFT_MINT, asset_category: non_fungible_token }
+      participant: { capacity: PRIVATE_INVESTOR }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-mint-boundary-2018
+    matrix: [boundary_date]
+    covers:
+      - fr-nft-mint-not-a-disposal
+    why: >-
+      A mint on the last day of 2018, before the pack's modelled window opens.
+      UNKNOWN, because this pack has not read what governed 2018.
+    input:
+      event: { event_type: NFT_MINT, asset_category: non_fungible_token }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts: { consideration_received: false }
+      as_of: { transaction_date: '2018-12-31', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-nft-vat-2021-unsettled
+    matrix: [ambiguous]
+    covers:
+      - fr-nft-vat-look-through-to-underlying-2024
+      - fr-nft-vat-unsettled-before-2024
+    why: >-
+      France had published nothing on NFT VAT in 2021. The engine must say so
+      — REVIEW_REQUIRED off an UNSETTLED rule — rather than returning no answer
+      by accident or reaching for the 2024 rescrit.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: MARKETPLACE_OPERATOR }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids: [fr-nft-vat-unsettled-before-2024]
+      not_applicable_rule_ids: [fr-nft-vat-look-through-to-underlying-2024]
+      later_guidance_rule_ids: []
+      effects:
+        fr-nft-vat-unsettled-before-2024:
+          classification: UNSETTLED_NO_CONTEMPORANEOUS_GUIDANCE
+
+  - test_id: fr-t-nft-vat-2021-does-not-see-2024-rescrit
+    matrix: [negative, historical_version]
+    covers:
+      - fr-nft-vat-look-through-to-underlying-2024
+      - fr-nft-vat-unsettled-before-2024
+    why: >-
+      The regression this pack most needs to hold. BOI-RES-TVA-000140 must not
+      appear for 2021 in any form — not as an applicable rule and not as later
+      guidance, because it does not govern 2021 at all. Back-projecting it
+      would erase the gap the pack exists to record.
+    input:
+      event: { event_type: NFT_MINT, asset_category: non_fungible_token }
+      participant: { capacity: MARKETPLACE_OPERATOR }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids: [fr-nft-vat-unsettled-before-2024]
+      not_applicable_rule_ids: [fr-nft-vat-look-through-to-underlying-2024]
+      later_guidance_rule_ids: []
+
+  - test_id: fr-t-nft-vat-boundary-2024-02-13
+    matrix: [boundary_date]
+    covers:
+      - fr-nft-vat-unsettled-before-2024
+    why: >-
+      The day before the rescrit. Still nothing published, still UNSETTLED.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: MARKETPLACE_OPERATOR }
+      as_of: { transaction_date: '2024-02-13', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids: [fr-nft-vat-unsettled-before-2024]
+
+  - test_id: fr-t-nft-vat-boundary-2024-02-14
+    matrix: [boundary_date, successor_version]
+    covers:
+      - fr-nft-vat-look-through-to-underlying-2024
+      - fr-nft-vat-unsettled-before-2024
+    why: >-
+      Publication day. The gap closes and the rescrit takes over on the same
+      date it became readable — effective_from and published_from coincide
+      here, which is what makes this handover clean.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: MARKETPLACE_OPERATOR }
+      as_of: { transaction_date: '2024-02-14', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-nft-vat-look-through-to-underlying-2024]
+      not_applicable_rule_ids: [fr-nft-vat-unsettled-before-2024]
+      later_guidance_rule_ids: []
+      certainty_level: AUTHORITATIVE_INTERPRETIVE
+      published_after_transaction:
+        fr-nft-vat-look-through-to-underlying-2024: false
+
+  - test_id: fr-t-nft-vat-2024-look-through
+    matrix: [positive]
+    covers:
+      - fr-nft-vat-look-through-to-underlying-2024
+    why: >-
+      Well inside the rescrit's period. The answer is a method — look through
+      the token to the underlying good or service — and deliberately not a
+      rate: the 5,5 % reduced rate turns on the closed list at CGI ann. III
+      art. 98 A, which enumerates physical media only.
+    input:
+      event: { event_type: ART_PRIMARY_SALE, asset_category: non_fungible_token }
+      participant: { capacity: MARKETPLACE_OPERATOR }
+      as_of: { transaction_date: '2024-06-01', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-nft-vat-look-through-to-underlying-2024]
+      effects:
+        fr-nft-vat-look-through-to-underlying-2024:
+          classification: VAT_LOOK_THROUGH_TO_UNDERLYING
+
+  - test_id: fr-t-nft-vat-cites-eu-sources-that-must-resolve
+    matrix: [positive]
+    covers:
+      - fr-nft-vat-unsettled-before-2024
+    why: >-
+      Plan 15 says France VAT rules reference the EU pack rather than duplicate
+      it, so this rule's only two sources are EU records. Both must resolve to
+      real, contemporaneous sources — a rule whose citations silently drop is
+      an AC-001 violation that looks like a sourced answer.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: MARKETPLACE_OPERATOR }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids: [fr-nft-vat-unsettled-before-2024]
+      contemporaneous_source_count:
+        fr-nft-vat-unsettled-before-2024: 2

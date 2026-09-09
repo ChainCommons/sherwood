@@ -1,0 +1,67 @@
+# The 305 € floor, and the two things about it people get wrong: it is measured
+# on *proceeds*, not gains, and it is annual, not per-disposal.
+#
+# A year of 400 € of proceeds producing a 20 € gain is inside the charge; a year
+# of 300 € of proceeds producing a 250 € gain is not.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: fr-individual-occasional-disposal-below-floor
+jurisdiction_id: france
+tax_domain: capital_gains
+title: >-
+  Annual disposal proceeds of 305 € or less are exempt (art. 150 VH bis)
+applies_to:
+  capacities:
+    - COLLECTOR
+    - PRIVATE_INVESTOR
+  event_types:
+    - CRYPTO_SALE
+    - ASSET_SALE
+dsl_version: '0'
+conditions:
+  all:
+    - field: asset_category
+      op: eq
+      value: fungible_digital_asset
+    - field: jurisdiction_facts.french_tax_resident
+      op: eq
+      value: true
+    - field: jurisdiction_facts.annual_disposal_proceeds_over_305_eur
+      op: eq
+      value: false
+effects:
+  classification: EXEMPT_BELOW_ANNUAL_PROCEEDS_FLOOR
+effective_from: '2019-01-01'
+effective_to: '2026-06-27'
+published_from: '2018-12-28'
+sources:
+  - fr-cgi-150-vh-bis-2019
+  - fr-bofip-rppm-pvbmc-30-10-2019
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_CLEAR
+  reason: >-
+    Art. 150 VH bis exempts the gains where the total annual disposal proceeds
+    do not exceed 305 €.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+test_cases:
+  - fr-t-disposal-above-floor-2021
+  - fr-t-disposal-below-floor-2021
+  - fr-t-floor-exactly-305-eur-2021
+  - fr-t-floor-missing-proceeds-fact-2021
+  - fr-t-disposal-missing-residence-fact-2021
+  - fr-t-disposal-active-trader-not-covered-2021
+  - fr-t-disposal-nft-not-covered-2021
+  - fr-t-disposal-2026-after-recast-not-modelled
+notes: >-
+  The boundary is 305,00 € exempt / 305,01 € in charge, on proceeds for the
+  whole calendar year. DSL v0 carries only boolean jurisdiction_facts, so the
+  comparison itself happens before the engine is called and this rule reads the
+  answer as annual_disposal_proceeds_over_305_eur. The euro boundary is
+  therefore asserted in the test cases, not in the predicate — a numeric-fact
+  gap recorded in docs/rfc/P0-3-03.md. Note the asymmetry that matters: the
+  floor is tested on proceeds even though the exemption is of the gains.
+schema_version: 0.1.0

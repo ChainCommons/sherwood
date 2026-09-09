@@ -1,0 +1,191 @@
+# Rule tests for the two rules whose job is to stop the engine guessing: token
+# receipts and on-chain royalties (§86 matrix).
+#
+# Both are UNSETTLED, so the expected outcome is REVIEW_REQUIRED. Plan 05 §86
+# asks ambiguous rules to be tested for exactly that.
+test_suite_id: fr-tests-rewards-and-royalties
+jurisdiction: france
+todo: P0-3-03
+covers:
+  - fr-crypto-reward-receipt-not-automatically-income
+  - fr-nft-royalty-characterisation-unsettled
+cases:
+  - test_id: fr-t-baking-reward-2021-review-required
+    matrix: [positive, ambiguous, missing_fact]
+    covers:
+      - fr-crypto-reward-receipt-not-automatically-income
+    why: >-
+      A baker receiving tez, with capacity not yet confirmed. The rule carries
+      no capacity filter precisely so that it still fires here: the participant
+      whose capacity is UNKNOWN is the one who most needs to be told the
+      question is open, and receiving tokens must never imply professional
+      income on its own.
+    input:
+      event: { event_type: BAKING_REWARD }
+      participant: { capacity: UNKNOWN }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids: [fr-crypto-reward-receipt-not-automatically-income]
+      effects:
+        fr-crypto-reward-receipt-not-automatically-income:
+          classification: REVIEW_REQUIRED_CATEGORY_TURNS_ON_FACTS
+
+  - test_id: fr-t-airdrop-2021-review-required
+    matrix: [ambiguous]
+    covers:
+      - fr-crypto-reward-receipt-not-automatically-income
+    why: >-
+      An unsolicited airdrop to a collector. No indexed French source addresses
+      airdrops, so the mining doctrine must not be stretched to cover it.
+    input:
+      event: { event_type: AIRDROP }
+      participant: { capacity: COLLECTOR }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids: [fr-crypto-reward-receipt-not-automatically-income]
+      certainty_level: UNSETTLED
+
+  - test_id: fr-t-reward-rule-does-not-catch-a-sale-2021
+    matrix: [negative]
+    covers:
+      - fr-crypto-reward-receipt-not-automatically-income
+    why: >-
+      The receipt rule is about receiving, not about disposing. A sale with no
+      facts supplied must fall through to UNKNOWN rather than picking up a
+      review flag from the wrong rule.
+    input:
+      event: { event_type: CRYPTO_SALE }
+      participant: { capacity: COLLECTOR }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-baking-reward-boundary-2018
+    matrix: [boundary_date]
+    covers:
+      - fr-crypto-reward-receipt-not-automatically-income
+    why: >-
+      The pack's modelled window opens on 2019-01-01. A 2018 reward gets
+      UNKNOWN — not because nothing applied in 2018, but because this pack has
+      not read what did.
+    input:
+      event: { event_type: BAKING_REWARD }
+      participant: { capacity: UNKNOWN }
+      as_of: { transaction_date: '2018-12-31', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-baking-reward-2019-before-doctrine
+    matrix: [historical_version]
+    covers:
+      - fr-crypto-reward-receipt-not-automatically-income
+    why: >-
+      The rule leans on doctrine published 2019-09-02 while governing from
+      2019-01-01, so for a reward received that March it is later guidance and
+      the honest answer is UNKNOWN.
+    input:
+      event: { event_type: STAKING_REWARD }
+      participant: { capacity: UNKNOWN }
+      as_of: { transaction_date: '2019-03-01', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+      later_guidance_rule_ids: [fr-crypto-reward-receipt-not-automatically-income]
+      published_after_transaction:
+        fr-crypto-reward-receipt-not-automatically-income: true
+      gaps_include: ['only later-published guidance covers this period']
+
+  - test_id: fr-t-nft-royalty-2021-review-required
+    matrix: [ambiguous]
+    covers:
+      - fr-nft-royalty-characterisation-unsettled
+      - fr-nft-vat-unsettled-before-2024
+    why: >-
+      A resale pays the artist an on-chain royalty in 2021. Income tax and VAT
+      are both open, and neither may be closed by the other.
+    input:
+      event: { event_type: NFT_ROYALTY, asset_category: non_fungible_token }
+      participant: { capacity: ARTIST }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids:
+        - fr-nft-royalty-characterisation-unsettled
+        - fr-nft-vat-unsettled-before-2024
+      effects:
+        fr-nft-royalty-characterisation-unsettled:
+          classification: REVIEW_REQUIRED_CHARACTERISATION_UNSETTLED
+
+  - test_id: fr-t-royalty-receipt-income-tax-only-2021
+    matrix: [positive, ambiguous]
+    covers:
+      - fr-nft-royalty-characterisation-unsettled
+    why: >-
+      A royalty that did not arrive through an NFT event still reaches the
+      characterisation rule, and on its own it shows the certainty the rule
+      actually carries: UNSETTLED, because neither CGI art. 93, 1 quater nor
+      CSS art. L. 382-1 has been applied to on-chain royalties by anything
+      indexed here.
+    input:
+      event: { event_type: ROYALTY_RECEIPT }
+      participant: { capacity: CREATOR }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids: [fr-nft-royalty-characterisation-unsettled]
+      certainty_level: UNSETTLED
+
+  - test_id: fr-t-nft-royalty-collector-not-covered-2021
+    matrix: [negative]
+    covers:
+      - fr-nft-royalty-characterisation-unsettled
+      - fr-nft-vat-unsettled-before-2024
+    why: >-
+      The characterisation question is about the author's own position, so the
+      rule is confined to ARTIST and CREATOR. A collector receiving a royalty
+      raises a different question the pack has not researched, and must not be
+      handed the artist's answer.
+    input:
+      event: { event_type: NFT_ROYALTY, asset_category: non_fungible_token }
+      participant: { capacity: COLLECTOR }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids: [fr-nft-vat-unsettled-before-2024]
+      not_applicable_rule_ids: [fr-nft-royalty-characterisation-unsettled]
+
+  - test_id: fr-t-nft-royalty-boundary-2018
+    matrix: [boundary_date]
+    covers:
+      - fr-nft-royalty-characterisation-unsettled
+    why: >-
+      The pack's modelled window opens on 2019-01-01. A 2018 royalty gets
+      UNKNOWN, and the silence is about this pack's reading, not about French
+      law in 2018.
+    input:
+      event: { event_type: ROYALTY_RECEIPT }
+      participant: { capacity: ARTIST }
+      as_of: { transaction_date: '2018-12-31', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-royalty-missing-capacity-2021
+    matrix: [missing_fact]
+    covers:
+      - fr-nft-royalty-characterisation-unsettled
+    why: >-
+      Capacity is a fact about the person and is never inferred (INV-004/005).
+      Until it is confirmed the artist-author question cannot even be asked, so
+      the rule stays silent rather than assuming the recipient is the author.
+    input:
+      event: { event_type: ROYALTY_RECEIPT }
+      participant: { capacity: UNKNOWN }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
