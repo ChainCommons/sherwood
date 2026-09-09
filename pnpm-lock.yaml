@@ -39,6 +39,8 @@ importers:
 
   packages/evidence: {}
 
+  packages/findings: {}
+
   packages/lots: {}
 
   packages/rules-engine:
