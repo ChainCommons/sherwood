@@ -3,6 +3,8 @@
   "include": [
     "packages/*/src/**/*",
     "packages/*/test/**/*",
+    "adapters/*/src/**/*",
+    "adapters/*/test/**/*",
     "tests/**/*"
   ],
   "compilerOptions": {
