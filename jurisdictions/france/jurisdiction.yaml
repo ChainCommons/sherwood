@@ -1,4 +1,5 @@
-# LEVEL 1: official sources are indexed with dates, links and hashes.
+# LEVEL 2: sources are indexed with dates, links and hashes, and the main
+# questions have a human-readable explanation in explanations/.
 # Nothing here is tax guidance. No rules are modelled yet — see RESEARCH.md.
 $schema: https://schemas.opencryptotaxcommons.org/jurisdiction/jurisdiction.schema.json
 jurisdiction_id: france
@@ -37,13 +38,16 @@ unsupported_tax_domains:
   - court_deadlines
 maintainers: []
 review_status: COMMUNITY_DRAFT
-maturity_level: 1
+maturity_level: 2
 last_source_verification: '2026-09-08'
 notes: >-
-  Sources indexed, no rules modelled. Every tax domain stays unsupported until
-  a sourced rule exists, so the UI reports 'not modelled' rather than implying
-  that silence means no tax applies. France published no NFT-specific VAT
-  guidance before 2024-02-14 and no NFT income-tax provision before CGI art.
-  150 VH ter (2026), so an NFT question about an earlier year is UNSETTLED, not
-  unanswered by accident. See RESEARCH.md.
+  Sources indexed and explained; no rules modelled. LEVEL 2 records the seven
+  human-readable explanations in explanations/, which is a reading of the
+  sources, not an executable rule: every tax domain stays unsupported until a
+  sourced rule exists (P0-3-03), so the UI reports 'not modelled' rather than
+  implying that silence means no tax applies. France published no NFT-specific
+  VAT guidance before 2024-02-14 and no NFT income-tax provision before CGI
+  art. 150 VH ter (2026), so an NFT question about an earlier year is
+  UNSETTLED, not unanswered by accident. See RESEARCH.md and
+  explanations/README.md.
 schema_version: 0.1.0
