@@ -201,6 +201,38 @@ describe('references', () => {
     write('jurisdictions/france/rules/r.yaml', 'rule_id: r1\njurisdiction_id: france\nsources:\n  - real-source\n')
     expect(references.run({ root: sandbox })).toEqual([])
   })
+
+  it('accepts a rule referencing a rule in a pack it depends on', () => {
+    // Plan 15 §79: reference the shared EU rule rather than copy-pasting it.
+    write('jurisdictions/eu/jurisdiction.yaml', 'jurisdiction_id: eu\njurisdiction_type: supranational\nunsupported_tax_domains: []\n')
+    write('jurisdictions/eu/rules/vat.yaml', 'rule_id: eu-vat-place-of-supply\njurisdiction_id: eu\n')
+    write(
+      'jurisdictions/france/jurisdiction.yaml',
+      'jurisdiction_id: france\njurisdiction_type: national\nunsupported_tax_domains: []\ndepends_on:\n  - eu\n'
+    )
+    write(
+      'jurisdictions/france/rules/r.yaml',
+      'rule_id: fr-vat\njurisdiction_id: france\nreferences:\n  - eu-vat-place-of-supply\n'
+    )
+    expect(references.run({ root: sandbox })).toEqual([])
+  })
+
+  it('flags a reference to a rule nobody declares', () => {
+    write('jurisdictions/france/jurisdiction.yaml', 'jurisdiction_id: france\njurisdiction_type: national\nunsupported_tax_domains: []\n')
+    write('jurisdictions/france/rules/r.yaml', 'rule_id: fr-vat\njurisdiction_id: france\nreferences:\n  - ghost-rule\n')
+    expect(
+      references.run({ root: sandbox }).some((i) => /references points at unknown rule_id "ghost-rule"/.test(i.message))
+    ).toBe(true)
+  })
+
+  it('rejects a source id in references, which belongs in sources', () => {
+    write('jurisdictions/france/jurisdiction.yaml', 'jurisdiction_id: france\njurisdiction_type: national\nunsupported_tax_domains: []\n')
+    write('jurisdictions/france/sources/s.yaml', 'source_id: real-source\njurisdiction_id: france\n')
+    write('jurisdictions/france/rules/r.yaml', 'rule_id: fr-vat\njurisdiction_id: france\nreferences:\n  - real-source\n')
+    expect(
+      references.run({ root: sandbox }).some((i) => /cite authorities in sources, not references/.test(i.message))
+    ).toBe(true)
+  })
 })
 
 describe('secrets', () => {

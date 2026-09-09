@@ -49,6 +49,12 @@
     "certainty": { "$ref": "../common.schema.json#/$defs/certainty" },
     "supersedes": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" } },
     "superseded_by": { "type": "array", "items": { "$ref": "../common.schema.json#/$defs/slug" } },
+    "references": {
+      "description": "Other rules this rule builds on, including rules in a pack this jurisdiction depends on (plan 15 §79: reference rather than copy-paste). A referenced rule is not a source: cite the authority in sources, and the rule that reads it here.",
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/slug" },
+      "uniqueItems": true
+    },
     "review": { "$ref": "../common.schema.json#/$defs/review" },
     "test_cases": { "type": "array", "items": { "type": "string" } },
     "interpretations": {

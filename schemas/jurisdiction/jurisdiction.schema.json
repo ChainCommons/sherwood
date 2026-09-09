@@ -9,6 +9,12 @@
     "jurisdiction_id": { "$ref": "../common.schema.json#/$defs/slug" },
     "name": { "type": "string" },
     "parent_jurisdiction": { "oneOf": [{ "$ref": "../common.schema.json#/$defs/slug" }, { "type": "null" }] },
+    "depends_on": {
+      "description": "Packs whose rules and sources this pack builds on (plan 15 §79), so a national pack can reference shared rules instead of duplicating them. Distinct from parent_jurisdiction, which states geography: 'France is in the EU' is not the same claim as 'run the EU pack's rules'. Declarative only — composition requires engine support, so declaring a dependency does not by itself make another pack's rules fire.",
+      "type": "array",
+      "items": { "$ref": "../common.schema.json#/$defs/slug" },
+      "uniqueItems": true
+    },
     "jurisdiction_type": {
       "enum": ["supranational", "national", "federal", "state", "province", "canton", "local", "treaty"]
     },

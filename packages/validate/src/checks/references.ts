@@ -70,6 +70,25 @@ export const references: SyncCheck = {
           }
         }
       }
+
+      // `references` names another *rule* this one builds on, possibly in a pack
+      // this jurisdiction depends on. A source id here would be the copy-paste
+      // the field exists to avoid, so sources are not accepted as a fallback.
+      const references = Array.isArray(doc.references) ? (doc.references as unknown[]) : []
+      for (const value of references) {
+        if (typeof value !== 'string') continue
+        if (!declaredRules.has(value)) {
+          issues.push(
+            error(
+              'references',
+              path,
+              declaredSources.has(value)
+                ? `references points at source_id "${value}"; cite authorities in sources, not references`
+                : `references points at unknown rule_id "${value}"`
+            )
+          )
+        }
+      }
     }
     return issues
   }
