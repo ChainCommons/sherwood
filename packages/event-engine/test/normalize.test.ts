@@ -161,6 +161,52 @@ describe('economic normalization', () => {
     expect(result.events.some(e => e.event_type.includes('SALE'))).toBe(false)
   })
 
+  it('does not apply a self-transfer sale overlay to a third-party royalty recipient', () => {
+    const ctx = context('creator')
+    ctx.ownership = [wallet(seller), wallet(buyer), wallet(creator, 'creator')]
+    const result = normalize([tx], ctx)
+    expect(result.events.map(e => e.event_type)).toEqual(['UNKNOWN'])
+    expect(result.legs[0]).toMatchObject({ quantity: '10', economic_character: 'unknown', direction: 'inbound' })
+    expect(result.unresolved.map(u => u.reason)).toContain('UNKNOWN_INTERACTION')
+    validate(result)
+  })
+
+  it.each(['native', 'token'])('preserves a %s self-transfer and its fee separately, despite a sale annotation', kind => {
+    const ctx = context()
+    ctx.ownership = [wallet(seller), wallet('second-wallet')]
+    ctx.userTags = [hint('ASSET_SALE')]
+    const movement = { from: seller, to: 'second-wallet', amount: '1.000001' }
+    const input = transfer({
+      native_transfers: kind === 'native' ? [movement] : [],
+      token_transfers: kind === 'token' ? [{ ...movement, contract: 'synthetic-token', token_id: '7' }] : [],
+      fees: [{ payer: seller, kind: 'network', amount: '0.000001' }],
+    })
+    const before = structuredClone({ input, ctx })
+    const result = normalize([input], ctx)
+    expect(result.events.map(e => e.event_type)).toEqual(['SELF_TRANSFER', 'ASSET_TRANSFER'])
+    expect(result.legs.map(l => [l.quantity, l.economic_character])).toEqual([
+      ['1.000001', 'transfer'], ['0.000001', 'fee'],
+    ])
+    expect(result.events[0]).toMatchObject({ source_evidence: input.source_evidence, user_annotations: ['synthetic-annotation'] })
+    expect(result.events[0]).not.toHaveProperty('gross_amount')
+    expect(result.events[0]).not.toHaveProperty('classification')
+    expect({ input, ctx }).toEqual(before)
+    expect(normalize([input], { ...ctx, ownership: [...ctx.ownership].reverse() })).toEqual(result)
+    validate(result)
+  })
+
+  it('recomputes self-transfer status only after both owners are confirmed', () => {
+    const ctx = context()
+    ctx.ownership = [wallet(seller), { ...wallet('second-wallet'), confirmation: 'INFERRED' }]
+    const input = transfer()
+    const before = normalize([input], ctx)
+    const after = normalize([input], { ...ctx, ownership: [wallet(seller), wallet('second-wallet')] })
+    expect(before.events[0]!.event_type).toBe('ASSET_TRANSFER')
+    expect(after.events[0]!.event_type).toBe('SELF_TRANSFER')
+    expect(after.events[0]!.event_id).toBe(before.events[0]!.event_id)
+    expect(after.legs).toEqual(before.legs)
+  })
+
   it.each(['INFERRED', 'UNKNOWN'] as const)('does not infer ownership from %s mappings', confirmation => {
     const ctx = context()
     ctx.ownership = [wallet(seller), { ...wallet('second-wallet'), confirmation }]
