@@ -46,6 +46,8 @@ importers:
 
   packages/lots: {}
 
+  packages/positions: {}
+
   packages/rules-engine:
     dependencies:
       '@octc/core':
