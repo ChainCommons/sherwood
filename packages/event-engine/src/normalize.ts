@@ -1,5 +1,6 @@
 import { amount, canonicalJson, eq, sha256, sub, sum, toJSON } from '../../core/src/index.ts'
 import type { EconomicCharacter, JsonValue, SemanticEventType } from '../../core/src/index.ts'
+import { confirmedOwnership, isConfirmedSelfTransfer } from './ownership.ts'
 import type {
   AssetRef, Leg, MarketplaceDecode, NormalizeContext, NormalizeResult,
   SemanticEvent, TechnicalTx, Transfer, Unresolved,
@@ -70,13 +71,10 @@ function reconcile(tx: TechnicalTx, overlay: MarketplaceDecode, movements: Movem
 /** Pure, local normalization. Inputs must already satisfy the published JSON schemas. */
 export function normalize(technicalTxs: readonly TechnicalTx[], ctx: NormalizeContext): NormalizeResult {
   const result: NormalizeResult = { legs: [], events: [], unresolved: [] }
-  const owner = (chain: string, address: string): string | undefined => {
-    const records = ctx.ownership.filter(w => w.chain === chain && w.address === address && w.confirmation === 'USER_CONFIRMED')
-    const owners = unique(records.map(w => w.owner_participant_id ?? ''))
-    return owners.length === 1 && owners[0] ? owners[0] : undefined
-  }
-  const owns = (tx: TechnicalTx, address: string): boolean => owner(tx.chain, address) === ctx.participant
-  const self = (tx: TechnicalTx, m: Movement): boolean => owns(tx, m.from) && owns(tx, m.to)
+  const owns = (tx: TechnicalTx, address: string): boolean =>
+    confirmedOwnership(tx.chain, address, ctx.ownership).owner === ctx.participant
+  const self = (tx: TechnicalTx, m: Movement): boolean =>
+    isConfirmedSelfTransfer(tx.chain, m.from, m.to, ctx.ownership)
   const grouped = new Map<string, TechnicalTx[]>()
   for (const tx of technicalTxs) grouped.set(tx.technical_tx_id, [...(grouped.get(tx.technical_tx_id) ?? []), tx])
   for (const [txId, copies] of [...grouped].sort(([a], [b]) => a.localeCompare(b))) {
@@ -104,8 +102,7 @@ export function normalize(technicalTxs: readonly TechnicalTx[], ctx: NormalizeCo
     }
     if (tx.internal_operations?.length) unresolved('INTERNAL_OPERATIONS', 'Opaque internal operations are retained as evidence; adapters must flatten applied asset movements.')
     for (const address of unique(movements.flatMap(m => [m.from, m.to]))) {
-      const records = ctx.ownership.filter(w => w.chain === tx.chain && w.address === address && w.confirmation === 'USER_CONFIRMED')
-      if (new Set(records.map(w => w.owner_participant_id)).size > 1) unresolved('CONFLICTING_OWNERSHIP', `Conflicting confirmed owners for ${address}.`)
+      if (confirmedOwnership(tx.chain, address, ctx.ownership).conflicting) unresolved('CONFLICTING_OWNERSHIP', `Conflicting confirmed owners for ${address}.`)
     }
     const annotations = ctx.userTags.filter(a =>
       (a.target_type === 'technical_tx' && a.target_id === txId) ||

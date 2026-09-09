@@ -23,6 +23,16 @@ plus an owner ID. Only movements involving the selected participant's confirmed
 wallets produce events. Conflicting confirmed ownership produces an unresolved
 record. Personal and company owner IDs remain distinct.
 
+`isConfirmedSelfTransfer(chain, from, to, ownership)` exposes the same detection
+used by normalization. Both addresses must have an unambiguous `USER_CONFIRMED`
+mapping to the same nonempty owner ID on that chain. Missing/null owners,
+inferred ownership, and shared control or entity relationships are insufficient.
+Duplicate identical confirmations are harmless; conflicting confirmations prevent
+self-transfer detection. The helper does not depend on the participant being
+viewed, so a self-transfer sale proposal cannot generate a royalty interpretation
+in a third party's view. Unexplained third-party payments retain their observed
+movements and remain unresolved. Network fees stay separate from self-transfers.
+
 The package consumes the existing schemas and shared core enums, decimal
 arithmetic, and hashing. Structural input types mirror the technical transaction,
 marketplace overlay, wallet ownership, and annotation contracts. All persisted
