@@ -1,0 +1,68 @@
+# Art. 45: the general B2C rule, the mirror of art. 44 — the place of supply of
+# services to a non-taxable person is where the *supplier* is established.
+#
+# The condition excludes electronically supplied services explicitly, because
+# art. 58 takes those to the customer instead and a rule that quietly covered
+# both would give a French artist selling a downloadable work to a German
+# consumer the wrong country.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: eu-vat-place-of-supply-services-b2c
+jurisdiction_id: eu
+tax_domain: vat
+title: >-
+  The place of supply of services to a non-taxable person is where the supplier
+  is established
+applies_to:
+  event_types:
+    - NFT_SALE
+    - NFT_MINT
+    - NFT_ROYALTY
+    - ART_PRIMARY_SALE
+    - ART_SECONDARY_SALE
+    - COMMISSION_INCOME
+    - LICENCE_INCOME
+    - ROYALTY_RECEIPT
+    - COPYRIGHT_ASSIGNMENT
+dsl_version: '0'
+conditions:
+  all:
+    - field: jurisdiction_facts.supply_is_of_services
+      op: eq
+      value: true
+    - field: jurisdiction_facts.customer_is_taxable_person
+      op: eq
+      value: false
+    - field: jurisdiction_facts.supply_is_electronically_supplied_service
+      op: eq
+      value: false
+effects:
+  classification: PLACE_OF_SUPPLY_WHERE_SUPPLIER_ESTABLISHED
+effective_from: '2019-01-01'
+published_from: '2006-12-11'
+sources:
+  - eu-dir-2006-112-vat
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_CLEAR
+  reason: >-
+    Art. 45 states the general B2C connecting factor in terms. The uncertainty
+    in a crypto question is never this article; it is whether the supply is a
+    service at all, and whether it is one of the services art. 58 carries to
+    the customer instead.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed EU sources only. This is a dependency pack for
+    France; no EU-qualified reviewer is recorded.
+test_cases:
+  - eu-t-b2b-not-reached-when-customer-is-consumer
+  - eu-t-b2c-electronic-service-customer-member-state
+  - eu-t-place-of-supply-facts-missing
+notes: >-
+  The three conditions must all be answered before this fires, and the third is
+  a negative: the pack refuses to apply the general B2C rule to a supply it has
+  not been told is non-electronic, because that is the case art. 58 removes. As
+  with art. 44, the current wording comes from a later amending instrument that
+  is not indexed here; published_from records Directive 2006/112/EC and the
+  window opens at 2019-01-01. RESEARCH.md §3.
+schema_version: 0.1.0

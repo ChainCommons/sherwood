@@ -1,0 +1,72 @@
+# DAC8. Two cases carry the whole rule, because the rule asserts one thing:
+# being reported is not being taxed.
+test_suite_id: eu-tests-crypto-reporting
+jurisdiction: eu
+todo: P0-3-04
+covers:
+  - eu-crypto-reporting-dac8-changes-no-treatment
+cases:
+  - test_id: eu-t-dac8-reporting-changes-nothing
+    matrix: [positive]
+    covers: [eu-crypto-reporting-dac8-changes-no-treatment]
+    why: >-
+      A disposal that a service provider reports. The pack must say, in the
+      reporting domain and in no other, that the report changes nothing about
+      the treatment — and must not emit a capital-gains or VAT consequence
+      alongside it.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts: { reported_by_crypto_asset_service_provider: true }
+      as_of: { transaction_date: '2026-03-01', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [eu-crypto-reporting-dac8-changes-no-treatment]
+      effects:
+        eu-crypto-reporting-dac8-changes-no-treatment:
+          { classification: REPORTING_ONLY_NO_TREATMENT_CHANGE }
+
+  - test_id: eu-t-dac8-silent-when-not-reported
+    matrix: [negative]
+    covers: [eu-crypto-reporting-dac8-changes-no-treatment]
+    why: >-
+      Not being reported is not a finding either. The rule has nothing to say
+      and says nothing.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts: { reported_by_crypto_asset_service_provider: false }
+      as_of: { transaction_date: '2026-03-01', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: eu-t-dac8-missing-fact
+    matrix: [missing_fact]
+    covers: [eu-crypto-reporting-dac8-changes-no-treatment]
+    why: >-
+      Whether a provider reported a taxpayer is not visible in the taxpayer's
+      own records, which is much of the point of DAC8.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: PRIVATE_INVESTOR }
+      as_of: { transaction_date: '2026-03-01', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: eu-t-dac8-boundary-2023-10-23
+    matrix: [boundary_date]
+    covers: [eu-crypto-reporting-dac8-changes-no-treatment]
+    why: >-
+      The day before the instrument this pack indexes was published. The rule
+      does not reach back before its own source, which also stops it being read
+      as a statement about when anyone's reporting obligation began.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts: { reported_by_crypto_asset_service_provider: true }
+      as_of: { transaction_date: '2023-10-23', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []

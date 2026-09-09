@@ -1,8 +1,10 @@
 # EU — source index
 
 EU instruments that the **France** pack depends on. This is a dependency index,
-not an EU tax pack: nothing here is modelled as a rule, and no member-state
-treatment is derived from it.
+not an EU tax pack: no member-state treatment is derived from it. Since
+P0-3-04 a narrow set of these instruments is modelled as rules — see
+[`../rules/`](../rules/README.md) — and the rest of this index is still
+metadata that nothing executes.
 
 Plan 15 §79: national packs SHOULD *reference* shared EU rules rather than
 duplicate them. France VAT explanations cite these `source_id`s; they do not
@@ -28,7 +30,10 @@ restate the directives.
   article must pin the consolidated text in force for its period; the ELI URLs
   here point at the act as published.
 - `publication_date` for the 2022 and 2023 directives is the OJ date reported
-  by EUR-Lex search and was **not** read off the document itself.
+  by EUR-Lex search and was **not** read off the document itself. P0-3-04 did
+  not clear this: EUR-Lex was unreachable from that authoring environment, so
+  no date here was re-verified and no rule was allowed to turn on one that had
+  not been. [`../RESEARCH.md`](../RESEARCH.md) §3.2.
 
 Licence: © European Union. Reuse authorised under Commission Decision
 2011/833/EU with acknowledgement of source. Redistribution posture in this

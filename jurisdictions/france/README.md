@@ -31,7 +31,9 @@ Nothing in this directory is tax advice.
 - [`tests/`](tests/README.md) — 52 cases against the plan 16 §86 matrix. They
   do not run in CI yet; the runner belongs to the QA lane and is carried in
   [`docs/rfc/P0-3-03.md`](../../docs/rfc/P0-3-03.md).
-- EU dependencies live in [`../eu/sources/`](../eu/sources/README.md).
+- EU dependencies live in [`../eu/`](../eu/README.md): five indexed
+  instruments and, since P0-3-04, the VAT / place-of-supply skeleton France
+  references rather than duplicates.
 
 ## What is deliberately not here
 

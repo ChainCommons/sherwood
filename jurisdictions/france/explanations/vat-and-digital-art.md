@@ -30,8 +30,13 @@ method, not an answer.
 
 Plan 15 §79 says national packs should *reference* shared EU rules rather than
 duplicate them. This page cites the EU records by `source_id` and does not
-restate the directives. The EU VAT / place-of-supply skeleton itself is
-[P0-3-04](../../../plans/23-implementation.md).
+restate the directives. The EU VAT / place-of-supply skeleton now exists in
+[`../../eu/rules/`](../../eu/rules/README.md): seven rules covering the
+taxable-person scope gate, arts. 44, 45 and 58, *Hedqvist*, the absence of any
+EU authority on NFTs, and DAC8. What it does **not** contain is a rate, an NFT
+answer, or anything at all before 2019-01-01 —
+[`../../eu/unsupported.yaml`](../../eu/unsupported.yaml) lists every EU question
+it leaves open and what would have to be indexed to close it.
 
 ## What we can say
 
@@ -100,8 +105,18 @@ years would produce a confident answer nobody could have acted on at the time.
   art. 150 VI routing in [`nft-secondary-sale.md`](nft-secondary-sale.md).
 - **Place of supply.** Where the customer is, whether they are a taxable
   person, and whether the supply is an electronically supplied service all
-  change the answer. The pack indexes the VAT Directive as the frame and models
-  none of it: the skeleton is P0-3-04. `UNKNOWN` here.
+  change the answer. The EU pack now models the general rules — art. 44 sends a
+  B2B supply to the customer, art. 45 keeps a B2C supply with the supplier, and
+  art. 58 sends an electronically supplied B2C service to the customer instead.
+  It stops there, and so does this page: **what counts as an electronically
+  supplied service** is defined in an implementing regulation that is not
+  indexed, so an NFT is not automatically inside that category, and the
+  exceptions in arts. 46 et seq. are not modelled either. `UNKNOWN` here until
+  those facts are supplied. See [`../../eu/rules/README.md`](../../eu/rules/README.md).
+  A France *evaluation* cannot yet run those EU rules — the engine loads one
+  pack at a time
+  ([`docs/rfc/P0-3-04.md`](../../../docs/rfc/P0-3-04.md)) — so for now this is
+  a reference for a reader, not a computation.
 - **Whether the mint is a supply.** Nothing indexed here says a mint is a
   taxable transaction. Plan 15 lists "NFT mint is not automatically a
   supply/sale" among the rules to attempt, precisely because the default
@@ -139,3 +154,8 @@ years would produce a confident answer nobody could have acted on at the time.
 Not indexed and needed: CGI art. 261 C (named by the rescrit), CGI art.
 278-0 bis and art. 297 A (rate and margin scheme for works of art), and the loi
 n° 2023-1322 art. 83 as a French source.
+
+On the EU side the gaps that bear hardest on this page are the definition of an
+electronically supplied service and the customer-location presumptions, both in
+Council Implementing Regulation (EU) No 282/2011, which is not indexed.
+[`../../eu/RESEARCH.md`](../../eu/RESEARCH.md) §3.3 keeps the list.

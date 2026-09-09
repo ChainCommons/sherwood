@@ -1,0 +1,59 @@
+# The first gate in the VAT Directive, and the one a crypto question most often
+# fails: VAT reaches a supply of goods or services for consideration made
+# *within the territory of a Member State by a taxable person acting as such*
+# (art. 2(1)), and a taxable person is anyone independently carrying out an
+# economic activity (art. 9(1)).
+#
+# This rule fires only on the negative: when the supplier is known not to be
+# acting as a taxable person, EU law puts the transaction outside the scope of
+# VAT and nothing downstream — place of supply, rate, exemption — needs to be
+# asked. When the fact is true or unknown the rule stays silent, because
+# whether a person is a taxable person is a fact-heavy national question this
+# pack does not decide.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: eu-vat-outside-scope-without-taxable-person
+jurisdiction_id: eu
+tax_domain: vat
+title: >-
+  A supply made otherwise than by a taxable person acting as such is outside
+  the scope of VAT
+dsl_version: '0'
+conditions:
+  all:
+    - field: jurisdiction_facts.supplier_acts_as_taxable_person
+      op: eq
+      value: false
+effects:
+  classification: OUTSIDE_VAT_SCOPE_NO_TAXABLE_PERSON
+effective_from: '2019-01-01'
+published_from: '2006-12-11'
+sources:
+  - eu-dir-2006-112-vat
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_CLEAR
+  reason: >-
+    Art. 2(1) states the charge and art. 9(1) defines the taxable person. That
+    a supply outside any economic activity is outside the scope of VAT is the
+    frame the Directive is built on, not an interpretation of it. What is not
+    clear, and is not decided here, is whether a given seller of tokens or NFTs
+    is carrying out an economic activity: that turns on facts and on national
+    application.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed EU sources only. This is a dependency pack for
+    France; no EU-qualified reviewer is recorded.
+test_cases:
+  - eu-t-private-seller-outside-scope
+  - eu-t-taxable-person-not-excluded
+  - eu-t-taxable-person-fact-missing
+  - eu-t-scope-boundary-2018-12-31
+  - eu-t-scope-boundary-2019-01-01
+notes: >-
+  Deliberately one-directional. It says when VAT does not reach a transaction
+  and never says when it does, so it cannot be read as a finding that someone
+  is a taxable person. effective_from is 2019-01-01 because that is where this
+  pack's modelled window opens, following the France pack, not because anything
+  changed for VAT on that date; arts. 2 and 9 carry their 2006 wording.
+schema_version: 0.1.0

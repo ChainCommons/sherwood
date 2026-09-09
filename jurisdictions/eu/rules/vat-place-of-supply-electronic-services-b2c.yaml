@@ -1,0 +1,76 @@
+# Art. 58: electronically supplied services to a non-taxable person are
+# supplied where that customer is established, has their permanent address or
+# usually resides — not where the supplier is. This is the article that makes a
+# downloadable or automatically delivered work a cross-border VAT question for
+# a one-person studio, and the one a French artist most often has never heard
+# of.
+#
+# Whether a given NFT sale is an electronically supplied service is NOT decided
+# here. The Directive's own definition sits in an implementing regulation this
+# pack has not indexed, so the rule takes the classification as a fact and says
+# only what follows from it.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: eu-vat-place-of-supply-electronic-services-b2c
+jurisdiction_id: eu
+tax_domain: vat
+title: >-
+  Electronically supplied services to a non-taxable person are supplied where
+  the customer belongs
+applies_to:
+  event_types:
+    - NFT_SALE
+    - NFT_MINT
+    - NFT_ROYALTY
+    - ART_PRIMARY_SALE
+    - ART_SECONDARY_SALE
+    - COMMISSION_INCOME
+    - LICENCE_INCOME
+    - ROYALTY_RECEIPT
+dsl_version: '0'
+conditions:
+  all:
+    - field: jurisdiction_facts.supply_is_electronically_supplied_service
+      op: eq
+      value: true
+    - field: jurisdiction_facts.customer_is_taxable_person
+      op: eq
+      value: false
+effects:
+  classification: PLACE_OF_SUPPLY_WHERE_CUSTOMER_BELONGS
+effective_from: '2019-01-01'
+published_from: '2006-12-11'
+sources:
+  - eu-dir-2006-112-vat
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_CLEAR
+  reason: >-
+    The connecting factor for B2C electronically supplied services is stated in
+    the Directive. The clear part is the destination; the unclear part is
+    membership of the category, which this rule does not decide.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed EU sources only. This is a dependency pack for
+    France; no EU-qualified reviewer is recorded.
+test_cases:
+  - eu-t-b2c-electronic-service-customer-member-state
+  - eu-t-b2b-not-reached-when-customer-is-consumer
+  - eu-t-electronic-service-b2b-not-reached
+  - eu-t-place-of-supply-facts-missing
+notes: >-
+  Three things are deliberately absent. **What counts as electronically
+  supplied** is defined in Council Implementing Regulation (EU) No 282/2011,
+  which is not indexed here, so the pack asks for the answer as a fact rather
+  than deriving it — an NFT delivered as a token pointing at a file is not
+  automatically within the category, and treating it as automatic is the error
+  this rule is shaped to avoid. **The customer-location presumptions and the
+  evidence needed to rebut them** are in the same regulation and are likewise
+  not modelled. **The small-business turnover threshold** below which a
+  supplier may stay taxed at home is not modelled either. The destination this
+  rule gives is therefore where the question continues, not where it ends.
+  As with arts. 44 and 45, the current wording of art. 58 comes from later
+  amending instruments not indexed here; the window opens at 2019-01-01 and the
+  pack says nothing about earlier years, when B2C electronic supplies inside
+  the EU were located differently. RESEARCH.md §3.
+schema_version: 0.1.0

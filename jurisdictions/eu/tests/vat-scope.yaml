@@ -1,0 +1,94 @@
+# The taxable-person gate. These cases exist mostly to pin what the rule does
+# NOT say: it answers only when it has been told the supplier was not acting as
+# a taxable person, and stays silent — UNKNOWN — in every other state.
+#
+# CRYPTO_SALE on a fungible asset is the isolating event here: the
+# place-of-supply rules do not list it and the NFT marker requires a
+# non-fungible asset, so the result contains the scope answer and nothing else.
+test_suite_id: eu-tests-vat-scope
+jurisdiction: eu
+todo: P0-3-04
+covers:
+  - eu-vat-outside-scope-without-taxable-person
+cases:
+  - test_id: eu-t-private-seller-outside-scope
+    matrix: [positive]
+    covers: [eu-vat-outside-scope-without-taxable-person]
+    why: >-
+      Someone selling their own tokens outside any economic activity is the
+      commonest crypto question there is, and the answer is that VAT never
+      reaches it. If this case failed, the pack would be routing private
+      disposals into a place-of-supply analysis that does not apply to them.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts: { supplier_acts_as_taxable_person: false }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [eu-vat-outside-scope-without-taxable-person]
+      certainty_level: AUTHORITATIVE_CLEAR
+      effects:
+        eu-vat-outside-scope-without-taxable-person:
+          { classification: OUTSIDE_VAT_SCOPE_NO_TAXABLE_PERSON }
+
+  - test_id: eu-t-taxable-person-not-excluded
+    matrix: [negative]
+    covers: [eu-vat-outside-scope-without-taxable-person]
+    why: >-
+      The mirror image, and the one that matters. Knowing that someone IS
+      acting as a taxable person is not an answer about their VAT position;
+      it only means this rule has nothing to say. UNKNOWN, not APPLICABLE.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: BUSINESS_OWNER }
+      jurisdiction_facts: { supplier_acts_as_taxable_person: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+      gaps_include: ['no rule matches']
+
+  - test_id: eu-t-taxable-person-fact-missing
+    matrix: [missing_fact]
+    covers: [eu-vat-outside-scope-without-taxable-person]
+    why: >-
+      Whether a person acts as a taxable person is never recoverable from a
+      transaction. With the fact absent the pack must not guess in either
+      direction.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: UNKNOWN }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: eu-t-scope-boundary-2018-12-31
+    matrix: [boundary_date]
+    covers: [eu-vat-outside-scope-without-taxable-person]
+    why: >-
+      The day before this pack's modelled window opens. The Directive was in
+      force in 2018; the pack has simply not looked, and says so by answering
+      UNKNOWN rather than reaching back.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts: { supplier_acts_as_taxable_person: false }
+      as_of: { transaction_date: '2018-12-31', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: eu-t-scope-boundary-2019-01-01
+    matrix: [boundary_date]
+    covers: [eu-vat-outside-scope-without-taxable-person]
+    why: The first day the window covers. Same facts, and now an answer.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts: { supplier_acts_as_taxable_person: false }
+      as_of: { transaction_date: '2019-01-01', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [eu-vat-outside-scope-without-taxable-person]

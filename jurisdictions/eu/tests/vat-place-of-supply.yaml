@@ -1,0 +1,193 @@
+# The place-of-supply chain: art. 44 for business customers, art. 45 for
+# consumers, art. 58 taking electronically supplied services to the consumer
+# instead. The three must partition cleanly — exactly one of them answers a
+# given set of facts, and none of them answers when a fact is missing.
+#
+# ART_PRIMARY_SALE with no asset_category is the isolating input: the NFT
+# marker requires a non-fungible asset, so these cases return the location
+# answer alone. The last case deliberately breaks that isolation to show what
+# an NFT question really looks like.
+test_suite_id: eu-tests-vat-place-of-supply
+jurisdiction: eu
+todo: P0-3-04
+covers:
+  - eu-vat-place-of-supply-services-b2b
+  - eu-vat-place-of-supply-services-b2c
+  - eu-vat-place-of-supply-electronic-services-b2c
+cases:
+  - test_id: eu-t-b2b-services-customer-member-state
+    matrix: [positive]
+    covers: [eu-vat-place-of-supply-services-b2b]
+    why: >-
+      A French artist invoicing a business established in another Member State.
+      Art. 44 moves the supply to the customer's country before any national
+      rate is reached, and getting this wrong is how a small studio ends up
+      charging the wrong country's VAT for years.
+    input:
+      event: { event_type: ART_PRIMARY_SALE }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts:
+        { supply_is_of_services: true, customer_is_taxable_person: true }
+      as_of: { transaction_date: '2022-05-10', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [eu-vat-place-of-supply-services-b2b]
+      certainty_level: AUTHORITATIVE_CLEAR
+      effects:
+        eu-vat-place-of-supply-services-b2b:
+          { classification: PLACE_OF_SUPPLY_WHERE_CUSTOMER_ESTABLISHED }
+
+  - test_id: eu-t-b2b-not-reached-when-customer-is-consumer
+    matrix: [negative, positive]
+    covers:
+      - eu-vat-place-of-supply-services-b2b
+      - eu-vat-place-of-supply-services-b2c
+      - eu-vat-place-of-supply-electronic-services-b2c
+    why: >-
+      The same supply to a consumer, not electronically supplied. Art. 45 keeps
+      it where the supplier is, and neither of the other two rules may reach
+      it. One case pins all three boundaries at once.
+    input:
+      event: { event_type: ART_PRIMARY_SALE }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts:
+        supply_is_of_services: true
+        customer_is_taxable_person: false
+        supply_is_electronically_supplied_service: false
+      as_of: { transaction_date: '2022-05-10', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [eu-vat-place-of-supply-services-b2c]
+      not_applicable_rule_ids:
+        - eu-vat-place-of-supply-services-b2b
+        - eu-vat-place-of-supply-electronic-services-b2c
+      effects:
+        eu-vat-place-of-supply-services-b2c:
+          { classification: PLACE_OF_SUPPLY_WHERE_SUPPLIER_ESTABLISHED }
+
+  - test_id: eu-t-b2c-electronic-service-customer-member-state
+    matrix: [positive]
+    covers:
+      - eu-vat-place-of-supply-electronic-services-b2c
+      - eu-vat-place-of-supply-services-b2c
+    why: >-
+      The case the general B2C rule must yield. Once the supply is
+      electronically supplied and the customer is a consumer, the supply
+      follows the customer, not the supplier — and the general rule must be
+      silent rather than offering a competing country.
+    input:
+      event: { event_type: ART_PRIMARY_SALE }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts:
+        supply_is_of_services: true
+        customer_is_taxable_person: false
+        supply_is_electronically_supplied_service: true
+      as_of: { transaction_date: '2022-05-10', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [eu-vat-place-of-supply-electronic-services-b2c]
+      not_applicable_rule_ids:
+        - eu-vat-place-of-supply-services-b2c
+        - eu-vat-place-of-supply-services-b2b
+      effects:
+        eu-vat-place-of-supply-electronic-services-b2c:
+          { classification: PLACE_OF_SUPPLY_WHERE_CUSTOMER_BELONGS }
+
+  - test_id: eu-t-electronic-service-b2b-not-reached
+    matrix: [negative]
+    covers:
+      - eu-vat-place-of-supply-electronic-services-b2c
+      - eu-vat-place-of-supply-services-b2b
+    why: >-
+      Electronically supplied and sold to a business. Art. 58 is a B2C
+      derogation, so it must not fire here; art. 44 already sends the supply to
+      the same customer for a different reason, and conflating the two is how a
+      pack ends up applying consumer-location evidence rules to a B2B invoice.
+    input:
+      event: { event_type: LICENCE_INCOME }
+      participant: { capacity: CREATOR }
+      jurisdiction_facts:
+        supply_is_of_services: true
+        customer_is_taxable_person: true
+        supply_is_electronically_supplied_service: true
+      as_of: { transaction_date: '2022-05-10', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [eu-vat-place-of-supply-services-b2b]
+      not_applicable_rule_ids: [eu-vat-place-of-supply-electronic-services-b2c]
+
+  - test_id: eu-t-place-of-supply-facts-missing
+    matrix: [missing_fact]
+    covers:
+      - eu-vat-place-of-supply-services-b2b
+      - eu-vat-place-of-supply-services-b2c
+      - eu-vat-place-of-supply-electronic-services-b2c
+    why: >-
+      Nothing in a transaction record says whether the buyer was a business.
+      With the facts absent all three rules stay silent — the pack asks rather
+      than defaulting to the supplier's own country, which is the assumption a
+      European seller most often makes and most often gets wrong.
+    input:
+      event: { event_type: ART_PRIMARY_SALE }
+      participant: { capacity: ARTIST }
+      as_of: { transaction_date: '2022-05-10', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+      gaps_include: ['no rule matches']
+
+  - test_id: eu-t-place-of-supply-boundary-2018-12-31
+    matrix: [boundary_date]
+    covers: [eu-vat-place-of-supply-services-b2b]
+    why: >-
+      The day before the window opens. The place-of-supply articles took their
+      current form through amending instruments this pack has not indexed, so
+      an earlier year gets no answer at all rather than today's answer
+      back-projected onto it.
+    input:
+      event: { event_type: ART_PRIMARY_SALE }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts:
+        { supply_is_of_services: true, customer_is_taxable_person: true }
+      as_of: { transaction_date: '2018-12-31', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: eu-t-place-of-supply-boundary-2019-01-01
+    matrix: [boundary_date]
+    covers: [eu-vat-place-of-supply-services-b2b]
+    why: The first day of the window, same facts, and now an answer.
+    input:
+      event: { event_type: ART_PRIMARY_SALE }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts:
+        { supply_is_of_services: true, customer_is_taxable_person: true }
+      as_of: { transaction_date: '2019-01-01', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [eu-vat-place-of-supply-services-b2b]
+
+  - test_id: eu-t-nft-place-of-supply-still-answered
+    matrix: [positive, ambiguous]
+    covers:
+      - eu-vat-place-of-supply-services-b2b
+      - eu-vat-no-eu-authority-on-nft-supplies
+    why: >-
+      What an NFT question actually looks like at EU level, and the reason both
+      halves must come back together. Where the supply is located is answered;
+      what the token supplies is not. A pack that returned only the first would
+      read as a clean answer, and a pack that returned only the second would
+      hide the half that is settled.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts:
+        { supply_is_of_services: true, customer_is_taxable_person: true }
+      as_of: { transaction_date: '2022-05-10', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids:
+        - eu-vat-no-eu-authority-on-nft-supplies
+        - eu-vat-place-of-supply-services-b2b
+      certainty_level: UNSETTLED

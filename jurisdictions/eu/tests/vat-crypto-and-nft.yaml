@@ -1,0 +1,169 @@
+# Hedqvist and the NFT gap — the pair this dependency pack exists for. The
+# France pack's 2021–2023 VAT gap is only honest if the EU level is honest
+# about having no NFT authority of its own, and Hedqvist is only usable if it
+# is fenced to the transaction the Court actually decided.
+test_suite_id: eu-tests-vat-crypto-and-nft
+jurisdiction: eu
+todo: P0-3-04
+covers:
+  - eu-vat-payment-token-currency-exchange-exempt
+  - eu-vat-no-eu-authority-on-nft-supplies
+cases:
+  - test_id: eu-t-fiat-token-exchange-exempt
+    matrix: [positive]
+    covers: [eu-vat-payment-token-currency-exchange-exempt]
+    why: >-
+      The transaction C-264/14 decided: a taxable person exchanging a fungible
+      payment token against a traditional currency. Exempt, and the only thing
+      in this pack that says so.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: BUSINESS_OWNER }
+      jurisdiction_facts:
+        exchange_against_traditional_currency: true
+        supplier_acts_as_taxable_person: true
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [eu-vat-payment-token-currency-exchange-exempt]
+      certainty_level: AUTHORITATIVE_CLEAR
+      effects:
+        eu-vat-payment-token-currency-exchange-exempt:
+          { classification: VAT_EXEMPT_CURRENCY_TRANSACTION }
+      published_after_transaction:
+        eu-vat-payment-token-currency-exchange-exempt: false
+      contemporaneous_source_count:
+        eu-vat-payment-token-currency-exchange-exempt: 2
+
+  - test_id: eu-t-token-for-token-swap-not-reached
+    matrix: [negative]
+    covers: [eu-vat-payment-token-currency-exchange-exempt]
+    why: >-
+      No traditional currency on either side. The Court was not asked about
+      token-for-token and did not answer it, so the exemption must not follow
+      the trade. UNKNOWN is the whole point of this case.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: BUSINESS_OWNER }
+      jurisdiction_facts:
+        exchange_against_traditional_currency: false
+        supplier_acts_as_taxable_person: true
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: eu-t-exchange-currency-fact-missing
+    matrix: [missing_fact]
+    covers: [eu-vat-payment-token-currency-exchange-exempt]
+    why: >-
+      A transfer of tokens does not record what stood on the other side of it.
+      Without that fact the exemption is not available.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: BUSINESS_OWNER }
+      jurisdiction_facts: { supplier_acts_as_taxable_person: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: eu-t-hedqvist-boundary-2018-12-31
+    matrix: [boundary_date]
+    covers: [eu-vat-payment-token-currency-exchange-exempt]
+    why: >-
+      The judgment is from 2015 and the window opens in 2019. The gap between
+      those two dates is a gap in what this pack has looked at, not in the law,
+      and the pack must not pretend otherwise by answering.
+    input:
+      event: { event_type: CRYPTO_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: BUSINESS_OWNER }
+      jurisdiction_facts:
+        exchange_against_traditional_currency: true
+        supplier_acts_as_taxable_person: true
+      as_of: { transaction_date: '2018-12-31', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: eu-t-nft-sale-unsettled-at-eu-level
+    matrix: [ambiguous]
+    covers: [eu-vat-no-eu-authority-on-nft-supplies]
+    why: >-
+      An NFT sale with no facts supplied. The answer is REVIEW_REQUIRED with
+      the reason attached: no EU instrument indexed here reaches non-fungible
+      tokens. Not APPLICABLE, and not silence.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: ARTIST }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids: [eu-vat-no-eu-authority-on-nft-supplies]
+      certainty_level: UNSETTLED
+      effects:
+        eu-vat-no-eu-authority-on-nft-supplies:
+          { classification: UNSETTLED_NO_EU_AUTHORITY }
+
+  - test_id: eu-t-nft-sale-not-reached-by-hedqvist
+    matrix: [negative]
+    covers:
+      - eu-vat-payment-token-currency-exchange-exempt
+      - eu-vat-no-eu-authority-on-nft-supplies
+    why: >-
+      An NFT sold for euros by a taxable person: every fact Hedqvist wants is
+      present except fungibility, and that is the fact the case turns on. The
+      exemption must not reach it — the 2024 French rescrit says NFT operations
+      sit outside the financial exemption, and stretching C-264/14 across that
+      line is the single most likely misuse of this pack.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: MARKETPLACE_OPERATOR }
+      jurisdiction_facts:
+        exchange_against_traditional_currency: true
+        supplier_acts_as_taxable_person: true
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids: [eu-vat-no-eu-authority-on-nft-supplies]
+      not_applicable_rule_ids: [eu-vat-payment-token-currency-exchange-exempt]
+
+  - test_id: eu-t-fungible-sale-not-marked-unsettled
+    matrix: [negative]
+    covers: [eu-vat-no-eu-authority-on-nft-supplies]
+    why: >-
+      The NFT marker must not attach itself to a fungible supply. If it did,
+      every crypto question in the pack would come back REVIEW_REQUIRED and the
+      marker would stop meaning anything.
+    input:
+      event: { event_type: ART_PRIMARY_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts:
+        { supply_is_of_services: true, customer_is_taxable_person: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [eu-vat-place-of-supply-services-b2b]
+      not_applicable_rule_ids: [eu-vat-no-eu-authority-on-nft-supplies]
+
+  - test_id: eu-t-nft-2021-sees-no-later-eu-guidance
+    matrix: [historical_version]
+    covers: [eu-vat-no-eu-authority-on-nft-supplies]
+    why: >-
+      The Time Machine anchor this pack owes France. Asked about 2021 from
+      2026, the EU level must return the same two 2015-or-earlier sources it
+      had then and nothing in later guidance — because nothing at EU level has
+      arrived since. If an EU NFT instrument is ever indexed, this case is
+      where it will first show up as later guidance.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: ARTIST }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: REVIEW_REQUIRED
+      applicable_rule_ids: [eu-vat-no-eu-authority-on-nft-supplies]
+      later_guidance_rule_ids: []
+      published_after_transaction:
+        eu-vat-no-eu-authority-on-nft-supplies: false
+      contemporaneous_source_count:
+        eu-vat-no-eu-authority-on-nft-supplies: 2

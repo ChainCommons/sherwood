@@ -1,5 +1,6 @@
-# LEVEL 1: official sources are indexed with dates, links and hashes.
-# Nothing here is tax guidance. No rules are modelled yet — see RESEARCH.md.
+# LEVEL 3: sources indexed, and a narrow set modelled as machine-readable rules
+# in rules/ with tests in tests/. Nothing here is tax guidance.
+# See RESEARCH.md for what is NOT modelled, and unsupported.yaml for the list.
 $schema: https://schemas.opencryptotaxcommons.org/jurisdiction/jurisdiction.schema.json
 jurisdiction_id: eu
 name: European Union
@@ -10,20 +11,20 @@ official_languages:
   - en
 timezone_reference: Europe/Brussels
 tax_year_convention: CALENDAR_YEAR
-supported_tax_domains: []
+supported_tax_domains:
+  - vat
+  - crypto_reporting
 unsupported_tax_domains:
   - personal_income_tax
   - professional_business_income
   - corporation_tax
   - capital_gains
-  - vat
   - social_security
   - artist_social_regime
   - self_employment_contributions
   - withholding
   - business_registration
   - reporting
-  - crypto_reporting
   - foreign_asset_reporting
   - deductible_expenses
   - tax_lot_accounting
@@ -37,12 +38,22 @@ unsupported_tax_domains:
   - court_deadlines
 maintainers: []
 review_status: COMMUNITY_DRAFT
-maturity_level: 1
+maturity_level: 3
 last_source_verification: '2026-09-08'
 notes: >-
-  Dependency pack for France, not an EU tax pack. Five instruments are indexed
-  (MiCA, the VAT Directive, the 2022 VAT-rates amendment, DAC8, CJEU Hedqvist)
-  so national packs can reference them instead of duplicating them. Every tax
-  domain stays unsupported until a sourced rule exists; the VAT and
-  place-of-supply skeleton is P0-3-04.
+  Dependency pack for France, not an EU tax pack and not a member state. Five
+  instruments are indexed (MiCA, the VAT Directive, the 2022 VAT-rates
+  amendment, DAC8, CJEU Hedqvist) so national packs can reference them instead
+  of duplicating them, and seven rules model the narrow set those instruments
+  support: the taxable-person scope gate, the three place-of-supply rules,
+  Hedqvist, the absence of any EU authority on NFTs, and that DAC8 reporting
+  changes no treatment. Two domains move to supported because a sourced rule
+  now decides something in them. Supported does not mean answered: the pack
+  says where a supply is located and whether VAT reaches it, never at what rate
+  or how much, and direct taxation is a Member State competence with no EU
+  layer to model at all. The modelled window opens 2019-01-01 because the
+  place-of-supply articles reached their current form through amending
+  instruments not indexed here. Review status stays COMMUNITY_DRAFT: no rule is
+  SOURCE_VERIFIED and no EU-qualified reviewer is recorded. See RESEARCH.md,
+  unsupported.yaml, rules/README.md and tests/README.md.
 schema_version: 0.1.0
