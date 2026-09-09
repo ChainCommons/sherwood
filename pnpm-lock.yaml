@@ -35,6 +35,8 @@ importers:
         specifier: ^10.4.3
         version: 10.6.0
 
+  packages/event-engine: {}
+
   packages/evidence: {}
 
   packages/rules-engine:
