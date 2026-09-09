@@ -89,10 +89,48 @@ describe('unique-ids', () => {
     expect(issues.length).toBe(1)
     expect(issues[0]!.message).toMatch(/duplicate source_version_id "dup-v"/)
   })
+
+  it('does not mistake the rule_id foreign key on an interpretation for a declaration', () => {
+    // Plan 05 §100: competing readings of one rule are the point, so a rule and
+    // its interpretations legitimately share a rule_id.
+    write('jurisdictions/france/rules/r.yaml', 'rule_id: fr-rule\njurisdiction_id: france\n')
+    write(
+      'jurisdictions/france/interpretations/a.yaml',
+      'interpretation_id: fr-interp-a\nrule_id: fr-rule\n'
+    )
+    write(
+      'jurisdictions/france/interpretations/b.yaml',
+      'interpretation_id: fr-interp-b\nrule_id: fr-rule\n'
+    )
+    expect(uniqueIds.run({ root: sandbox })).toEqual([])
+  })
+
+  it('still flags two interpretations claiming one interpretation_id', () => {
+    const doc = 'interpretation_id: dup-i\nrule_id: fr-rule\n'
+    write('jurisdictions/france/interpretations/a.yaml', doc)
+    write('jurisdictions/france/interpretations/b.yaml', doc)
+    const issues = uniqueIds.run({ root: sandbox })
+    expect(issues.length).toBe(1)
+    expect(issues[0]!.message).toMatch(/duplicate interpretation_id "dup-i"/)
+  })
 })
 
 describe('temporal', () => {
   const base = 'rule_id: r1\njurisdiction_id: france\n'
+
+  it('does not demand published_from from an interpretation of a rule', () => {
+    // The interpretation schema has no published_from and forbids extra
+    // properties, so demanding it made the rule_id field unusable.
+    write('jurisdictions/france/interpretations/a.yaml', base + 'interpretation_id: fr-interp-a\n')
+    expect(temporal.run({ root: sandbox })).toEqual([])
+  })
+
+  it('still demands published_from from an actual rule', () => {
+    write('jurisdictions/france/rules/r.yaml', base)
+    const issues = temporal.run({ root: sandbox })
+    expect(issues.length).toBe(1)
+    expect(issues[0]!.message).toMatch(/missing published_from/)
+  })
 
   it('rejects an effective range that ends before it starts', () => {
     write('jurisdictions/france/rules/r.yaml', base + 'effective_from: 2021-01-01\neffective_to: 2020-01-01\npublished_from: 2020-12-01\n')

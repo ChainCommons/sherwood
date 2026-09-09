@@ -32,10 +32,15 @@ const ID_FIELDS = [
  * version of (plan 05 §28) — the mechanism by which historical text survives
  * alongside current text. Without this carve-out a source plus any of its
  * versions is a duplicate, so `source-version.schema.json` could not be used.
+ *
+ * `rule_id` on an interpretation is likewise the foreign key to the rule being
+ * read (plan 05 §100). Competing readings of one rule are the point, so two
+ * interpretations naturally share a `rule_id` with it and with each other.
  */
 const declaresId = (field: string, doc: Record<string, unknown>): boolean => {
   if (field === 'jurisdiction_id') return typeof doc.jurisdiction_type === 'string'
   if (field === 'source_id') return doc.source_version_id === undefined
+  if (field === 'rule_id') return doc.interpretation_id === undefined
   return true
 }
 

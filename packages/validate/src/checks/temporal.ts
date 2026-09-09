@@ -23,6 +23,7 @@ interface Dated {
   repealed_at?: unknown
   rule_id?: unknown
   source_id?: unknown
+  interpretation_id?: unknown
 }
 
 const asDate = (v: unknown): string | undefined => (typeof v === 'string' ? v : undefined)
@@ -51,7 +52,9 @@ export const temporal: SyncCheck = {
         }
 
         const published = asDate(d.published_from) ?? asDate(d.publication_date)
-        const isRule = typeof d.rule_id === 'string'
+        // An interpretation carries rule_id as the foreign key to the rule it
+        // reads, and has no published_from of its own to demand.
+        const isRule = typeof d.rule_id === 'string' && d.interpretation_id === undefined
         if (isRule && published === undefined) {
           issues.push(error('temporal', path, 'rule is missing published_from (AC-002 needs it)'))
         }
