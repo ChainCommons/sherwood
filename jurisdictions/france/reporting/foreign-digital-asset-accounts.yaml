@@ -1,0 +1,42 @@
+# Information reporting is a separate type from taxation (plan 10 §57,
+# INV-018). REPORTABLE is not TAXABLE and NOT REPORTED is not NOT TAXABLE, so
+# this obligation is authored as a reporting rule and no `rule` in this pack
+# points at it as a tax-base rule.
+#
+# It is here because it is the France obligation most often missed and it is
+# well sourced: statute, doctrine and the form itself.
+$schema: https://schemas.opencryptotaxcommons.org/rule/reporting-rule.schema.json
+reporting_rule_id: fr-foreign-digital-asset-account-declaration
+jurisdiction: france
+framework: >-
+  CGI art. 1649 bis C — déclaration des comptes d'actifs numériques ouverts,
+  détenus, utilisés ou clos à l'étranger, on form 3916 / 3916 bis
+reporting_party: >-
+  The taxpayer, on their own annual return. This is a self-reporting
+  obligation, not third-party reporting by a service provider.
+reported_person: >-
+  The individual, association or non-commercial company domiciled or
+  established in France that holds the account.
+reported_fields:
+  - account identifier
+  - account holder
+  - the institution holding the account and its country
+  - opening, holding, use or closure during the year
+reporting_period: Calendar year, declared with the annual income tax return.
+effective_from: '2020-01-01'
+published_from: '2018-12-28'
+sources:
+  - fr-cgi-1649-bis-c
+  - fr-cgi-1736
+  - fr-impots-form-3916
+  - fr-bofip-cf-cpf-30-20
+  - fr-impots-actu-comptes-actifs-numeriques-etranger
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01). The penalties at CGI art. 1736 are cited
+    but not modelled: RESEARCH.md §6 records that the paragraph numbering
+    inside that article was not transcribed, so no penalty rule may be built on
+    it without re-reading it.
+schema_version: 0.1.0

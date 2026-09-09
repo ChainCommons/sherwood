@@ -1,6 +1,6 @@
-# LEVEL 2: sources are indexed with dates, links and hashes, and the main
-# questions have a human-readable explanation in explanations/.
-# Nothing here is tax guidance. No rules are modelled yet — see RESEARCH.md.
+# LEVEL 3: sources indexed, explained, and a narrow set of them modelled as
+# machine-readable rules in rules/ with tests in tests/.
+# Nothing here is tax guidance. See RESEARCH.md for what is NOT modelled.
 $schema: https://schemas.opencryptotaxcommons.org/jurisdiction/jurisdiction.schema.json
 jurisdiction_id: france
 name: France
@@ -11,13 +11,15 @@ official_languages:
   - fr
 timezone_reference: Europe/Paris
 tax_year_convention: CALENDAR_YEAR
-supported_tax_domains: []
+supported_tax_domains:
+  - capital_gains
+  - tax_lot_accounting
+  - vat
+  - foreign_asset_reporting
 unsupported_tax_domains:
   - personal_income_tax
   - professional_business_income
   - corporation_tax
-  - capital_gains
-  - vat
   - social_security
   - artist_social_regime
   - self_employment_contributions
@@ -25,9 +27,7 @@ unsupported_tax_domains:
   - business_registration
   - reporting
   - crypto_reporting
-  - foreign_asset_reporting
   - deductible_expenses
-  - tax_lot_accounting
   - recordkeeping
   - filing
   - corrections
@@ -38,16 +38,21 @@ unsupported_tax_domains:
   - court_deadlines
 maintainers: []
 review_status: COMMUNITY_DRAFT
-maturity_level: 2
+maturity_level: 3
 last_source_verification: '2026-09-08'
 notes: >-
-  Sources indexed and explained; no rules modelled. LEVEL 2 records the seven
-  human-readable explanations in explanations/, which is a reading of the
-  sources, not an executable rule: every tax domain stays unsupported until a
-  sourced rule exists (P0-3-03), so the UI reports 'not modelled' rather than
-  implying that silence means no tax applies. France published no NFT-specific
-  VAT guidance before 2024-02-14 and no NFT income-tax provision before CGI
-  art. 150 VH ter (2026), so an NFT question about an earlier year is
-  UNSETTLED, not unanswered by accident. See RESEARCH.md and
-  explanations/README.md.
+  LEVEL 3: thirteen machine-readable rules in rules/, two competing
+  interpretations, one reporting rule and 52 test cases. Four domains move to
+  supported because a sourced rule now decides something in them; the rest stay
+  unsupported so the UI reports 'not modelled' rather than implying that
+  silence means no tax applies. Supported does not mean answered: five of the
+  thirteen rules are UNSETTLED and exist to record what France had not decided,
+  and personal_income_tax and professional_business_income stay unsupported
+  even though a rule exists in each, because those rules only mark the boundary
+  of the question. France published no NFT-specific VAT guidance before
+  2024-02-14 and no NFT income-tax provision before CGI art. 150 VH ter (2026),
+  so an NFT question about an earlier year is UNSETTLED, not unanswered by
+  accident. Review status stays COMMUNITY_DRAFT throughout: no rule is
+  SOURCE_VERIFIED or EXPERT_REVIEWED, and no qualified French reviewer is
+  recorded (P0-L-01). See RESEARCH.md, rules/README.md and tests/README.md.
 schema_version: 0.1.0

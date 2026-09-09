@@ -1,0 +1,190 @@
+# Rule tests for the NFT income-tax perimeter: the 2019–2025 gap, the two
+# competing readings of it, and the 2026 successor (§86 matrix).
+#
+# This is the suite the France pack exists for. Every case here is a check that
+# the engine does not answer a question France had not answered.
+test_suite_id: fr-tests-nft-disposal
+jurisdiction: france
+todo: P0-3-03
+covers:
+  - fr-nft-disposal-perimeter-unsettled-2019-2025
+  - fr-nft-disposal-regime-of-underlying-from-2026
+cases:
+  - test_id: fr-t-nft-sale-2021-unresolved
+    matrix: [positive, ambiguous]
+    covers:
+      - fr-nft-disposal-perimeter-unsettled-2019-2025
+      - fr-nft-vat-unsettled-before-2024
+    why: >-
+      An artist selling an NFT in 2021. Two readings of art. 150 VH bis coexist
+      and neither is chosen (plan 05 §100, AC-011), so the engine returns
+      UNRESOLVED with both attached. VAT is open in the same breath.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts: { french_tax_resident: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNRESOLVED
+      applicable_rule_ids:
+        - fr-nft-disposal-perimeter-unsettled-2019-2025
+        - fr-nft-vat-unsettled-before-2024
+      certainty_level: CONFLICTING_AUTHORITIES
+      interpretations:
+        fr-nft-disposal-perimeter-unsettled-2019-2025:
+          - fr-interp-nft-inside-150-vh-bis
+          - fr-interp-nft-outside-150-vh-bis
+      effects:
+        fr-nft-disposal-perimeter-unsettled-2019-2025:
+          classification: UNSETTLED_PERIMETER
+
+  - test_id: fr-t-nft-sale-2025-still-unresolved
+    matrix: [boundary_date, ambiguous]
+    covers:
+      - fr-nft-disposal-perimeter-unsettled-2019-2025
+      - fr-nft-disposal-regime-of-underlying-from-2026
+      - fr-nft-vat-look-through-to-underlying-2024
+      - fr-nft-vat-unsettled-before-2024
+    why: >-
+      2025-12-31 is the last day of the income-tax gap. Four years on from the
+      first case the income-tax answer has not moved, even though VAT has: the
+      2024 rescrit now applies and the perimeter question still does not.
+    input:
+      event: { event_type: ART_SECONDARY_SALE, asset_category: non_fungible_token }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { french_tax_resident: true }
+      as_of: { transaction_date: '2025-12-31', analysis_date: '2026-09-09' }
+    expect:
+      status: UNRESOLVED
+      applicable_rule_ids:
+        - fr-nft-disposal-perimeter-unsettled-2019-2025
+        - fr-nft-vat-look-through-to-underlying-2024
+      not_applicable_rule_ids:
+        - fr-nft-disposal-regime-of-underlying-from-2026
+        - fr-nft-vat-unsettled-before-2024
+
+  - test_id: fr-t-nft-sale-2026-not-covered
+    matrix: [boundary_date, successor_version]
+    covers:
+      - fr-nft-disposal-perimeter-unsettled-2019-2025
+      - fr-nft-disposal-regime-of-underlying-from-2026
+      - fr-nft-vat-look-through-to-underlying-2024
+    why: >-
+      2026-01-01, the first day of art. 150 VH ter. The gap rule stops and the
+      successor takes over — but the successor was not published until
+      2026-06-25, so on this date it is later guidance while the VAT rule,
+      published 2024, is contemporaneous. The two clocks come apart in a single
+      result.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts: { french_tax_resident: true }
+      as_of: { transaction_date: '2026-01-01', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-nft-vat-look-through-to-underlying-2024]
+      later_guidance_rule_ids: [fr-nft-disposal-regime-of-underlying-from-2026]
+      not_applicable_rule_ids: [fr-nft-disposal-perimeter-unsettled-2019-2025]
+      published_after_transaction:
+        fr-nft-disposal-regime-of-underlying-from-2026: true
+        fr-nft-vat-look-through-to-underlying-2024: false
+
+  - test_id: fr-t-nft-sale-2026-before-publication-is-later-guidance
+    matrix: [historical_version]
+    covers:
+      - fr-nft-disposal-regime-of-underlying-from-2026
+    why: >-
+      The pack's clearest AC-002 exhibit. A disposal on 2026-03-01 is governed
+      by art. 150 VH ter, whose words did not exist until 2026-06-25. The rule
+      must appear only as later guidance, with no contemporaneous source, and
+      the overall answer must be UNKNOWN — a taxpayer acting that March had
+      nothing to read.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts: { french_tax_resident: true }
+      as_of: { transaction_date: '2026-03-01', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+      later_guidance_rule_ids: [fr-nft-disposal-regime-of-underlying-from-2026]
+      published_after_transaction:
+        fr-nft-disposal-regime-of-underlying-from-2026: true
+      contemporaneous_source_count:
+        fr-nft-disposal-regime-of-underlying-from-2026: 0
+      gaps_include: ['only later-published guidance covers this period']
+
+  - test_id: fr-t-nft-sale-2026-after-publication
+    matrix: [successor_version, positive]
+    covers:
+      - fr-nft-disposal-regime-of-underlying-from-2026
+    why: >-
+      Once the article has been published the same disposal gets a
+      contemporaneous answer, and the answer is a routing instruction rather
+      than a number: the regime of the underlying good or right.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts: { french_tax_resident: true }
+      as_of: { transaction_date: '2026-09-01', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-nft-disposal-regime-of-underlying-from-2026]
+      later_guidance_rule_ids: []
+      certainty_level: AUTHORITATIVE_INTERPRETIVE
+      published_after_transaction:
+        fr-nft-disposal-regime-of-underlying-from-2026: false
+      effects:
+        fr-nft-disposal-regime-of-underlying-from-2026:
+          classification: REGIME_OF_UNDERLYING_GOOD_OR_RIGHT
+
+  - test_id: fr-t-nft-rule-does-not-catch-fungible-sale-2021
+    matrix: [negative]
+    covers:
+      - fr-nft-disposal-perimeter-unsettled-2019-2025
+    why: >-
+      Labelling an event NFT_SALE does not make the asset non-fungible. The
+      perimeter rule is guarded on the asset, so a mislabelled fungible sale
+      falls through rather than inheriting the NFT uncertainty.
+    input:
+      event: { event_type: NFT_SALE, asset_category: fungible_digital_asset }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts: { french_tax_resident: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-nft-sale-missing-asset-category-2021
+    matrix: [missing_fact]
+    covers:
+      - fr-nft-disposal-perimeter-unsettled-2019-2025
+    why: >-
+      MiCA treats issuance in a large series as an indicator of fungibility and
+      says a unique identifier alone is not enough, so "is this an NFT" is a
+      question about a specific collection. Until the user answers it the
+      engine must not pick.
+    input:
+      event: { event_type: NFT_SALE }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts: { french_tax_resident: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-nft-sale-2026-non-resident
+    matrix: [negative]
+    covers:
+      - fr-nft-disposal-regime-of-underlying-from-2026
+    why: >-
+      Art. 150 VH ter reaches French-resident individuals. A confirmed
+      non-resident is outside this pack.
+    input:
+      event: { event_type: NFT_SALE, asset_category: non_fungible_token }
+      participant: { capacity: PRIVATE_INVESTOR }
+      jurisdiction_facts: { french_tax_resident: false }
+      as_of: { transaction_date: '2026-09-01', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []

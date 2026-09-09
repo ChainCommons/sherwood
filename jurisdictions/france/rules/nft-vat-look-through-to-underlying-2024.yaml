@@ -1,0 +1,68 @@
+# The first French administrative guidance specific to NFTs, and it is about
+# VAT only: rescrit BOI-RES-TVA-000140 of 2024-02-14.
+#
+# It says non-fungible tokens have no VAT regime of their own, that the
+# analysis looks through the token to the underlying good or service, and that
+# a JNF is not a payment, utility or investment token — so NFT operations sit
+# outside the financial exemption of CGI art. 261 C.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: fr-nft-vat-look-through-to-underlying-2024
+jurisdiction_id: france
+tax_domain: vat
+title: >-
+  From 2024-02-14, NFT VAT analysis looks through the token to the underlying
+  good or service
+applies_to:
+  capacities:
+    - ARTIST
+    - CREATOR
+    - COLLECTOR
+    - MARKETPLACE_OPERATOR
+  event_types:
+    - NFT_SALE
+    - NFT_MINT
+    - NFT_ROYALTY
+    - ART_PRIMARY_SALE
+    - ART_SECONDARY_SALE
+dsl_version: '0'
+conditions:
+  all:
+    - field: asset_category
+      op: eq
+      value: non_fungible_token
+effects:
+  classification: VAT_LOOK_THROUGH_TO_UNDERLYING
+effective_from: '2024-02-14'
+published_from: '2024-02-14'
+sources:
+  - fr-bofip-res-tva-000140-2024
+  - eu-dir-2006-112-vat
+authority_status: ADMINISTRATIVE_GUIDANCE
+certainty:
+  level: AUTHORITATIVE_INTERPRETIVE
+  reason: >-
+    A rescrit is administrative doctrine, opposable to the administration but
+    not legislation. It settles the method — look through to the underlying —
+    without settling the answer for any particular underlying.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+test_cases:
+  - fr-t-nft-sale-2025-still-unresolved
+  - fr-t-nft-sale-2026-not-covered
+  - fr-t-nft-vat-2021-unsettled
+  - fr-t-nft-vat-2021-does-not-see-2024-rescrit
+  - fr-t-nft-vat-boundary-2024-02-14
+  - fr-t-nft-vat-2024-look-through
+notes: >-
+  effective_from is the publication date, deliberately. A rescrit states the
+  administration's reading of law that already existed, so an argument that it
+  describes earlier years is available — but this pack will not encode a
+  retrospective reach the document does not claim, and doing so would erase the
+  2021–2023 gap that fr-nft-vat-unsettled-before-2024 exists to record. No rate
+  follows from this rule. The 5,5 % reduced rate for works of art turns on the
+  closed list at CGI ann. III art. 98 A, which enumerates physical media only,
+  so it must not be asserted for a digital-only work on the indexed sources.
+schema_version: 0.1.0

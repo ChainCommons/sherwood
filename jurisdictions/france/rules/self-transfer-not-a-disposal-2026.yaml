@@ -1,0 +1,63 @@
+# Successor version of fr-self-transfer-not-a-disposal-2019.
+#
+# Art. 150 VH bis was recast on 2026-06-28 to take its perimeter from the MiCA
+# regulation instead of CMF art. L. 54-10-1. The charging words « cession à
+# titre onéreux » are unchanged, so the construction survives the recast — but
+# the rule is versioned rather than extended, because the source it rests on is
+# a different text with a different perimeter, and plan 05 §28 forbids letting
+# current text overwrite historical text.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: fr-self-transfer-not-a-disposal-2026
+jurisdiction_id: france
+tax_domain: capital_gains
+title: >-
+  Confirmed transfer between wallets of the same owner is not a cession à titre
+  onéreux (art. 150 VH bis, rédaction 2026)
+applies_to:
+  capacities:
+    - COLLECTOR
+    - PRIVATE_INVESTOR
+    - ARTIST
+    - CREATOR
+  event_types:
+    - SELF_TRANSFER
+dsl_version: '0'
+conditions:
+  all:
+    - field: jurisdiction_facts.same_beneficial_owner_confirmed
+      op: eq
+      value: true
+effects:
+  classification: NOT_A_DISPOSAL
+effective_from: '2026-06-28'
+published_from: '2026-06-25'
+sources:
+  - fr-cgi-150-vh-bis-2026
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_INTERPRETIVE
+  reason: >-
+    Same construction as the 2019 wording: the recast article still charges
+    disposals « à titre onéreux », and a transfer between addresses of the same
+    owner is not one.
+supersedes:
+  - fr-self-transfer-not-a-disposal-2019
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+test_cases:
+  - fr-t-self-transfer-confirmed-2021
+  - fr-t-self-transfer-boundary-last-day-of-2019-text
+  - fr-t-self-transfer-boundary-first-day-of-2026-text
+  - fr-t-self-transfer-confirmed-2026-successor
+  - fr-t-self-transfer-unconfirmed-2026
+notes: >-
+  RESEARCH.md §6 records an unresolved conflict between two Légifrance
+  consolidations of this article (2026-06-28 from loi n° 2026-534 and
+  2026-07-01 attributed to ordonnance n° 2024-936). This rule follows the
+  captured wording. If the ordonnance consolidation turns out to govern, the
+  effective_from here moves and a third version is added — it is not edited in
+  place.
+schema_version: 0.1.0

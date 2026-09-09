@@ -1,0 +1,46 @@
+# Reading 1 of the 2019–2025 NFT perimeter question. Recorded, not endorsed.
+# NOTE: this record carries no `rule_id`, although
+# `schemas/rule/interpretation.schema.json` offers one as the foreign key back
+# to the rule it interprets. Two validator checks read any document with a
+# `rule_id` as a *rule*: `unique-ids` counts the foreign key as a second
+# declaration of the rule's own id, and `temporal` demands a `published_from`
+# that the interpretation schema does not define. Using the field therefore
+# fails CI. The link is carried the other way instead, by
+# `interpretations: []` on the rule, which
+# `packages/rules-engine/src/evaluate.ts` already resolves. Both bugs are the
+# same shape as the `source_id` one in docs/rfc/P0-3-01.md and are filed in
+# docs/rfc/P0-3-03.md.
+$schema: https://schemas.opencryptotaxcommons.org/rule/interpretation.schema.json
+interpretation_id: fr-interp-nft-inside-150-vh-bis
+jurisdiction_id: france
+summary: >-
+  An NFT was an « actif numérique » for the 2019 wording of art. 150 VH bis, so
+  its disposal was charged under that article like any other digital asset.
+reasoning: >-
+  The article defines its perimeter by reference to CMF art. L. 54-10-1, which
+  describes digital representations of value that can be transferred and stored
+  electronically and says nothing whatever about fungibility. On that reading
+  the silence is inclusive: nothing in the text carves non-fungible tokens out,
+  and reading a carve-out into it requires words that are not there. This
+  reading has the practical advantage that a 2021 taxpayer following it was
+  applying the only French charging provision that mentioned digital assets at
+  all.
+sources:
+  - fr-cgi-150-vh-bis-2019
+certainty:
+  level: EXPERT_INTERPRETATION
+  reason: >-
+    A reading of the statutory text. No indexed French source states it, and no
+    court has ruled on it.
+held_by: >-
+  Not attributed. Recorded as a reading available on the 2021 material, not as
+  the position of any named authority, practitioner or commentator — this pack
+  cites no commentary as authority.
+conflicts_with:
+  - fr-interp-nft-outside-150-vh-bis
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+schema_version: 0.1.0

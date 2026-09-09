@@ -1,0 +1,152 @@
+# Rule tests for the self-transfer pair (§86 matrix).
+#
+# Format: see README.md in this directory. Each case is an `evaluate()` input
+# and the result it must produce. Nothing here is a source or a rule, so no
+# $schema is declared — there is no rule-test schema yet (docs/rfc/P0-3-03.md).
+test_suite_id: fr-tests-self-transfer
+jurisdiction: france
+todo: P0-3-03
+covers:
+  - fr-self-transfer-not-a-disposal-2019
+  - fr-self-transfer-not-a-disposal-2026
+cases:
+  - test_id: fr-t-self-transfer-confirmed-2021
+    matrix: [positive, historical_version]
+    covers:
+      - fr-self-transfer-not-a-disposal-2019
+      - fr-self-transfer-not-a-disposal-2026
+    why: >-
+      A 2021 transfer between two wallets the user has confirmed are theirs is
+      not a disposal, and the rule that says so must be the 2019 wording.
+    input:
+      event: { event_type: SELF_TRANSFER }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { same_beneficial_owner_confirmed: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-self-transfer-not-a-disposal-2019]
+      not_applicable_rule_ids: [fr-self-transfer-not-a-disposal-2026]
+      certainty_level: AUTHORITATIVE_INTERPRETIVE
+      effects:
+        fr-self-transfer-not-a-disposal-2019: { classification: NOT_A_DISPOSAL }
+
+  - test_id: fr-t-self-transfer-unconfirmed-2021
+    matrix: [negative]
+    covers:
+      - fr-self-transfer-not-a-disposal-2019
+    why: >-
+      The user has said the destination is not theirs. That is a transfer to
+      someone else, and this rule must not reach it.
+    input:
+      event: { event_type: SELF_TRANSFER }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { same_beneficial_owner_confirmed: false }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+      certainty_level: UNKNOWN
+
+  - test_id: fr-t-self-transfer-missing-ownership-fact-2021
+    matrix: [missing_fact]
+    covers:
+      - fr-self-transfer-not-a-disposal-2019
+    why: >-
+      Common ownership of two addresses is not observable on-chain. With the
+      fact absent the engine must answer UNKNOWN, not assume the transfer was
+      to the user's own wallet because the event was labelled SELF_TRANSFER.
+    input:
+      event: { event_type: SELF_TRANSFER }
+      participant: { capacity: COLLECTOR }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+      gaps_include: ['no rule matches']
+
+  - test_id: fr-t-self-transfer-boundary-last-day-of-2019-text
+    matrix: [boundary_date, historical_version]
+    covers:
+      - fr-self-transfer-not-a-disposal-2019
+      - fr-self-transfer-not-a-disposal-2026
+    why: >-
+      2026-06-27 is the last day the 2019 wording of art. 150 VH bis was in
+      force. The successor must not reach back over it.
+    input:
+      event: { event_type: SELF_TRANSFER }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts: { same_beneficial_owner_confirmed: true }
+      as_of: { transaction_date: '2026-06-27', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-self-transfer-not-a-disposal-2019]
+      not_applicable_rule_ids: [fr-self-transfer-not-a-disposal-2026]
+
+  - test_id: fr-t-self-transfer-boundary-first-day-of-2026-text
+    matrix: [boundary_date, successor_version]
+    covers:
+      - fr-self-transfer-not-a-disposal-2019
+      - fr-self-transfer-not-a-disposal-2026
+    why: >-
+      2026-06-28 is the first day of the recast wording. The pair must hand
+      over cleanly, with no day covered by both and no day covered by neither.
+    input:
+      event: { event_type: SELF_TRANSFER }
+      participant: { capacity: ARTIST }
+      jurisdiction_facts: { same_beneficial_owner_confirmed: true }
+      as_of: { transaction_date: '2026-06-28', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-self-transfer-not-a-disposal-2026]
+      not_applicable_rule_ids: [fr-self-transfer-not-a-disposal-2019]
+
+  - test_id: fr-t-self-transfer-confirmed-2026-successor
+    matrix: [successor_version, positive]
+    covers:
+      - fr-self-transfer-not-a-disposal-2026
+    why: >-
+      Well inside the recast period the successor answers alone, and its own
+      source is contemporaneous — published 2026-06-25, before the transaction.
+    input:
+      event: { event_type: SELF_TRANSFER }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { same_beneficial_owner_confirmed: true }
+      as_of: { transaction_date: '2026-09-01', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-self-transfer-not-a-disposal-2026]
+      later_guidance_rule_ids: []
+      published_after_transaction:
+        fr-self-transfer-not-a-disposal-2026: false
+
+  - test_id: fr-t-self-transfer-sale-is-not-covered-2021
+    matrix: [negative]
+    covers:
+      - fr-self-transfer-not-a-disposal-2019
+    why: >-
+      Confirming that both wallets are yours does not make a sale into a
+      self-transfer. The rule is keyed on the event, not on the fact.
+    input:
+      event: { event_type: CRYPTO_SALE }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { same_beneficial_owner_confirmed: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-self-transfer-unconfirmed-2026
+    matrix: [negative, missing_fact]
+    covers:
+      - fr-self-transfer-not-a-disposal-2026
+    why: >-
+      The successor inherits the guard, not just the conclusion. Recasting the
+      article did not turn an unconfirmed transfer into a self-transfer.
+    input:
+      event: { event_type: SELF_TRANSFER }
+      participant: { capacity: COLLECTOR }
+      as_of: { transaction_date: '2026-09-01', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []

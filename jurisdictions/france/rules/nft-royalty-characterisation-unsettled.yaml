@@ -1,0 +1,59 @@
+# An on-chain royalty paid on a resale is the question this pack is least able
+# to answer, and plan 15 is explicit that it must not be picked silently.
+#
+# CGI art. 93, 1 quater taxes authors' droits d'auteur under the traitements et
+# salaires rules when they are fully declared by third parties. On the sources
+# held here, no NFT marketplace is a tiers déclarant in that sense, and a
+# royalty enforced by a smart contract is not obviously a droit d'auteur rather
+# than a contractual resale share.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: fr-nft-royalty-characterisation-unsettled
+jurisdiction_id: france
+tax_domain: personal_income_tax
+title: >-
+  The characterisation of an on-chain NFT royalty is unsettled and needs facts
+applies_to:
+  capacities:
+    - ARTIST
+    - CREATOR
+  event_types:
+    - NFT_ROYALTY
+    - ROYALTY_RECEIPT
+dsl_version: '0'
+effects:
+  classification: REVIEW_REQUIRED_CHARACTERISATION_UNSETTLED
+effective_from: '2019-01-01'
+published_from: '2018-12-28'
+sources:
+  - fr-cgi-93
+  - fr-css-l382-1
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: UNSETTLED
+  reason: >-
+    Neither CGI art. 93, 1 quater nor CSS art. L. 382-1 has been applied to
+    on-chain royalties by any source indexed here. Three readings are live —
+    droit d'auteur, BNC, and a contractual resale share that is neither — and
+    the social-contribution consequence differs under each. The pack asks
+    rather than picks.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed sources only. No qualified French reviewer is
+    recorded for this pack (P0-L-01).
+test_cases:
+  - fr-t-nft-royalty-2021-review-required
+  - fr-t-royalty-receipt-income-tax-only-2021
+  - fr-t-nft-royalty-collector-not-covered-2021
+  - fr-t-nft-royalty-boundary-2018
+  - fr-t-royalty-missing-capacity-2021
+notes: >-
+  No interpretations are attached, even though three readings are named above.
+  An interpretation record has to cite a source that actually advances the
+  reading; none of the three is held by anything indexed here, so recording
+  them as competing authorities would manufacture a debate out of the pack's
+  own reasoning. The droit de suite analogy at CPI art. L. 122-8 is the closest
+  legal parallel and is not indexed either (RESEARCH.md §6). Facts the pack
+  needs: whether a copyright licence was granted, whether the marketplace
+  declares the payment, and the recipient's confirmed capacity.
+schema_version: 0.1.0

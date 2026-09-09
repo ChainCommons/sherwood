@@ -1,0 +1,96 @@
+# Rule tests for the crypto-to-crypto exchange rule (§86 matrix).
+test_suite_id: fr-tests-exchange-without-soulte
+jurisdiction: france
+todo: P0-3-03
+covers:
+  - fr-exchange-without-soulte-outside-charge
+cases:
+  - test_id: fr-t-swap-without-soulte-2021
+    matrix: [positive]
+    covers:
+      - fr-exchange-without-soulte-outside-charge
+    why: >-
+      The French answer a foreign default most often gets wrong. A swap of one
+      fungible digital asset for another, with no cash balancing payment, is
+      outside the charge — not a realisation event with a deferred gain.
+    input:
+      event: { event_type: CRYPTO_SWAP, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { french_tax_resident: true, soulte_paid: false }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: APPLICABLE
+      applicable_rule_ids: [fr-exchange-without-soulte-outside-charge]
+      certainty_level: AUTHORITATIVE_CLEAR
+      effects:
+        fr-exchange-without-soulte-outside-charge:
+          classification: OUT_OF_CHARGE_EXCHANGE_WITHOUT_SOULTE
+
+  - test_id: fr-t-swap-with-soulte-2021
+    matrix: [negative]
+    covers:
+      - fr-exchange-without-soulte-outside-charge
+    why: >-
+      With a soulte the exclusion falls away. The pack has no sourced rule for
+      what happens next, so the honest answer is UNKNOWN rather than reaching
+      for the disposal rule, which is keyed on a sale.
+    input:
+      event: { event_type: CRYPTO_SWAP, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { french_tax_resident: true, soulte_paid: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-swap-missing-soulte-fact-2021
+    matrix: [missing_fact]
+    covers:
+      - fr-exchange-without-soulte-outside-charge
+    why: >-
+      Whether a balancing payment was made is not always visible in the
+      transaction data. Absent the fact the engine must not assume the
+      favourable branch.
+    input:
+      event: { event_type: CRYPTO_SWAP, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { french_tax_resident: true }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-swap-non-resident-2021
+    matrix: [negative]
+    covers:
+      - fr-exchange-without-soulte-outside-charge
+    why: >-
+      Art. 150 VH bis reaches individuals fiscally domiciled in France within
+      the meaning of art. 4 B. A non-resident is outside this pack entirely.
+    input:
+      event: { event_type: CRYPTO_SWAP, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { french_tax_resident: false, soulte_paid: false }
+      as_of: { transaction_date: '2021-06-15', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+
+  - test_id: fr-t-swap-after-2026-recast-not-modelled
+    matrix: [boundary_date]
+    covers:
+      - fr-exchange-without-soulte-outside-charge
+    why: >-
+      The rule stops on 2026-06-27 because nobody checked whether the recast
+      article carries the soulte exclusion forward. A swap the day after must
+      return UNKNOWN, which is the pack admitting a gap rather than running an
+      unverified rule past its evidence.
+    input:
+      event: { event_type: CRYPTO_SWAP, asset_category: fungible_digital_asset }
+      participant: { capacity: COLLECTOR }
+      jurisdiction_facts: { french_tax_resident: true, soulte_paid: false }
+      as_of: { transaction_date: '2026-06-28', analysis_date: '2026-09-09' }
+    expect:
+      status: UNKNOWN
+      applicable_rule_ids: []
+      gaps_include: ['no rule matches']

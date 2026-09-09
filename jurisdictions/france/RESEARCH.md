@@ -1,6 +1,7 @@
 # France — source research log
 
-**TODO:** P0-3-01 · **Status:** LEVEL 1 (sources indexed, no rules modelled) ·
+**TODO:** P0-3-01 · **Status:** LEVEL 3 (sources indexed; a narrow set modelled
+in [`rules/`](rules/README.md) under P0-3-03) ·
 **Review status:** `COMMUNITY_DRAFT` — no qualified French reviewer is recorded
 (that is [P0-L-01](../../plans/23-implementation.md)).
 
@@ -314,8 +315,12 @@ Recorded so the next contributor starts from the edge of what is known.
 
 **Deliberately absent:**
 
-- No `content_hash` on any Légifrance record (§2).
-- No rule YAML. Sources first, rules in **P0-3-03**, and only where citable.
+- No `content_hash` on any Légifrance record (§2) — restated here because it
+  is the one integrity gap this log will not paper over.
+- Rules now exist (**P0-3-03**, [`rules/README.md`](rules/README.md)), but only
+  where citable: thirteen of them, five saying `UNSETTLED`. The gaps listed
+  above are the reason the other domains stay unmodelled, and
+  [`rules/README.md`](rules/README.md) says which of them blocks what.
 - No `SOURCE_VERIFIED` or `EXPERT_REVIEWED` label anywhere. The pack is
   `COMMUNITY_DRAFT` and the UI must say expert review is absent.
 
