@@ -1,0 +1,77 @@
+# Art. 44 of the VAT Directive: the place of supply of services to a taxable
+# person acting as such is where that customer has established their business.
+# For a French artist selling to a business established elsewhere, this is the
+# rule that moves the supply out of France before any French rate is reached.
+#
+# The rule turns on two facts the pack cannot recover from a transaction: that
+# what is supplied is a service, and that the customer is a taxable person. If
+# either is absent the rule does not fire and the engine answers UNKNOWN, which
+# is the honest result — see notes.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: eu-vat-place-of-supply-services-b2b
+jurisdiction_id: eu
+tax_domain: vat
+title: >-
+  The place of supply of services to a taxable person is where the customer is
+  established
+applies_to:
+  event_types:
+    - NFT_SALE
+    - NFT_MINT
+    - NFT_ROYALTY
+    - ART_PRIMARY_SALE
+    - ART_SECONDARY_SALE
+    - COMMISSION_INCOME
+    - LICENCE_INCOME
+    - ROYALTY_RECEIPT
+    - COPYRIGHT_ASSIGNMENT
+dsl_version: '0'
+conditions:
+  all:
+    - field: jurisdiction_facts.supply_is_of_services
+      op: eq
+      value: true
+    - field: jurisdiction_facts.customer_is_taxable_person
+      op: eq
+      value: true
+effects:
+  classification: PLACE_OF_SUPPLY_WHERE_CUSTOMER_ESTABLISHED
+effective_from: '2019-01-01'
+published_from: '2006-12-11'
+sources:
+  - eu-dir-2006-112-vat
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_CLEAR
+  reason: >-
+    The general B2B place-of-supply rule at art. 44 is legislation and states
+    the connecting factor in terms. It is clear about *where* the supply is
+    located, and says nothing about whether the supply is taxable there, at
+    what rate, or under which exemption — those stay with the Member State the
+    rule points at.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed EU sources only. This is a dependency pack for
+    France; no EU-qualified reviewer is recorded.
+test_cases:
+  - eu-t-b2b-services-customer-member-state
+  - eu-t-b2b-not-reached-when-customer-is-consumer
+  - eu-t-electronic-service-b2b-not-reached
+  - eu-t-place-of-supply-facts-missing
+  - eu-t-place-of-supply-boundary-2018-12-31
+  - eu-t-place-of-supply-boundary-2019-01-01
+  - eu-t-nft-place-of-supply-still-answered
+  - eu-t-fungible-sale-not-marked-unsettled
+notes: >-
+  Art. 44 in its current form was inserted by a later amending directive, and
+  that instrument is NOT indexed in this pack. published_from therefore records
+  the publication of Directive 2006/112/EC itself and MUST NOT be read as a
+  claim about when this wording appeared; effective_from opens the window at
+  2019-01-01, by which date the current wording was in force, and this pack
+  makes no statement about the place of supply before that date. Pinning the
+  consolidated text per period is an open gap — RESEARCH.md §3. The exceptions
+  in arts. 46 et seq. (immovable property, transport, admission to events,
+  hire) are not modelled: a supply falling in one of them is not answered by
+  this rule and the pack does not detect that.
+schema_version: 0.1.0

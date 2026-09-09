@@ -1,0 +1,54 @@
+# DAC8 — Council Directive (EU) 2023/2226 — extends administrative cooperation
+# to crypto-asset service providers. It is the instrument most likely to be
+# misread as a tax change, because it is the one that makes a taxpayer's
+# on-chain activity visible to their administration.
+#
+# The rule exists to say the boring thing loudly: REPORTABLE is not TAXABLE.
+# Being reported changes nothing about how a receipt or a disposal is treated.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: eu-crypto-reporting-dac8-changes-no-treatment
+jurisdiction_id: eu
+tax_domain: crypto_reporting
+title: >-
+  Reporting by a crypto-asset service provider under DAC8 does not change how a
+  transaction is taxed
+dsl_version: '0'
+conditions:
+  all:
+    - field: jurisdiction_facts.reported_by_crypto_asset_service_provider
+      op: eq
+      value: true
+effects:
+  classification: REPORTING_ONLY_NO_TREATMENT_CHANGE
+effective_from: '2023-10-24'
+published_from: '2023-10-24'
+sources:
+  - eu-dir-2023-2226-dac8
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: AUTHORITATIVE_CLEAR
+  reason: >-
+    DAC8 amends Directive 2011/16/EU on administrative cooperation. It creates
+    reporting and exchange obligations addressed to service providers and to
+    Member States. That an obligation of that kind does not itself alter a
+    charge to tax is clear from what the instrument is.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed EU sources only. This is a dependency pack for
+    France; no EU-qualified reviewer is recorded.
+test_cases:
+  - eu-t-dac8-reporting-changes-nothing
+  - eu-t-dac8-silent-when-not-reported
+  - eu-t-dac8-missing-fact
+  - eu-t-dac8-boundary-2023-10-23
+notes: >-
+  Deliberately date-light. The obligation's own timetable — the transposition
+  deadline, the first reporting period, the first exchange — was NOT verified
+  against the instrument while authoring and is therefore not modelled;
+  effective_from and published_from both record the publication date carried by
+  the indexed source. What this rule asserts is time-independent, so it is
+  correct without those dates, but it must not be read as saying anyone had a
+  reporting obligation on 2023-10-24. A pack that needs the timetable must
+  index it first — RESEARCH.md §3.
+schema_version: 0.1.0

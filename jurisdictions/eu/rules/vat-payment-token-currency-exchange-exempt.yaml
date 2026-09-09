@@ -1,0 +1,72 @@
+# CJEU C-264/14 Hedqvist (2015-10-22): exchanging a traditional currency for a
+# fungible payment token and back, for consideration, is a supply of services
+# exempt under the currency limb of art. 135(1)(e) of the VAT Directive.
+#
+# The case is narrow and this rule is drawn to its edges rather than to what it
+# is often cited for. Mr Hedqvist proposed to run an exchange business, so the
+# rule requires the supplier to act as a taxable person; the transaction he put
+# to the Court had a traditional currency on one side, so the rule requires
+# that too. Token-for-token swaps and anything non-fungible are outside it.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: eu-vat-payment-token-currency-exchange-exempt
+jurisdiction_id: eu
+tax_domain: vat
+title: >-
+  Exchanging a fungible payment token against a traditional currency is an
+  exempt financial transaction
+applies_to:
+  event_types:
+    - CRYPTO_SALE
+    - CRYPTO_PURCHASE
+    - SPOT_TRADE
+dsl_version: '0'
+conditions:
+  all:
+    - field: asset_category
+      op: eq
+      value: fungible_digital_asset
+    - field: jurisdiction_facts.exchange_against_traditional_currency
+      op: eq
+      value: true
+    - field: jurisdiction_facts.supplier_acts_as_taxable_person
+      op: eq
+      value: true
+effects:
+  classification: VAT_EXEMPT_CURRENCY_TRANSACTION
+effective_from: '2019-01-01'
+published_from: '2015-10-22'
+sources:
+  - eu-cjeu-c-264-14-hedqvist
+  - eu-dir-2006-112-vat
+authority_status: BINDING_DOCTRINE
+certainty:
+  level: AUTHORITATIVE_CLEAR
+  reason: >-
+    A CJEU ruling on the exact transaction referred to it, binding on national
+    courts and administrations. It is clear about that transaction and about
+    nothing beyond it: the Court was asked about a currency exchanged for
+    bitcoin and answered that question.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed EU sources only. This is a dependency pack for
+    France; no EU-qualified reviewer is recorded.
+test_cases:
+  - eu-t-fiat-token-exchange-exempt
+  - eu-t-token-for-token-swap-not-reached
+  - eu-t-exchange-currency-fact-missing
+  - eu-t-hedqvist-boundary-2018-12-31
+  - eu-t-nft-sale-not-reached-by-hedqvist
+notes: >-
+  Exempt is not outside scope and is not zero-rated: an exempt supply is within
+  VAT and generally blocks input deduction. The rule says which box the
+  transaction sits in and does not compute anything. What it must never be
+  stretched to cover: NFTs and any other non-fungible asset — the 2024 French
+  rescrit expressly places NFT operations outside the financial-operations
+  exemption — token-for-token swaps with no traditional currency leg, staking
+  and lending rewards, and the taxable amount, which for an exchange service is
+  the margin rather than the gross. None of those follows from this judgment.
+  effective_from opens at the pack window, not at the judgment: the ruling is
+  from 2015-10-22 and published_from records that, so a pre-window transaction
+  is not answered here rather than being answered wrongly.
+schema_version: 0.1.0

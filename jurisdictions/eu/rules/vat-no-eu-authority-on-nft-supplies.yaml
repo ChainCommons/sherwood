@@ -1,0 +1,66 @@
+# The absence that the France pack leans on. No EU instrument indexed here, and
+# no CJEU decision, addresses the VAT treatment of a non-fungible token. This
+# rule exists so that an NFT question gets a dated "the EU has not answered
+# this" instead of Hedqvist stretched across a line the Court never crossed, or
+# a national rescrit read as if it were EU doctrine.
+#
+# It is UNSETTLED on purpose: the engine turns that into REVIEW_REQUIRED, which
+# is the correct posture for a question no cited authority resolves.
+$schema: https://schemas.opencryptotaxcommons.org/rule/rule.schema.json
+rule_id: eu-vat-no-eu-authority-on-nft-supplies
+jurisdiction_id: eu
+tax_domain: vat
+title: >-
+  No EU instrument or CJEU decision indexed here addresses the VAT treatment of
+  non-fungible tokens
+applies_to:
+  event_types:
+    - NFT_SALE
+    - NFT_MINT
+    - NFT_ROYALTY
+    - NFT_PURCHASE
+    - ART_PRIMARY_SALE
+    - ART_SECONDARY_SALE
+dsl_version: '0'
+conditions:
+  all:
+    - field: asset_category
+      op: eq
+      value: non_fungible_token
+effects:
+  classification: UNSETTLED_NO_EU_AUTHORITY
+effective_from: '2019-01-01'
+published_from: '2015-10-22'
+sources:
+  - eu-dir-2006-112-vat
+  - eu-cjeu-c-264-14-hedqvist
+authority_status: BINDING_LEGISLATION
+certainty:
+  level: UNSETTLED
+  reason: >-
+    The VAT Directive does not mention non-fungible tokens. Hedqvist concerns a
+    fungible payment token exchanged against a traditional currency, which is a
+    different transaction. Nothing else indexed in this pack reaches NFTs at
+    all, so the absence is the finding — not a conclusion that no VAT arises.
+review:
+  status: COMMUNITY_DRAFT
+  scope: >-
+    Authored against the indexed EU sources only. This is a dependency pack for
+    France; no EU-qualified reviewer is recorded.
+test_cases:
+  - eu-t-nft-sale-unsettled-at-eu-level
+  - eu-t-nft-sale-not-reached-by-hedqvist
+  - eu-t-fungible-sale-not-marked-unsettled
+  - eu-t-nft-place-of-supply-still-answered
+  - eu-t-nft-2021-sees-no-later-eu-guidance
+notes: >-
+  This rule has no end date. It is not a historical gap that later closed: it
+  records the state of the EU-level sources indexed here as of
+  last_source_verification, and it must be revisited — not assumed still true —
+  whenever this pack is re-verified. It is also not a claim about national law.
+  France answered part of the question for itself on 2024-02-14 in
+  BOI-RES-TVA-000140, and that rescrit is a French source with French reach;
+  the general place-of-supply rules in this pack still apply to an NFT supply
+  alongside this marker, because where a supply is located does not depend on
+  anyone having decided what it is.
+schema_version: 0.1.0

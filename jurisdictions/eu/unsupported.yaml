@@ -1,0 +1,152 @@
+# What this dependency pack does NOT model, stated as data rather than left as
+# silence (plan 05 §24, plan 15 §79). Every entry is a question a French or
+# other national pack may legitimately ask the EU level, and the answer is
+# "not here, and here is what would have to be indexed first".
+#
+# `status` is about this pack, not about the law:
+#   UNKNOWN      the instruments exist; this pack has not indexed them
+#   UNSETTLED    indexed authority exists and does not resolve the question
+#   OUT_OF_SCOPE deliberately not an EU-level question at all
+#
+# This file is not consumed by the engine. It is the map a maintainer reads
+# before assuming the absence of a rule means the absence of a tax.
+unsupported_id: eu-unsupported
+jurisdiction: eu
+todo: P0-3-04
+as_of: '2026-09-08'
+
+not_modelled:
+  - topic: Place of supply before 2019-01-01
+    status: UNKNOWN
+    why: >-
+      Arts. 44, 45 and 58 reached their current form through amending
+      instruments this pack has not indexed, and the B2C rule for electronic
+      supplies inside the EU located them differently before that. The modelled
+      window therefore opens at 2019-01-01 and earlier years get no answer.
+    needs:
+      - Council Directive 2008/8/EC (place of supply of services)
+      - A consolidated version of Directive 2006/112/EC pinned per period
+
+  - topic: What counts as an electronically supplied service
+    status: UNKNOWN
+    why: >-
+      The definition and the indicative list are in an implementing regulation
+      that is not indexed here. `eu-vat-place-of-supply-electronic-services-b2c`
+      therefore takes the classification as a supplied fact and never derives
+      it. An NFT is not automatically within the category.
+    needs:
+      - Council Implementing Regulation (EU) No 282/2011, art. 7 and Annex I
+
+  - topic: Customer-location presumptions and the evidence to rebut them
+    status: UNKNOWN
+    why: >-
+      Where a consumer belongs, and what proof a supplier must keep, are the
+      operative questions once art. 58 points at the customer. Not indexed, not
+      modelled.
+    needs:
+      - Council Implementing Regulation (EU) No 282/2011, arts. 24a and 24b
+
+  - topic: The place-of-supply exceptions in arts. 46 et seq.
+    status: UNKNOWN
+    why: >-
+      Services connected with immovable property, transport, admission to
+      events, short-term hire and the effective-use provisions all displace the
+      general rules. The pack neither models them nor detects that a supply
+      falls into one, so a place-of-supply answer here is the general rule's
+      answer and nothing more.
+    needs:
+      - Directive 2006/112/EC arts. 46-59a, consolidated per period
+
+  - topic: The small-business threshold for cross-border B2C supplies
+    status: UNKNOWN
+    why: >-
+      A supplier below the turnover threshold may stay taxed where they are
+      established rather than following the customer. Not indexed, so the
+      art. 58 destination is stated without it.
+    needs:
+      - Directive 2006/112/EC art. 59c, consolidated per period
+
+  - topic: Registration, one-stop-shop and returns
+    status: UNKNOWN
+    why: >-
+      Knowing which Member State a supply belongs to is not the same as knowing
+      where and how to register or file. This pack models the first and none of
+      the second.
+    needs:
+      - Directive 2006/112/EC Title XII Chapter 6, consolidated per period
+
+  - topic: Token-for-token exchanges
+    status: UNSETTLED
+    why: >-
+      Hedqvist decided an exchange with a traditional currency on one side. No
+      indexed authority reaches a swap of one crypto-asset for another, so
+      `eu-vat-payment-token-currency-exchange-exempt` requires a traditional
+      currency leg and is silent otherwise.
+    needs:
+      - A CJEU decision or EU instrument addressing token-for-token exchange
+
+  - topic: The taxable amount of an exchange service
+    status: UNKNOWN
+    why: >-
+      Hedqvist places the exchange in the exemption; it does not compute
+      anything. What the consideration is for a spread-based service is a
+      separate question this pack does not answer.
+    needs:
+      - Directive 2006/112/EC Title VII, consolidated per period
+
+  - topic: VAT treatment of non-fungible tokens
+    status: UNSETTLED
+    why: >-
+      Modelled as the rule `eu-vat-no-eu-authority-on-nft-supplies`, which
+      records the absence rather than leaving it to be filled in. France
+      answered part of it nationally on 2024-02-14; that is a French source
+      with French reach and is not restated here.
+    needs:
+      - An EU instrument or CJEU decision addressing non-fungible tokens
+
+  - topic: Staking, lending and liquidity rewards
+    status: UNKNOWN
+    why: >-
+      Whether a reward is consideration for a supply at all is unaddressed by
+      anything indexed here. No rule, and no default.
+    needs:
+      - An EU instrument or CJEU decision addressing crypto-asset rewards
+
+  - topic: VAT rates
+    status: OUT_OF_SCOPE
+    why: >-
+      The rate is fixed by each Member State within the limits the Directive
+      sets. No EU rule states a rate, so no rule here does either. Directive
+      (EU) 2022/542 is indexed because it changed which supplies a Member State
+      MAY tax at a reduced rate — including works of art — but the rate itself,
+      and the definition of a work of art, remain national. France's own
+      analysis of that boundary is in
+      `jurisdictions/france/explanations/vat-and-digital-art.md`.
+    needs: []
+
+  - topic: The DAC8 reporting timetable
+    status: UNKNOWN
+    why: >-
+      `eu-crypto-reporting-dac8-changes-no-treatment` asserts only that
+      reporting does not change treatment, which is true whatever the dates.
+      The transposition deadline, the first reporting period and the first
+      exchange were not verified against the instrument and are not modelled.
+    needs:
+      - Directive (EU) 2023/2226, final provisions, read against the OJ text
+
+  - topic: Direct taxation generally
+    status: OUT_OF_SCOPE
+    why: >-
+      Income tax, capital gains and corporation tax are Member State
+      competences. There is no EU rule for a national pack to reference, and a
+      pack that produced one here would be inventing a layer that does not
+      exist.
+    needs: []
+
+  - topic: MiCA as a tax instrument
+    status: OUT_OF_SCOPE
+    why: >-
+      Regulation (EU) 2023/1114 is indexed only because French law borrows its
+      perimeter from 2026-06-28. It is market regulation. No tax treatment is
+      derived from it here and none should be derived from it anywhere.
+    needs: []
